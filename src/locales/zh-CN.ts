@@ -5,6 +5,7 @@ export default {
     startTimeText: '开始时间',
     endTimeText: '结束时间',
     login: '登录',
+    delete:'删除',
     required: '该项为必填项',
     loginOut: '退出系统',
     document: '项目文档',
@@ -13,6 +14,8 @@ export default {
     loginOutMessage: '是否退出本系统？',
     back: '返回',
     ok: '确定',
+    confirm: '确定',
+    confirmText: '是否确认执行该操作？',
     save: '保存',
     cancel: '取消',
     close: '关闭',
@@ -58,7 +61,7 @@ export default {
     copyError: '复制失败',
     queryFailed: '查询失败',
     creator: '创建人',
-    updater:'更新人',
+    updater: '更新人',
     operation: '操作',
     select: '选择',
     selectSuccess: '选择成功'
@@ -508,6 +511,8 @@ export default {
       approve: '通过',
       reject: '驳回',
       approveSuccess: '审核通过成功',
+      rejectConfirm: '确认要驳回该出库订单吗？',
+      rejectSuccess: '驳回成功',
       allocate: '分配库存',
       allocateConfirm: '确认要分配库存吗？',
       allocateSuccess: '分配库存成功'
@@ -539,6 +544,57 @@ export default {
       last30Days: '近三十天',
       last3Months: '近三个月',
       currentMonth: '当月'
+    },
+    deliveryNote: {
+      title: '发货单管理',
+      generateBtn: '生成发货单',
+      pendingCount: '待生成: {count} 单',
+      deliveryNo: '发货单号',
+      status: '状态',
+      totalOrderCount: '包含订单数',
+      transportMode: '运输方式',
+      carrierInfo: '承运信息',
+      shippedTime: '发运时间',
+      shippedBy: '发运人',
+      remark: '备注',
+      operation: '操作',
+      startLoading: '开始装车',
+      continueLoading: '继续装车',
+      viewDetail: '查看详情',
+      totalCount: '共 {count} 条记录',
+      statusPending: '待装车',
+      statusLoading: '装车中',
+      statusShipped: '已发运',
+      transportThirdParty: '第三方物流',
+      transportOwnFleet: '自有车队',
+      transportSelfPickup: '客户自提',
+      generateTitle: '生成发货单',
+      generateTip: '您已选择 {count} 个订单进行发货。',
+      selectOrders: '选择出库订单',
+      orderNo: '出库订单号',
+      partyName: '客户名称',
+      receiverInfo: '收货地址',
+      orderStatus: '订单状态',
+      selectedCount: '已选择: {count} 个订单',
+      confirmGenerate: '确认生成',
+      loadingDialogTitle: '装车操作',
+      noteInfo: '发货单信息',
+      orderList: '出库订单清单',
+      loadedCount: '已装车: {loaded}/{total}',
+      loadingStatus: '装车状态',
+      loadedTime: '装车时间',
+      loadedBy: '装车人',
+      loadOrderBtn: '装车完成',
+      loadOrderLoaded: '已装车',
+      confirmShippedTitle: '确认发运',
+      confirmShippedMsg: '所有订单已装车完成，确认发运？',
+      confirmShippedSuccess: '发运成功',
+      generateSuccess: '发货单生成成功',
+      loadOrderSuccess: '装车完成',
+      deleteSuccess: '删除成功',
+      deleteConfirm: '确认删除该发货单？删除后不可恢复。',
+      selectAtLeastOne: '请至少选择一个出库订单',
+      loadingProgress: '装车进度'
     },
     wave: {
       title: '波次计划生成',
@@ -654,9 +710,18 @@ export default {
       waveNotExist: '波次不存在',
       waveStatusChanged: '波次状态已变更，无法创建拣货任务',
       waveTaskExists: '该波次已创建拣货任务',
+      selectOrder: '请选择出库订单',
+      noAllocatedOrder: '暂无已分配的出库订单',
+      pleaseSelectOrder: '请选择一个出库订单',
+      orderPriority: '优先级',
+      materialCount: '物料数',
+      totalDemandQty: '需求总量',
+      orderNotExist: '出库订单不存在',
+      orderStatusChanged: '订单状态已变更，无法创建拣货任务',
+      orderTaskExists: '该出库订单已创建拣货任务',
       remark: '备注',
       remarkPlaceholder: '请输入备注（可选）',
-      executePicking: '执行拣货',
+      executePicking: '拣货执行',
       executionTitle: '执行拣货任务',
       executionSubtitle: '逐项确认拣货数量，完成拣货作业',
       pickingProgress: '拣货进度',
@@ -761,7 +826,7 @@ export default {
       delete: '删除',
       search: '搜索',
       reset: '重置',
-      
+
       // 表单相关
       formTitle: 'ASN到货预告单',
       createForm: '新增ASN到货预告单',
@@ -780,7 +845,7 @@ export default {
       selectExpectedArrivalTime: '请选择预计到货时间',
       putawayStrategy: '上架规则',
       saveAsn: '保存ASN',
-      
+
       // 物料明细表单
       materialSelection: '物料选择',
       batchNoOptional: '批次号 (可选)',
@@ -802,7 +867,7 @@ export default {
       loadMaterialFailed: '获取物料列表失败',
       loadMaterialUnitFailed: '获取物料单位列表失败',
       loadPutawayRulesFailed: '获取上架规则列表失败',
-      
+
       // 物料明细
       materialDetails: '物料明细',
       materialCode: '物料编码',
@@ -819,7 +884,7 @@ export default {
       inputExpectedQty: '请输入预计数量',
       noMaterialData: '暂无物料明细，请点击上方按钮添加',
       materialCountLabel: '种物料',
-      
+
       // 详情页
       detailTitle: 'ASN单详情',
       basicInfo: '基本信息',
@@ -830,7 +895,7 @@ export default {
       close: '关闭',
       materialDetailsSection: '物料明细',
       sequenceNo: '序号',
-      
+
       // 收货确认页
       receiveTitle: 'ASN收货确认',
       receiveDescription: '请填写实际收货数量，系统将根据收货数量更新库存。',
@@ -845,7 +910,7 @@ export default {
       receiveFailed: '收货确认失败',
       receiveValidationFailed: '请确保所有物料的实际数量都已正确填写',
       loadAsnDetailFailed: '获取ASN详情失败',
-      
+
       // 验证消息
       asnNoRequired: 'ASN单号不能为空',
       inboundTypeRequired: '入库类型不能为空',
@@ -858,7 +923,7 @@ export default {
       packageUnitRequired: '第{row}行包装单位不能为空',
       actualQtyRequired: '第{row}行实际收货数量不能为空',
       actualQtyMustGtZero: '第{row}行实际收货数量必须大于0',
-      
+
       // 操作消息
       createSuccess: '新增成功',
       createFailed: '新增失败',
@@ -870,7 +935,7 @@ export default {
       batchDeleteConfirm: '确定要删除选中的ASN单吗？',
       exportSuccess: '导出成功',
       exportFailed: '导出失败',
-      
+
       // 状态提示
       cannotEditReceived: '已收货的ASN单不能编辑',
       cannotDeleteReceived: '已收货的ASN单不能删除',
@@ -885,7 +950,7 @@ export default {
       syncFromQms: '从QMS同步',
       batchDelete: '批量删除',
       inspectionNo: '检验单号',
-      inspectionType: '检验类型',
+      inspectionType: '来源类型',
       sourceType: '来源类型',
       sourceOrderNo: '来源单据号',
       sourceOrderType: '来源单据类型',
@@ -898,6 +963,8 @@ export default {
       productionLine: '产线',
       warehouseCode: '仓库编码',
       warehouseName: '仓库名称',
+      locationCode: '库位编码',
+      locationName: '库位名称',
       inspectionTime: '检验时间',
       inspector: '检验员',
       inspectionResult: '检验结果',
@@ -950,6 +1017,7 @@ export default {
       errorDetails: '错误详情',
       errorMessage: '错误信息',
       startSync: '开始同步',
+      syncConfirm: '确定要从QMS系统同步检验数据吗?',
       syncSuccess: '同步成功! 新增{created}条,更新{updated}条',
       syncCompleteWithErrors: '同步完成! 新增{created}条,更新{updated}条,失败{failed}条',
       syncFailed: '同步失败',
@@ -962,7 +1030,7 @@ export default {
       minOneItem: '请至少添加一个检验项目',
       itemNameRequired: '第{row}行检验项目名称不能为空',
       judgeResultRequired: '第{row}行判定结果不能为空',
-      selectInspectionType: '请选择检验类型',
+      selectInspectionType: '请选择来源类型',
       selectSourceOrderType: '请选择来源单据类型',
       selectInspectionResult: '请选择检验结果',
       selectJudgeResult: '请选择',
@@ -976,6 +1044,8 @@ export default {
       inputSupplierOrLine: '请输入{label}',
       inputWarehouseCode: '请输入仓库编码',
       inputWarehouseName: '请输入仓库名称',
+      inputLocationCode: '请输入库位编码',
+      inputLocationName: '请输入库位名称',
       inputInspector: '请输入检验员',
       inputRemark: '请输入备注信息',
       selectInspectionTime: '请选择检验时间',
@@ -987,24 +1057,34 @@ export default {
       updateTime: '修改时间',
       noData: '暂无检验项目，请点击上方按钮添加',
       totalItems: '共 {count} 项',
-      dateShortcuts:{
+      dateShortcuts: {
         today: '今天',
         yesterday: '昨天',
         last7Days: '近7天',
         last30Days: '近30天',
         totalCount: '总记录数'
       },
-      
+
       // 详情页专用
       businessInfo: '业务信息',
       inspectionItemDetail: '检验项目详情',
       inspectionPass: '检验合格',
       inspectionFail: '检验不合格',
       inspectionPassDesc: '物料状态已更新为"可用"，允许入库上架。',
-      inspectionFailDesc: '物料状态为"冻结"或"退货"，请处理。',
+      inspectionFailDesc: '物料已自动锁定，请进行不合格品处置。',
       getDetailFailed: '获取详情失败',
       downloadSuccess: '下载成功',
-      downloadFailed: '下载失败'
+      downloadFailed: '下载失败',
+      noReportFile: '暂无检验报告文件',
+
+      // 不合格处置相关
+      disposalSuggestion: '不合格处置建议',
+      failureReason: '不合格原因',
+      disposalMethod: '处置方式',
+      disposalRemark: '备注说明',
+      inputFailureReason: '请输入不合格原因',
+      inputDisposalMethod: '请输入处置方式，如：报废、返工、让步接收等',
+      inputDisposalRemark: '请输入处置说明，如：建议报废处理，通知产线停机检查'
     },
     putOnTask: {
       // 共享的通用 keys
@@ -1051,7 +1131,7 @@ export default {
         loadMaterialFailed: '获取物料列表失败',
         loadStatisticsFailed: '获取统计数据失败',
         loadTaskDetailFailed: '获取任务详情失败',
-        
+
         // 详情页
         detailTitle: '上架任务详情',
         bizCode: '业务编码',
@@ -1068,7 +1148,7 @@ export default {
         seconds: '秒',
         minutes: '分',
         hours: '小时',
-        
+
         // 执行确认页
         executeConfirmTitle: '上架任务执行确认',
         executeConfirmTip: '请核对推荐库位，扫描实际库位条码并确认上架数量。',
@@ -1112,7 +1192,7 @@ export default {
         generateTaskSuccess: '成功生成 {count} 个上架任务',
         generateTaskFailed: '生成上架任务失败',
         taskAssignSuccess: '任务分配成功',
-        
+
         // 表单页
         formTitle: '上架任务信息',
         formDescription: '填写上架任务信息，包含物料、数量、目标库位及执行人等详细信息。',
@@ -1122,7 +1202,7 @@ export default {
         selectUnit: '选择单位',
         executorInfo: '执行人信息',
         executorNamePlaceholder: '请输入执行人姓名',
-        
+
         // 物料选择弹窗
         selectMaterialTitle: '选择待上架物料',
         selectedCount: '已选择 {count} 条记录',
@@ -1140,9 +1220,7 @@ export default {
         pendingQty: '待上架数量',
         materialInfo: '物料信息',
         confirmSelect: '确认选择 ({count})',
-        getSupplierListFailed: '获取供应商列表失败',
-        getMaterialListFailed: '获取物料列表失败',
-        
+
         // 任务分配弹窗
         assignTaskTitle: '分配上架任务',
         assignDescription: '将任务 {taskCode} 分配给操作员或设备。',
@@ -1174,7 +1252,7 @@ export default {
       detailList: '调整明细',
       detailCount: '明细行数',
       totalAdjustQty: '总调整量',
-      
+
       // 表单相关
       formTitle: '库存调整单',
       formDescription: '填写库存调整信息，系统将自动计算调整数量和调整类型。',
@@ -1185,13 +1263,13 @@ export default {
       selectAdjustReason: '请选择调整原因',
       inputRelatedOrderNo: '请输入关联单号',
       inputRemark: '请输入备注信息',
-      
+
       // 明细相关
       detailTitle: '调整明细',
       addDetail: '添加明细',
       noDetail: '暂无调整明细，请点击"添加明细"按钮添加',
       selectWarehouseFirst: '请先选择仓库',
-      
+
       // 明细字段
       material: '物料',
       materialCode: '物料编码',
@@ -1204,13 +1282,13 @@ export default {
       adjustQty: '调整数量',
       afterQty: '调整后数量',
       quantityComparison: '数量对比(系/实/差)',
-      
+
       // 明细占位符
       selectMaterial: '选择物料',
       inputBatchNo: '批次号',
       selectLocation: '选择库位',
       inputActualQty: '0.00',
-      
+
       // 明细验证
       pleaseSelectMaterial: '请选择物料',
       pleaseInputBatchNo: '请输入批次号',
@@ -1223,7 +1301,7 @@ export default {
       locationNotExists: '所选库位不存在或不属于当前仓库，请重新选择',
       detailRowError: '第{index}行明细：{message}',
       atLeastOneDetail: '请至少添加一个调整明细',
-      
+
       // 按钮
       saveOrder: '保存调整单',
       submitForApproval: '提交审核',
@@ -1231,7 +1309,7 @@ export default {
       reject: '审核驳回',
       post: '过账',
       viewDetail: '查看详情',
-      
+
       // 确认消息
       submitConfirm: '确定要提交该调整单进行审批吗？',
       submitConfirmTitle: '提交确认',
@@ -1241,53 +1319,50 @@ export default {
       rejectConfirmTitle: '驳回确认',
       postConfirm: '确定要过账该调整单吗？过账后将更新库存数据，不可撤销！',
       postConfirmTitle: '过账确认',
-      
+
       // 操作结果
       submitSuccess: '提交成功',
       approveSuccess: '审核通过',
       rejectSuccess: '已驳回',
       postSuccess: '过账成功',
-      
+
       // 调整类型
       typeGain: '盘盈',
       typeLoss: '盘亏',
       typeTransfer: '移库',
-      
+
       // 调整原因
       reasonInventoryDiff: '盘点差异',
       reasonReceiveDiff: '收发货差异',
       reasonNaturalLoss: '自然损耗',
       reasonDamage: '损坏报废',
-      
+
       // 审批状态
       statusSubmitted: '已提交',
       statusUnderReview: '审核中',
       statusApproved: '已审核',
       statusPosted: '已过账',
       statusRejected: '已驳回',
-      
+
       // 详情页
-      detailTitle: '库存调整单详情',
-      basicInfo: '基本信息',
       detailInfo: '调整明细',
       detailCountInfo: '({count} 条明细)',
       noDetailData: '暂无调整明细',
       creator: '创建人',
-      
+
       // 查询
       inputAdjustOrderNo: '请输入调整单号',
       selectAdjustType: '请选择调整类型',
-      selectAdjustReason: '请选择调整原因',
       selectApprovalStatus: '请选择审批状态',
       dateRange: '创建时间',
       startDate: '开始日期',
       endDate: '结束日期',
-      
+
       // 列表
       detailOverview: '明细概览',
       detailOverviewTooltip: '明细行数: {count} | 总调整量: {qty}',
       rowsAndQty: '{count}行 / {qty}',
-      
+
       // 错误消息
       getWarehouseListFailed: '获取仓库列表失败',
       getAdjustReasonListFailed: '获取调整原因列表失败',
@@ -1387,7 +1462,7 @@ export default {
       create: '新增',
       export: '导出Excel',
       batchDelete: '批量删除',
-      
+
       // 查询表单
       warehouseArea: '仓库/库区',
       selectWarehouse: '请选择仓库',
@@ -1401,7 +1476,7 @@ export default {
       selectInventoryStatus: '请选择库存状态',
       queryInventory: '查询存货',
       reset: '重置',
-      
+
       // 表格列
       materialCode: '物料编码',
       materialName: '物料名称',
@@ -1420,11 +1495,11 @@ export default {
       view: '查看',
       edit: '编辑',
       delete: '删除',
-      
+
       // 库存明细列表
       inventoryDetailList: '库存明细列表',
       recordCount: '共 {count} 条记录',
-      
+
       // 表单
       formTitle: '库存信息',
       createForm: '新增库存',
@@ -1443,7 +1518,7 @@ export default {
       inputBatchNoPlaceholder: '请输入批次号',
       productionDate: '生产日期',
       selectProductionDate: '请选择生产日期',
-      
+
       // 数量信息
       quantityInfo: '数量信息',
       qty: '库存数量',
@@ -1456,7 +1531,7 @@ export default {
       inputTransitQty: '请输入在途数量',
       occupyQty: '占用数量',
       inputOccupyQty: '请输入占用数量',
-      
+
       // 有效期控制
       expiryControl: '有效期控制',
       enableExpiryControl: '启用有效期控制',
@@ -1464,7 +1539,7 @@ export default {
       disable: '禁用',
       expiryTime: '过期时间',
       selectExpiryTime: '请选择过期时间',
-      
+
       // 详情页
       detailTitle: '库存详情',
       basicInfo: '基本信息',
@@ -1480,14 +1555,14 @@ export default {
       updateTime: '更新时间',
       updater: '更新人',
       close: '关 闭',
-      
+
       // 统计卡片
       totalInventory: '总库存',
       available: '可用数量',
       occupied: '占用数量',
       blocked: '冻结数量',
       inTransit: '在途数量',
-      
+
       // 验证消息
       uniqueKeyIdRequired: '唯一标识不能为空',
       materialRequired: '请选择物料',
@@ -1499,7 +1574,7 @@ export default {
       blockedQtyRequired: '冻结数量不能为空',
       transitQtyRequired: '在途数量不能为空',
       occupyQtyRequired: '占用数量不能为空',
-      
+
       // 操作消息
       loadWarehouseFailed: '获取仓库列表失败',
       loadWarehouseAreaFailed: '获取库区列表失败',
@@ -1516,7 +1591,7 @@ export default {
     outboundLog: {
       title: '出库流水',
       searchPlaceholder: '搜索单据号...',
-      
+
       // 查询表单
       operationType: '操作类型',
       selectOperationType: '请选择操作类型',
@@ -1524,7 +1599,7 @@ export default {
       inputMaterialBatch: '请输入物料批次号',
       sourceDocNo: '源单据号',
       inputSourceDocNo: '请输入源单据号',
-      
+
       // 表格列
       operationId: '操作ID',
       operationTypeName: '操作类型',
@@ -1547,13 +1622,502 @@ export default {
       remark: '备注',
       createTime: '创建时间',
       creator: '创建人',
-      
+
       // 操作类型
       confirmOutbound: '确认出库',
       transferOut: '调拨出库',
-      
+
       // 提示信息
       noData: '暂无数据'
+    },
+    freezeOrder: {
+      // 页面标题
+      title: '库存冻结单',
+      detailTitle: '冻结单详情',
+
+      // 查询表单标签
+      freezeOrderNo: '冻结单号',
+      freezeObjectType: '冻结对象类型',
+      freezeObject: '冻结对象',
+      freezeReason: '冻结原因',
+      unfreezeCondition: '解冻条件',
+      relatedOrderNo: '关联单据号',
+      status: '状态',
+      remark: '备注说明',
+
+      // 查询表单占位符
+      inputFreezeOrderNo: '请输入冻结单号',
+      selectFreezeObjectType: '请选择冻结对象类型',
+      inputFreezeObject: '请输入冻结对象',
+      selectFreezeReason: '请选择冻结原因',
+      selectStatus: '请选择状态',
+      inputUnfreezeCondition: '请输入解冻条件',
+      inputRelatedOrderNo: '请输入关联单据号',
+      inputRemark: '请输入备注说明',
+      selectWarehouseLocation: '请选择库位',
+
+      // 表格列
+      freezeObjectName: '冻结对象',
+
+      // 按钮
+      search: '搜索',
+      reset: '重置',
+      addFreeze: '新增冻结',
+      export: '导出',
+      viewDetail: '查看详情',
+      unfreeze: '解冻',
+      generate: '生成',
+      cancel: '取 消',
+      executeFreeze: '执行冻结',
+      close: '关闭',
+
+      // 操作确认
+      unfreezeConfirm: '是否确认解冻该库存？',
+      confirmTip: '提示',
+
+      // 操作结果
+      unfreezeSuccess: '解冻成功',
+      generateSuccess: '冻结单号生成成功',
+      generateFailed: '生成冻结单号失败',
+      loadDetailFailed: '获取冻结单详情失败',
+      loadLocationFailed: '获取库位列表失败',
+
+      // 导出
+      exportFileName: '库存冻结单主表.xls',
+
+      // 验证消息
+      freezeOrderNoRequired: '请输入冻结单号',
+      freezeOrderNoLengthInvalid: '输入字符长度不合规',
+      freezeObjectTypeRequired: '请选择冻结对象类型',
+      freezeObjectRequired: '请输入冻结对象',
+      unfreezeConditionLengthInvalid: '输入字符长度不合规',
+      relatedOrderNoLengthInvalid: '输入字符长度不合规',
+      remarkLengthInvalid: '输入字符长度不合规',
+
+      // 详情页
+      basicInfo: '基本信息',
+      freezeDetailList: '冻结明细',
+      detailCount: '{count} 条明细',
+      noFreezeDetail: '暂无冻结明细',
+
+      // 明细表格列
+      index: '序号',
+      materialCode: '物料编码',
+      materialName: '物料名称',
+      materialBatch: '物料批次',
+      freezeQty: '冻结数量',
+      description: '说明',
+
+      // 时间
+      createTime: '创建时间',
+      updateTime: '更新时间'
+    },
+    freezeDetail: {
+      // 页面标题
+      title: '库存冻结明细',
+
+      // 查询表单
+      freezeOrderNo: '冻结单号',
+      inputFreezeOrderNo: '请输入冻结单号',
+
+      // 按钮
+      add: '新增',
+      export: '导出',
+      batchDelete: '批量删除',
+      edit: '编辑',
+      delete: '删除',
+      confirm: '确 定',
+      cancel: '取 消',
+
+      // 表格列
+      id: '主键id',
+      freezeOrderId: '冻结单ID',
+      inventoryId: '库存ID',
+      uniqueKeyId: '库存唯一标识',
+      warehouseId: '仓库',
+      warehouseAreaId: '库区',
+      warehousePlaceId: '库位',
+      materialId: '物料ID',
+      materialCode: '物料编码',
+      materialName: '物料名称',
+      materialBatch: '物料批次号',
+      freezeQty: '冻结数量',
+      description: '描述',
+      createTime: '创建时间',
+      deleted: '数据标识',
+      operation: '操作',
+
+      // 表单占位符
+      inputFreezeOrderId: '请输入冻结单ID',
+      inputInventoryId: '请输入库存ID',
+      inputUniqueKeyId: '请输入库存唯一标识',
+      inputWarehouseId: '请输入仓库',
+      inputWarehouseAreaId: '请输入库区',
+      inputWarehousePlaceId: '请输入库位',
+      inputMaterialId: '请输入物料ID',
+      inputMaterialCode: '请输入物料编码',
+      inputMaterialName: '请输入物料名称',
+      inputMaterialBatch: '请输入物料批次号',
+      inputFreezeQty: '请输入冻结数量',
+      inputDescription: '请输入描述',
+
+      // 验证消息
+      freezeOrderIdRequired: '请输入冻结单ID',
+      freezeOrderNoRequired: '请输入冻结单号',
+      lengthInvalid: '输入字符长度不合规',
+
+      // 导出
+      exportFileName: '库存冻结单明细表.xls'
+    },
+    countOrder: {
+      // 页面标题
+      title: '盘点单管理',
+
+      // 查询表单标签
+      countOrderNo: '盘点单号',
+      countType: '盘点类型',
+      countScopeType: '盘点范围类型',
+      status: '状态',
+
+      // 查询表单占位符
+      inputCountOrderNo: '请输入盘点单号',
+      selectCountType: '请选择盘点类型',
+      selectCountScopeType: '请选择盘点范围类型',
+      selectStatus: '请选择状态',
+
+      // 按钮
+      search: '搜索',
+      reset: '重置',
+      createCountOrder: '创建盘点单',
+      batchDelete: '批量删除',
+      viewDetail: '查看详情',
+      startCount: '开始盘点',
+      edit: '编辑',
+      delete: '删除',
+      generate: '生成',
+      cancel: '取 消',
+      generateCountOrder: '生成盘点单',
+      close: '关闭',
+      cancelCount: '取消',
+      completeCount: '盘点完成',
+      back: '返回',
+      confirmSelect: '确认选择',
+
+      // 表格列
+      scopeDetailNames: '关联范围明细',
+      countMethod: '盘点方式',
+      planBeginTime: '计划开始时间',
+      planEndTime: '计划完成时间',
+      adjustOrderFlag: '是否生成调整单',
+      generateAdjustOrder: '生成调整单',
+      reviewSettings: '复盘设置',
+      manageUser: '负责人',
+      countUsers: '盘点员',
+      actualBeginTime: '实际开始时间',
+      actualEndTime: '实际完成时间',
+      createTime: '创建时间',
+      updateTime: '更新时间',
+      operation: '操作',
+
+      // 表单占位符
+      selectCountMethod: '请选择盘点方式',
+      selectScopeDetails: '请选择关联范围明细',
+      selectPlanBeginTime: '请选择计划开始时间',
+      selectPlanEndTime: '请选择计划完成时间',
+      selectManageUser: '请选择负责人',
+      selectCountUsers: '请选择盘点员',
+      inputReviewSettings: '请输入复盘设置',
+      inputRemark: '请输入备注',
+      remark: '备注',
+
+      // 验证消息
+      countOrderNoRequired: '请输入盘点单号',
+      lengthInvalid: '输入字符长度不合规',
+      countTypeRequired: '请选择盘点类型',
+      countScopeTypeRequired: '请选择盘点范围类型',
+      scopeDetailsRequired: '请选择盘点范围明细',
+      planBeginTimeRequired: '请选择计划开始时间',
+      planEndTimeInvalid: '计划完成时间必须大于计划开始时间',
+      adjustOrderFlagRequired: '请选择是否生成调整单',
+      manageUserRequired: '请选择负责人',
+
+      // 操作消息
+      generateSuccess: '盘点单号生成成功',
+      generateFailed: '生成盘点单号失败',
+      startCountFailed: '开始盘点失败',
+      cancelCountSuccess: '已取消盘点',
+      cancelCountFailed: '取消盘点失败',
+      countQtyRequired: '请填写所有物料的盘点数量',
+      countCompleteSuccess: '盘点完成',
+      countCompleteFailed: '盘点完成失败',
+      loadDetailFailed: '获取盘点单详情失败',
+      selectAtLeastOne: '请至少选择一条盘点明细',
+
+      // 详情页
+      detailTitle: '盘点单详情',
+      basicInfo: '基本信息',
+      countDetailList: '盘点明细',
+      detailCount: '{count} 条明细',
+      noCountDetail: '暂无盘点明细',
+
+      // 明细表格列
+      index: '序号',
+      materialCode: '物料编码',
+      materialName: '物料名称',
+      materialBatch: '物料批次',
+      bookQty: '账面数量',
+      countQty: '盘点数量',
+      countStatus: '盘点状态',
+
+      // 确认页
+      confirmTitle: '盘点单确认',
+      countOrderDetail: '盘点单明细',
+      countDetailCountText: '{count} 个盘点清单',
+      warehouse: '仓库',
+      warehouseArea: '库区',
+      warehousePlace: '库位',
+      batchNo: '批次号',
+      inventoryStatus: '库存状态',
+
+      // 导出
+      exportFileName: '盘点单信息.xls'
+    },
+    countDifference: {
+      // 页面标题
+      title: '盘点差异管理',
+
+      // 查询表单标签
+      differenceOrder: '差异单号',
+      countOrder: '盘点单号',
+      differenceStatus: '差异状态',
+
+      // 查询表单占位符
+      inputDifferenceOrder: '请输入差异单号',
+      inputCountOrder: '请输入盘点单号',
+      selectDifferenceStatus: '请选择差异状态',
+
+      // 按钮
+      search: '搜索',
+      reset: '重置',
+      viewDetail: '查看详情',
+      handle: '处理',
+      approval: '审批',
+      posting: '过账',
+      cancel: '取消',
+      submit: '提交',
+      confirm: '确认',
+      reject: '驳回',
+      approve: '批准',
+      close: '关闭',
+      confirmBtn: '确 定',
+      cancelBtn: '取 消',
+
+      // 表格列
+      adjustOrderNo: '调整单号',
+      warehousePlace: '库位',
+      materialCode: '物料编码',
+      materialName: '物料名称',
+      materialBatch: '随机物料批次号',
+      usableQty: '系统账面数量',
+      countQty: '实际盘点数量',
+      differenceQty: '差异数量',
+      differenceReason: '差异原因',
+      differenceTime: '差异生成时间',
+      operation: '操作',
+
+      // 处理对话框
+      handleTitle: '处理盘点差异',
+      selectDifferenceReason: '请选择差异原因',
+      differenceReasonRequired: '请选择差异原因',
+      handleSuccess: '处理成功',
+
+      // 审批对话框
+      approvalTitle: '审批盘点差异',
+      approvalComment: '审批意见',
+      inputApprovalComment: '请输入审批意见（非必填）',
+      approvalSuccess: '批准成功',
+      rejectSuccess: '驳回成功',
+
+      // 过账对话框
+      postTitle: '过账盘点差异',
+      postingQty: '过账数量',
+      postSuccess: '过账成功',
+
+      // 详情页
+      detailTitle: '盘点差异详情',
+      basicInfo: '基本信息',
+      createTime: '创建时间',
+      updateTime: '更新时间',
+
+      // 库存差异区域
+      inventoryDifference: '库存差异',
+      materialBatchNo: '物料批次号',
+      differenceAmount: '差异金额',
+
+      // 处理信息区域
+      handleInfo: '处理信息',
+      handleUser: '处理人',
+      handleTime: '处理时间',
+
+      // 审批信息区域
+      approvalInfo: '审批信息',
+      approvalUser: '审批人',
+      approvalTime: '审批时间',
+
+      // 过账信息区域
+      postingInfo: '过账信息',
+      postingUser: '过账人',
+      postingTime: '过账时间',
+
+      // 操作消息
+      loadDetailFailed: '获取盘点差异详情失败',
+
+      // 表单字段标签
+      countOrderId: '盘点单ID',
+      adjustOrderId: '调整单ID',
+      uniqueKeyId: '库存唯一标识',
+      warehouseId: '物料仓库id',
+      warehouseAreaId: '库区id',
+      warehousePlaceId: '库位id',
+      materialId: '物料id',
+      handleUserId: '处理人ID',
+      handleUserName: '处理人名称',
+      approvalUserId: '审批人ID',
+      approvalUserName: '审批人名称',
+      postingAfterQty: '过账后数量',
+      postingUserId: '过账人ID',
+      postingUserName: '过账人名称',
+
+      // 表单占位符
+      inputCountOrderId: '请输入盘点单ID',
+      inputAdjustOrderId: '请输入调整单ID',
+      inputUniqueKeyId: '请输入库存唯一标识',
+      inputAdjustOrderNo: '请输入调整单号',
+      inputDifferenceTime: '请输入差异生成时间',
+      inputWarehouseId: '请输入物料仓库id',
+      inputWarehouseAreaId: '请输入库区id',
+      inputWarehousePlaceId: '请输入库位id',
+      inputMaterialId: '请输入物料id',
+      inputMaterialCode: '请输入物料编码',
+      inputMaterialName: '请输入物料名称',
+      inputMaterialBatch: '请输入随机物料批次号',
+      inputUsableQty: '请输入系统账面数量',
+      inputCountQty: '请输入实际盘点数量',
+      inputDifferenceQty: '请输入差异数量',
+      inputDifferenceAmount: '请输入差异金额',
+      inputDifferenceReason: '请输入差异原因',
+      inputHandleUserId: '请输入处理人ID',
+      inputHandleUserName: '请输入处理人名称',
+      inputHandleTime: '请输入处理时间',
+      inputApprovalCommentForm: '请输入审批意见',
+      inputApprovalUserId: '请输入审批人ID',
+      inputApprovalUserName: '请输入审批人名称',
+      inputApprovalTime: '请输入审批时间',
+      inputPostingQty: '请输入过账后数量',
+      inputPostingUserId: '请输入过账人ID',
+      inputPostingUserName: '请输入过账人名称',
+      inputPostingTime: '请输入过账时间',
+
+      // 验证消息
+      countOrderIdRequired: '请输入盘点单ID',
+      countOrderRequired: '请输入盘点单号',
+      differenceOrderRequired: '请输入差异单号',
+      differenceTimeRequired: '请输入差异生成时间',
+      lengthInvalid: '输入字符长度不合规',
+      uniqueKeyIdLengthInvalid: '库存唯一标识长度不大于255!',
+      adjustOrderNoLengthInvalid: '调整单号长度不大于32!',
+
+      // 导出
+      exportFileName: '盘点差异.xls'
+    }
+  },
+  mdm: {
+    lighting: {
+      title: '物联灯管理',
+      warehouse: '仓库',
+      controller: '控制器',
+      lightbar: '灯条',
+      location: '库位',
+      
+      // 组织结构
+      structure: {
+        title: '组织结构',
+        refresh: '刷新',
+        mainWarehouse: '一号主仓库',
+        coldChainWarehouse: '二号冷链库'
+      },
+      
+      // 控制器管理
+      controllerManagement: {
+        title: '管理该仓库下的管道灯',
+        addController: '添加管道灯',
+        bindLightbar: '绑定管道灯',
+        controllerName: '控制器名称',
+        controllerCode: '设备编码',
+        ipAddress: 'IP 地址',
+        relatedLightbars: '关联灯条',
+        count: '个',
+        online: '在线',
+        offline: '离线',
+        enabled: '已启用',
+        disabled: '已禁用'
+      },
+      
+      // 灯条列表
+      lightbarList: {
+        title: '灯条列表',
+        lightbarName: '灯条名称',
+        deviceId: '设备ID (Code)',
+        ipAddress: 'IP 地址',
+        connectionStatus: '连接状态',
+        enableStatus: '启用状态',
+        boundLocation: '绑定库位',
+        bindLocation: '绑定库位',
+        bindNewLightbar: '绑定新灯条',
+        unbindLightbar: '解绑灯条',
+        unbindConfirm: '确定要解绑该灯条吗？解绑后将同时删除该灯条下的所有库位绑定关系。',
+        unbindSuccess: '解绑成功',
+        unbindFailed: '解绑失败'
+      },
+      
+      // 绑定库位
+      bindLocation: {
+        title: '绑定库位',
+        tip: '将灯条关联到当前仓库中的特定库位',
+        currentWarehouse: '当前仓库',
+        selectLocation: '选择库位',
+        searchPlaceholder: '请选择库位...',
+        searchTip: '支持搜索库位编码或名称',
+        selectedLocations: '已选择库位',
+        bindSuccess: '绑定成功',
+        bindFailed: '绑定失败',
+        selectAtLeastOne: '请选择至少一个库位'
+      },
+      
+      // 绑定灯条
+      bindLightbar: {
+        title: '绑定新灯条',
+        tip: '选择物联系统中的可用灯条进行绑定',
+        availableDevices: '可用设备列表',
+        searchPlaceholder: '请选择设备...',
+        selectedDevices: '已选择设备',
+        noDevices: '暂无可用设备',
+        bindSuccess: '绑定成功',
+        bindFailed: '绑定失败',
+        selectAtLeastOne: '请选择至少一个设备'
+      },
+      
+      // 通用
+      common: {
+        confirm: '确定',
+        cancel: '取消',
+        back: '返回',
+        search: '搜索',
+        reset: '重置',
+        operation: '操作',
+        loading: '加载中...',
+        noData: '暂无数据'
+      }
     }
   }
 }

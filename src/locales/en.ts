@@ -5,6 +5,7 @@ export default {
     startTimeText: 'Start time',
     endTimeText: 'End time',
     login: 'Login',
+    delete:'Delete',
     required: 'This is required',
     loginOut: 'Login out',
     document: 'Document',
@@ -13,6 +14,8 @@ export default {
     loginOutMessage: 'Exit the system?',
     back: 'Back',
     ok: 'OK',
+    confirm: 'Confirm',
+    confirmText: 'Are you sure you want to proceed?',
     save: 'Save',
     cancel: 'Cancel',
     close: 'Close',
@@ -514,6 +517,8 @@ export default {
       approve: 'Approve',
       reject: 'Reject',
       approveSuccess: 'Approved successfully',
+      rejectConfirm: 'Are you sure to reject this outbound order?',
+      rejectSuccess: 'Rejected successfully',
       allocate: 'Allocate Inventory',
       allocateConfirm: 'Confirm to allocate inventory?',
       allocateSuccess: 'Allocate inventory successfully'
@@ -545,6 +550,57 @@ export default {
       last30Days: 'Last 30 Days',
       last3Months: 'Last 3 Months',
       currentMonth: 'Current Month'
+    },
+    deliveryNote: {
+      title: 'Delivery Note Management',
+      generateBtn: 'Generate Delivery Note',
+      pendingCount: 'Pending: {count} orders',
+      deliveryNo: 'Delivery Note No',
+      status: 'Status',
+      totalOrderCount: 'Order Count',
+      transportMode: 'Transport Mode',
+      carrierInfo: 'Carrier Info',
+      shippedTime: 'Shipped Time',
+      shippedBy: 'Shipped By',
+      remark: 'Remark',
+      operation: 'Operation',
+      startLoading: 'Start Loading',
+      continueLoading: 'Continue Loading',
+      viewDetail: 'View Detail',
+      totalCount: 'Total {count} records',
+      statusPending: 'Pending Loading',
+      statusLoading: 'Loading',
+      statusShipped: 'Shipped',
+      transportThirdParty: 'Third Party Logistics',
+      transportOwnFleet: 'Own Fleet',
+      transportSelfPickup: 'Self Pickup',
+      generateTitle: 'Generate Delivery Note',
+      generateTip: 'You have selected {count} orders for delivery.',
+      selectOrders: 'Select Outbound Orders',
+      orderNo: 'Order No',
+      partyName: 'Customer',
+      receiverInfo: 'Receiver Address',
+      orderStatus: 'Order Status',
+      selectedCount: 'Selected: {count} orders',
+      confirmGenerate: 'Confirm Generate',
+      loadingDialogTitle: 'Loading Operations',
+      noteInfo: 'Delivery Note Info',
+      orderList: 'Outbound Order List',
+      loadedCount: 'Loaded: {loaded}/{total}',
+      loadingStatus: 'Loading Status',
+      loadedTime: 'Loaded Time',
+      loadedBy: 'Loaded By',
+      loadOrderBtn: 'Mark Loaded',
+      loadOrderLoaded: 'Loaded',
+      confirmShippedTitle: 'Confirm Shipment',
+      confirmShippedMsg: 'All orders have been loaded. Confirm shipment?',
+      confirmShippedSuccess: 'Shipped successfully',
+      generateSuccess: 'Delivery note generated successfully',
+      loadOrderSuccess: 'Marked as loaded',
+      deleteSuccess: 'Deleted successfully',
+      deleteConfirm: 'Confirm to delete this delivery note? This action cannot be undone.',
+      selectAtLeastOne: 'Please select at least one outbound order',
+      loadingProgress: 'Loading Progress'
     },
     wave: {
       title: 'Wave Plan Generation',
@@ -660,6 +716,15 @@ export default {
       waveNotExist: 'Wave does not exist',
       waveStatusChanged: 'Wave status has changed, cannot create picking task',
       waveTaskExists: 'Picking task already exists for this wave',
+      selectOrder: 'Please select outbound order',
+      noAllocatedOrder: 'No allocated outbound orders available',
+      pleaseSelectOrder: 'Please select an outbound order',
+      orderPriority: 'Priority',
+      materialCount: 'Material Count',
+      totalDemandQty: 'Total Demand Qty',
+      orderNotExist: 'Outbound order does not exist',
+      orderStatusChanged: 'Order status has changed, cannot create picking task',
+      orderTaskExists: 'Picking task already exists for this order',
       remark: 'Remark',
       remarkPlaceholder: 'Enter remark (optional)',
       executePicking: 'Execute Picking',
@@ -697,7 +762,8 @@ export default {
       startRecheck: 'Start Recheck',
       viewDetail: 'View Detail',
       quickStartTitle: 'Quick Start Recheck',
-      quickStartTip: 'Search executing picking tasks without recheck task, can select multiple to start together',
+      quickStartTip:
+        'Search executing picking tasks without recheck task, can select multiple to start together',
       searchTaskPlaceholder: 'Search picking task no...',
       taskNo: 'Task No',
       sourceDocNo: 'Source Document No',
@@ -767,12 +833,13 @@ export default {
       delete: 'Delete',
       search: 'Search',
       reset: 'Reset',
-      
+
       // Form related
       formTitle: 'ASN Arrival Notice',
       createForm: 'Create ASN Arrival Notice',
       editForm: 'Edit ASN Arrival Notice',
-      formDescription: 'Fill in inbound forecast information, including supplier, expected arrival time and material details.',
+      formDescription:
+        'Fill in inbound forecast information, including supplier, expected arrival time and material details.',
       generateAsnNo: 'Generate',
       generateSuccess: 'ASN No generated successfully',
       generateFailed: 'Failed to generate ASN No',
@@ -786,7 +853,7 @@ export default {
       selectExpectedArrivalTime: 'Please select expected arrival time',
       putawayStrategy: 'Putaway Strategy',
       saveAsn: 'Save ASN',
-      
+
       // Material details form
       materialSelection: 'Material Selection',
       batchNoOptional: 'Batch No (Optional)',
@@ -808,7 +875,7 @@ export default {
       loadMaterialFailed: 'Failed to load material list',
       loadMaterialUnitFailed: 'Failed to load material unit list',
       loadPutawayRulesFailed: 'Failed to load putaway rules list',
-      
+
       // Material details
       materialDetails: 'Material Details',
       materialCode: 'Material Code',
@@ -825,7 +892,7 @@ export default {
       inputExpectedQty: 'Please input expected quantity',
       noMaterialData: 'No material details, please click the button above to add',
       materialCountLabel: ' materials',
-      
+
       // Detail page
       detailTitle: 'ASN Detail',
       basicInfo: 'Basic Information',
@@ -836,10 +903,11 @@ export default {
       close: 'Close',
       materialDetailsSection: 'Material Details',
       sequenceNo: 'Sequence No',
-      
+
       // Receive confirmation
       receiveTitle: 'Confirm Receive',
-      receiveDescription: 'Please fill in the actual received quantity, the system will update inventory based on the received quantity.',
+      receiveDescription:
+        'Please fill in the actual received quantity, the system will update inventory based on the received quantity.',
       actualReceiveQty: 'Actual Received Qty',
       actualQtyLabel: 'Actual Qty',
       inputActualQty: 'Please input actual received quantity',
@@ -851,7 +919,7 @@ export default {
       receiveFailed: 'Receive confirmation failed',
       receiveValidationFailed: 'Please ensure all material actual quantities are filled correctly',
       loadAsnDetailFailed: 'Failed to load ASN detail',
-      
+
       // Validation messages
       asnNoRequired: 'ASN No is required',
       inboundTypeRequired: 'Inbound type is required',
@@ -864,7 +932,7 @@ export default {
       packageUnitRequired: 'Package unit is required in row {row}',
       actualQtyRequired: 'Actual received quantity is required in row {row}',
       actualQtyMustGtZero: 'Actual received quantity must be greater than 0 in row {row}',
-      
+
       // Operation messages
       createSuccess: 'Created successfully',
       createFailed: 'Creation failed',
@@ -876,11 +944,12 @@ export default {
       batchDeleteConfirm: 'Are you sure to delete selected ASNs?',
       exportSuccess: 'Exported successfully',
       exportFailed: 'Export failed',
-      
+
       // Status tips
       cannotEditReceived: 'Received ASN cannot be edited',
       cannotDeleteReceived: 'Received ASN cannot be deleted',
-      onlyCreatedCanReceive: 'Only ASN with status Created, Receiving, or Partially Received can be confirmed'
+      onlyCreatedCanReceive:
+        'Only ASN with status Created, Receiving, or Partially Received can be confirmed'
     },
     inspection: {
       title: 'Quality Inspection Records',
@@ -904,6 +973,8 @@ export default {
       productionLine: 'Production Line',
       warehouseCode: 'Warehouse Code',
       warehouseName: 'Warehouse Name',
+      locationCode: 'Location Code',
+      locationName: 'Location Name',
       inspectionTime: 'Inspection Time',
       inspector: 'Inspector',
       inspectionResult: 'Inspection Result',
@@ -956,8 +1027,10 @@ export default {
       errorDetails: 'Error Details',
       errorMessage: 'Error Message',
       startSync: 'Start Sync',
+      syncConfirm: 'Are you sure to sync inspection data from QMS system?',
       syncSuccess: 'Sync success! Created {created}, Updated {updated}',
-      syncCompleteWithErrors: 'Sync complete! Created {created}, Updated {updated}, Failed {failed}',
+      syncCompleteWithErrors:
+        'Sync complete! Created {created}, Updated {updated}, Failed {failed}',
       syncFailed: 'Sync Failed',
       syncComplete: 'Sync Complete',
       complete: 'Complete',
@@ -982,6 +1055,8 @@ export default {
       inputSupplierOrLine: 'Please input {label}',
       inputWarehouseCode: 'Please input warehouse code',
       inputWarehouseName: 'Please input warehouse name',
+      inputLocationCode: 'Please input location code',
+      inputLocationName: 'Please input location name',
       inputInspector: 'Please input inspector',
       inputRemark: 'Please input remark',
       selectInspectionTime: 'Please select inspection time',
@@ -1000,7 +1075,7 @@ export default {
         last30Days: 'Last 30 Days',
         totalCount: 'Total Records'
       },
-      
+
       // Detail page specific
       businessInfo: 'Business Information',
       inspectionItemDetail: 'Inspection Item Details',
@@ -1010,7 +1085,18 @@ export default {
       inspectionFailDesc: 'Material status is "Frozen" or "Return", please handle.',
       getDetailFailed: 'Failed to get detail',
       downloadSuccess: 'Download Success',
-      downloadFailed: 'Download Failed'
+      downloadFailed: 'Download Failed',
+      noReportFile: 'No inspection report file',
+
+      // Disposal related
+      disposalSuggestion: 'Disposal Suggestion',
+      failureReason: 'Failure Reason',
+      disposalMethod: 'Disposal Method',
+      disposalRemark: 'Disposal Remark',
+      inputFailureReason: 'Please input failure reason',
+      inputDisposalMethod: 'Please input disposal method, e.g.: Scrap, Rework, Concession',
+      inputDisposalRemark:
+        'Please input disposal remark, e.g.: Recommend scrapping, notify production line to stop for inspection'
     },
     putOnTask: {
       // Shared common keys
@@ -1057,7 +1143,7 @@ export default {
         loadMaterialFailed: 'Failed to load material list',
         loadStatisticsFailed: 'Failed to load statistics',
         loadTaskDetailFailed: 'Failed to load task detail',
-        
+
         // Detail page
         detailTitle: 'Put-on Task Detail',
         bizCode: 'Business Code',
@@ -1074,10 +1160,11 @@ export default {
         seconds: 'seconds',
         minutes: 'minutes',
         hours: 'hours',
-        
+
         // Execute confirmation page
         executeConfirmTitle: 'Put-on Task Execution Confirmation',
-        executeConfirmTip: 'Please verify the recommended location, scan the actual location barcode and confirm the put-on quantity.',
+        executeConfirmTip:
+          'Please verify the recommended location, scan the actual location barcode and confirm the put-on quantity.',
         waitingPutOnQty: 'Waiting Put-on Qty',
         recommendLocation: 'System Recommended Location',
         actualLocationScan: 'Actual Location Scan',
@@ -1118,17 +1205,18 @@ export default {
         generateTaskSuccess: 'Successfully generated {count} put-on tasks',
         generateTaskFailed: 'Failed to generate put-on tasks',
         taskAssignSuccess: 'Task assigned successfully',
-        
+
         // Form page
         formTitle: 'Put-on Task Information',
-        formDescription: 'Fill in put-on task information, including material, quantity, target location and executor details.',
+        formDescription:
+          'Fill in put-on task information, including material, quantity, target location and executor details.',
         selectTaskType: 'Please select task type',
         batchNoPlaceholder: 'Please input batch no (optional)',
         expectedQty: 'Expected Qty',
         selectUnit: 'Select unit',
         executorInfo: 'Executor Information',
         executorNamePlaceholder: 'Please input executor name',
-        
+
         // Material selection dialog
         selectMaterialTitle: 'Select Materials for Put-on',
         selectedCount: '{count} records selected',
@@ -1147,8 +1235,7 @@ export default {
         materialInfo: 'Material Information',
         confirmSelect: 'Confirm Selection ({count})',
         getSupplierListFailed: 'Failed to load supplier list',
-        getMaterialListFailed: 'Failed to load material list',
-        
+
         // Task assign dialog
         assignTaskTitle: 'Assign Put-on Task',
         assignDescription: 'Assign task {taskCode} to operator or device.',
@@ -1180,10 +1267,11 @@ export default {
       detailList: 'Adjustment Details',
       detailCount: 'Detail Count',
       totalAdjustQty: 'Total Adjustment Qty',
-      
+
       // Form related
       formTitle: 'Inventory Adjustment Order',
-      formDescription: 'Fill in the inventory adjustment information, the system will automatically calculate the adjustment quantity and type.',
+      formDescription:
+        'Fill in the inventory adjustment information, the system will automatically calculate the adjustment quantity and type.',
       generateOrderNo: 'Generate',
       generateOrderNoSuccess: 'Adjustment order no generated successfully',
       generateOrderNoFailed: 'Failed to generate adjustment order no',
@@ -1191,13 +1279,13 @@ export default {
       selectAdjustReason: 'Please select adjustment reason',
       inputRelatedOrderNo: 'Please input related order no',
       inputRemark: 'Please input remark',
-      
+
       // Detail related
       detailTitle: 'Adjustment Details',
       addDetail: 'Add Detail',
       noDetail: 'No adjustment details, please click "Add Detail" button to add',
       selectWarehouseFirst: 'Please select warehouse first',
-      
+
       // Detail fields
       material: 'Material',
       materialCode: 'Material Code',
@@ -1210,26 +1298,28 @@ export default {
       adjustQty: 'Adjustment Qty',
       afterQty: 'After Qty',
       quantityComparison: 'Qty Comparison (Sys/Act/Diff)',
-      
+
       // Detail placeholders
       selectMaterial: 'Select material',
       inputBatchNo: 'Batch no',
       selectLocation: 'Select location',
       inputActualQty: '0.00',
-      
+
       // Detail validation
       pleaseSelectMaterial: 'Please select material',
       pleaseInputBatchNo: 'Please input batch no',
       pleaseSelectLocation: 'Please select location',
       pleaseInputActualQty: 'Please input actual quantity',
       actualQtyCannotBeNegative: 'Actual quantity cannot be negative',
-      adjustQtyCannotBeZero: 'Adjustment quantity cannot be zero, please modify actual quantity or delete this row',
+      adjustQtyCannotBeZero:
+        'Adjustment quantity cannot be zero, please modify actual quantity or delete this row',
       materialNotExists: 'Material code "{code}" does not exist, please reselect',
       batchNoInvalid: 'Batch no "{batchNo}" is invalid, please input valid batch no',
-      locationNotExists: 'Selected location does not exist or does not belong to current warehouse, please reselect',
+      locationNotExists:
+        'Selected location does not exist or does not belong to current warehouse, please reselect',
       detailRowError: 'Row {index} detail: {message}',
       atLeastOneDetail: 'Please add at least one adjustment detail',
-      
+
       // Buttons
       saveOrder: 'Save Order',
       submitForApproval: 'Submit for Approval',
@@ -1237,7 +1327,7 @@ export default {
       reject: 'Reject',
       post: 'Post',
       viewDetail: 'View Detail',
-      
+
       // Confirm messages
       submitConfirm: 'Are you sure to submit this adjustment order for approval?',
       submitConfirmTitle: 'Submit Confirmation',
@@ -1245,26 +1335,27 @@ export default {
       approveConfirmTitle: 'Approve Confirmation',
       rejectConfirm: 'Are you sure to reject this adjustment order?',
       rejectConfirmTitle: 'Reject Confirmation',
-      postConfirm: 'Are you sure to post this adjustment order? Posting will update inventory data and cannot be undone!',
+      postConfirm:
+        'Are you sure to post this adjustment order? Posting will update inventory data and cannot be undone!',
       postConfirmTitle: 'Post Confirmation',
-      
+
       // Operation results
       submitSuccess: 'Submit Success',
       approveSuccess: 'Approve Success',
       rejectSuccess: 'Rejected',
       postSuccess: 'Post Success',
-      
+
       // Adjustment types
       typeGain: 'Gain',
       typeLoss: 'Loss',
       typeTransfer: 'Transfer',
-      
+
       // Adjustment reasons
       reasonInventoryDiff: 'Inventory Difference',
       reasonReceiveDiff: 'Receive/Ship Difference',
       reasonNaturalLoss: 'Natural Loss',
       reasonDamage: 'Damage/Scrap',
-      
+
       // Approval status
       statusSubmitted: 'Submitted',
       statusUnderReview: 'Under Review',
@@ -1272,28 +1363,26 @@ export default {
       statusPosted: 'Posted',
       statusRejected: 'Rejected',
       
-      // Detail page
-      detailTitle: 'Inventory Adjustment Order Detail',
+      // Detail page,
       basicInfo: 'Basic Information',
       detailInfo: 'Adjustment Details',
       detailCountInfo: '({count} details)',
       noDetailData: 'No adjustment details',
       creator: 'Creator',
-      
+
       // Query
       inputAdjustOrderNo: 'Please input adjustment order no',
       selectAdjustType: 'Please select adjustment type',
-      selectAdjustReason: 'Please select adjustment reason',
       selectApprovalStatus: 'Please select approval status',
       dateRange: 'Create Time',
       startDate: 'Start Date',
       endDate: 'End Date',
-      
+
       // List
       detailOverview: 'Detail Overview',
       detailOverviewTooltip: 'Detail count: {count} | Total adjustment qty: {qty}',
       rowsAndQty: '{count} rows / {qty}',
-      
+
       // Error messages
       getWarehouseListFailed: 'Failed to get warehouse list',
       getAdjustReasonListFailed: 'Failed to get adjustment reason list',
@@ -1356,7 +1445,8 @@ export default {
       availableQty: 'Available Qty',
       noInventorySelected: 'Please select source inventory first',
       inputQty: 'Input Quantity',
-      formTip: 'Select a source inventory, choose target warehouse/area/place, and input quantity to create transfer task',
+      formTip:
+        'Select a source inventory, choose target warehouse/area/place, and input quantity to create transfer task',
       executeConfirm: 'Are you sure to execute this transfer task?',
       cancelConfirm: 'Are you sure to cancel this transfer task?',
       deleteConfirm: 'Are you sure to delete this transfer task?',
@@ -1393,7 +1483,7 @@ export default {
       create: 'Create',
       export: 'Export Excel',
       batchDelete: 'Batch Delete',
-      
+
       // Query form
       warehouseArea: 'Warehouse/Area',
       selectWarehouse: 'Please select warehouse',
@@ -1407,7 +1497,7 @@ export default {
       selectInventoryStatus: 'Please select inventory status',
       queryInventory: 'Query Inventory',
       reset: 'Reset',
-      
+
       // Table columns
       materialCode: 'Material Code',
       materialName: 'Material Name',
@@ -1426,16 +1516,17 @@ export default {
       view: 'View',
       edit: 'Edit',
       delete: 'Delete',
-      
+
       // Inventory detail list
       inventoryDetailList: 'Inventory Detail List',
       recordCount: '{count} records in total',
-      
+
       // Form
       formTitle: 'Inventory Information',
       createForm: 'Create Inventory',
       editForm: 'Edit Inventory',
-      formDescription: 'Manage warehouse inventory information, including material location, quantity allocation and expiry control.',
+      formDescription:
+        'Manage warehouse inventory information, including material location, quantity allocation and expiry control.',
       uniqueKeyId: 'Unique Key ID',
       inputUniqueKeyId: 'Please input unique key ID',
       material: 'Material',
@@ -1449,7 +1540,7 @@ export default {
       inputBatchNoPlaceholder: 'Please input batch no',
       productionDate: 'Production Date',
       selectProductionDate: 'Please select production date',
-      
+
       // Quantity information
       quantityInfo: 'Quantity Information',
       qty: 'Quantity',
@@ -1462,7 +1553,7 @@ export default {
       inputTransitQty: 'Please input transit quantity',
       occupyQty: 'Occupy Qty',
       inputOccupyQty: 'Please input occupy quantity',
-      
+
       // Expiry control
       expiryControl: 'Expiry Control',
       enableExpiryControl: 'Enable Expiry Control',
@@ -1470,7 +1561,7 @@ export default {
       disable: 'Disable',
       expiryTime: 'Expiry Time',
       selectExpiryTime: 'Please select expiry time',
-      
+
       // Detail page
       detailTitle: 'Inventory Detail',
       basicInfo: 'Basic Information',
@@ -1486,14 +1577,14 @@ export default {
       updateTime: 'Update Time',
       updater: 'Updater',
       close: 'Close',
-      
+
       // Statistics cards
       totalInventory: 'Total Inventory',
       available: 'Available Qty',
       occupied: 'Occupied Qty',
       blocked: 'Blocked Qty',
       inTransit: 'In Transit Qty',
-      
+
       // Validation messages
       uniqueKeyIdRequired: 'Unique key ID is required',
       materialRequired: 'Please select material',
@@ -1505,7 +1596,7 @@ export default {
       blockedQtyRequired: 'Blocked quantity is required',
       transitQtyRequired: 'Transit quantity is required',
       occupyQtyRequired: 'Occupy quantity is required',
-      
+
       // Operation messages
       loadWarehouseFailed: 'Failed to load warehouse list',
       loadWarehouseAreaFailed: 'Failed to load warehouse area list',
@@ -1522,7 +1613,7 @@ export default {
     outboundLog: {
       title: 'Outbound Log',
       searchPlaceholder: 'Search document no...',
-      
+
       // Query form
       operationType: 'Operation Type',
       selectOperationType: 'Please select operation type',
@@ -1530,7 +1621,7 @@ export default {
       inputMaterialBatch: 'Please input material batch no',
       sourceDocNo: 'Source Document No',
       inputSourceDocNo: 'Please input source document no',
-      
+
       // Table columns
       operationId: 'Operation ID',
       operationTypeName: 'Operation Type',
@@ -1553,13 +1644,501 @@ export default {
       remark: 'Remark',
       createTime: 'Create Time',
       creator: 'Creator',
-      
+
       // Operation types
       confirmOutbound: 'Confirm Outbound',
       transferOut: 'Transfer Out',
-      
+
       // Tips
       noData: 'No data'
+    },
+    freezeOrder: {
+      // Page title
+      title: 'Inventory Freeze Order',
+      detailTitle: 'Freeze Order Detail',
+
+      // Query form labels
+      freezeOrderNo: 'Freeze Order No',
+      freezeObjectType: 'Freeze Object Type',
+      freezeObject: 'Freeze Object',
+      freezeReason: 'Freeze Reason',
+      unfreezeCondition: 'Unfreeze Condition',
+      relatedOrderNo: 'Related Order No',
+      status: 'Status',
+      remark: 'Remark',
+
+      // Query form placeholders
+      inputFreezeOrderNo: 'Please input freeze order no',
+      selectFreezeObjectType: 'Please select freeze object type',
+      inputFreezeObject: 'Please input freeze object',
+      selectFreezeReason: 'Please select freeze reason',
+      selectStatus: 'Please select status',
+      inputUnfreezeCondition: 'Please input unfreeze condition',
+      inputRelatedOrderNo: 'Please input related order no',
+      inputRemark: 'Please input remark',
+      selectWarehouseLocation: 'Please select warehouse location',
+
+      // Table columns
+      freezeObjectName: 'Freeze Object',
+
+      // Buttons
+      search: 'Search',
+      reset: 'Reset',
+      addFreeze: 'Add Freeze',
+      export: 'Export',
+      viewDetail: 'View Detail',
+      unfreeze: 'Unfreeze',
+      generate: 'Generate',
+      cancel: 'Cancel',
+      executeFreeze: 'Execute Freeze',
+      close: 'Close',
+
+      // Operation confirm
+      unfreezeConfirm: 'Are you sure to unfreeze this inventory?',
+      confirmTip: 'Tip',
+
+      // Operation results
+      unfreezeSuccess: 'Unfreeze success',
+      generateSuccess: 'Freeze order no generated successfully',
+      generateFailed: 'Failed to generate freeze order no',
+      loadDetailFailed: 'Failed to load freeze order detail',
+      loadLocationFailed: 'Failed to load warehouse location list',
+
+      // Export
+      exportFileName: 'Inventory Freeze Order.xls',
+
+      // Validation messages
+      freezeOrderNoRequired: 'Please input freeze order no',
+      freezeOrderNoLengthInvalid: 'Character length is invalid',
+      freezeObjectTypeRequired: 'Please select freeze object type',
+      freezeObjectRequired: 'Please input freeze object',
+      unfreezeConditionLengthInvalid: 'Character length is invalid',
+      relatedOrderNoLengthInvalid: 'Character length is invalid',
+      remarkLengthInvalid: 'Character length is invalid',
+
+      // Detail page
+      basicInfo: 'Basic Information',
+      freezeDetailList: 'Freeze Details',
+      detailCount: '{count} items',
+      noFreezeDetail: 'No freeze details',
+
+      // Detail table columns
+      index: 'No.',
+      materialCode: 'Material Code',
+      materialName: 'Material Name',
+      materialBatch: 'Material Batch',
+      freezeQty: 'Freeze Qty',
+      description: 'Description',
+
+      // Time
+      createTime: 'Create Time',
+      updateTime: 'Update Time'
+    },
+    freezeDetail: {
+      // Page title
+      title: 'Inventory Freeze Details',
+
+      // Query form
+      freezeOrderNo: 'Freeze Order No',
+      inputFreezeOrderNo: 'Please input freeze order no',
+
+      // Buttons
+      add: 'Add',
+      export: 'Export',
+      batchDelete: 'Batch Delete',
+      edit: 'Edit',
+      delete: 'Delete',
+      confirm: 'Confirm',
+      cancel: 'Cancel',
+
+      // Table columns
+      id: 'ID',
+      freezeOrderId: 'Freeze Order ID',
+      inventoryId: 'Inventory ID',
+      uniqueKeyId: 'Unique Key ID',
+      warehouseId: 'Warehouse',
+      warehouseAreaId: 'Warehouse Area',
+      warehousePlaceId: 'Warehouse Location',
+      materialId: 'Material ID',
+      materialCode: 'Material Code',
+      materialName: 'Material Name',
+      materialBatch: 'Material Batch No',
+      freezeQty: 'Freeze Qty',
+      description: 'Description',
+      createTime: 'Create Time',
+      deleted: 'Data Flag',
+      operation: 'Operation',
+
+      // Form placeholders
+      inputFreezeOrderId: 'Please input freeze order ID',
+      inputInventoryId: 'Please input inventory ID',
+      inputUniqueKeyId: 'Please input unique key ID',
+      inputWarehouseId: 'Please input warehouse',
+      inputWarehouseAreaId: 'Please input warehouse area',
+      inputWarehousePlaceId: 'Please input warehouse location',
+      inputMaterialId: 'Please input material ID',
+      inputMaterialCode: 'Please input material code',
+      inputMaterialName: 'Please input material name',
+      inputMaterialBatch: 'Please input material batch no',
+      inputFreezeQty: 'Please input freeze qty',
+      inputDescription: 'Please input description',
+
+      // Validation messages
+      freezeOrderIdRequired: 'Please input freeze order ID',
+      freezeOrderNoRequired: 'Please input freeze order no',
+      lengthInvalid: 'Character length is invalid',
+
+      // Export
+      exportFileName: 'Inventory Freeze Details.xls'
+    },
+    countOrder: {
+      // Page title
+      title: 'Count Order Management',
+
+      // Search form labels
+      countOrderNo: 'Count Order No',
+      countType: 'Count Type',
+      countScopeType: 'Count Scope Type',
+      status: 'Status',
+
+      // Search form placeholders
+      inputCountOrderNo: 'Please input count order no',
+      selectCountType: 'Please select count type',
+      selectCountScopeType: 'Please select count scope type',
+      selectStatus: 'Please select status',
+
+      // Buttons
+      search: 'Search',
+      reset: 'Reset',
+      createCountOrder: 'Create Count Order',
+      batchDelete: 'Batch Delete',
+      viewDetail: 'View Detail',
+      startCount: 'Start Count',
+      edit: 'Edit',
+      delete: 'Delete',
+      generate: 'Generate',
+      cancel: 'Cancel',
+      generateCountOrder: 'Generate Count Order',
+      close: 'Close',
+      cancelCount: 'Cancel',
+      completeCount: 'Complete Count',
+      back: 'Back',
+      confirmSelect: 'Confirm Selection',
+
+      // Table columns
+      scopeDetailNames: 'Scope Details',
+      countMethod: 'Count Method',
+      planBeginTime: 'Planned Start Time',
+      planEndTime: 'Planned End Time',
+      adjustOrderFlag: 'Generate Adjust Order',
+      generateAdjustOrder: 'Generate Adjust Order',
+      reviewSettings: 'Review Settings',
+      manageUser: 'Manager',
+      countUsers: 'Count Users',
+      actualBeginTime: 'Actual Start Time',
+      actualEndTime: 'Actual End Time',
+      createTime: 'Create Time',
+      updateTime: 'Update Time',
+      operation: 'Operation',
+
+      // Form placeholders
+      selectCountMethod: 'Please select count method',
+      selectScopeDetails: 'Please select scope details',
+      selectPlanBeginTime: 'Please select planned start time',
+      selectPlanEndTime: 'Please select planned end time',
+      selectManageUser: 'Please select manager',
+      selectCountUsers: 'Please select count users',
+      inputReviewSettings: 'Please input review settings',
+      inputRemark: 'Please input remark',
+      remark: 'Remark',
+
+      // Validation messages
+      countOrderNoRequired: 'Please input count order no',
+      lengthInvalid: 'Character length is invalid',
+      countTypeRequired: 'Please select count type',
+      countScopeTypeRequired: 'Please select count scope type',
+      scopeDetailsRequired: 'Please select scope details',
+      planBeginTimeRequired: 'Please select planned start time',
+      planEndTimeInvalid: 'Planned end time must be later than planned start time',
+      adjustOrderFlagRequired: 'Please select whether to generate adjust order',
+      manageUserRequired: 'Please select manager',
+
+      // Operation messages
+      generateSuccess: 'Count order no generated successfully',
+      generateFailed: 'Failed to generate count order no',
+      startCountFailed: 'Failed to start count',
+      cancelCountSuccess: 'Count cancelled',
+      cancelCountFailed: 'Failed to cancel count',
+      countQtyRequired: 'Please fill in count qty for all materials',
+      countCompleteSuccess: 'Count completed',
+      countCompleteFailed: 'Failed to complete count',
+      loadDetailFailed: 'Failed to load count order detail',
+      selectAtLeastOne: 'Please select at least one count detail',
+
+      // Detail page
+      detailTitle: 'Count Order Detail',
+      basicInfo: 'Basic Info',
+      countDetailList: 'Count Details',
+      detailCount: '{count} details',
+      noCountDetail: 'No count details',
+
+      // Detail table columns
+      index: 'No.',
+      materialCode: 'Material Code',
+      materialName: 'Material Name',
+      materialBatch: 'Material Batch',
+      bookQty: 'Book Qty',
+      countQty: 'Count Qty',
+      countStatus: 'Count Status',
+
+      // Confirm page
+      confirmTitle: 'Count Order Confirmation',
+      countOrderDetail: 'Count Order Details',
+      countDetailCountText: '{count} count items',
+      warehouse: 'Warehouse',
+      warehouseArea: 'Warehouse Area',
+      warehousePlace: 'Warehouse Location',
+      batchNo: 'Batch No',
+      inventoryStatus: 'Inventory Status',
+
+      // Export
+      exportFileName: 'Count Order.xls'
+    },
+    countDifference: {
+      // Page title
+      title: 'Count Difference Management',
+
+      // Search form labels
+      differenceOrder: 'Difference Order No',
+      countOrder: 'Count Order No',
+      differenceStatus: 'Difference Status',
+
+      // Search form placeholders
+      inputDifferenceOrder: 'Please input difference order no',
+      inputCountOrder: 'Please input count order no',
+      selectDifferenceStatus: 'Please select difference status',
+
+      // Buttons
+      search: 'Search',
+      reset: 'Reset',
+      viewDetail: 'View Detail',
+      handle: 'Handle',
+      approval: 'Approval',
+      posting: 'Post',
+      cancel: 'Cancel',
+      submit: 'Submit',
+      confirm: 'Confirm',
+      reject: 'Reject',
+      approve: 'Approve',
+      close: 'Close',
+      confirmBtn: 'Confirm',
+      cancelBtn: 'Cancel',
+
+      // Table columns
+      adjustOrderNo: 'Adjust Order No',
+      warehousePlace: 'Warehouse Location',
+      materialCode: 'Material Code',
+      materialName: 'Material Name',
+      materialBatch: 'Material Batch No',
+      usableQty: 'System Book Qty',
+      countQty: 'Actual Count Qty',
+      differenceQty: 'Difference Qty',
+      differenceReason: 'Difference Reason',
+      differenceTime: 'Difference Time',
+      operation: 'Operation',
+
+      // Handle dialog
+      handleTitle: 'Handle Count Difference',
+      selectDifferenceReason: 'Please select difference reason',
+      differenceReasonRequired: 'Please select difference reason',
+      handleSuccess: 'Handled successfully',
+
+      // Approval dialog
+      approvalTitle: 'Approve Count Difference',
+      approvalComment: 'Approval Comment',
+      inputApprovalComment: 'Please input approval comment (optional)',
+      approvalSuccess: 'Approved successfully',
+      rejectSuccess: 'Rejected successfully',
+
+      // Post dialog
+      postTitle: 'Post Count Difference',
+      postingQty: 'Posting Qty',
+      postSuccess: 'Posted successfully',
+
+      // Detail page
+      detailTitle: 'Count Difference Detail',
+      basicInfo: 'Basic Info',
+      createTime: 'Create Time',
+      updateTime: 'Update Time',
+
+      // Inventory difference section
+      inventoryDifference: 'Inventory Difference',
+      materialBatchNo: 'Material Batch No',
+      differenceAmount: 'Difference Amount',
+
+      // Handle info section
+      handleInfo: 'Handle Info',
+      handleUser: 'Handler',
+      handleTime: 'Handle Time',
+
+      // Approval info section
+      approvalInfo: 'Approval Info',
+      approvalUser: 'Approver',
+      approvalTime: 'Approval Time',
+
+      // Posting info section
+      postingInfo: 'Posting Info',
+      postingUser: 'Poster',
+      postingTime: 'Posting Time',
+
+      // Operation messages
+      loadDetailFailed: 'Failed to load count difference detail',
+
+      // Form field labels
+      countOrderId: 'Count Order ID',
+      adjustOrderId: 'Adjust Order ID',
+      uniqueKeyId: 'Unique Key ID',
+      warehouseId: 'Warehouse ID',
+      warehouseAreaId: 'Warehouse Area ID',
+      warehousePlaceId: 'Warehouse Location ID',
+      materialId: 'Material ID',
+      handleUserId: 'Handler ID',
+      handleUserName: 'Handler Name',
+      approvalUserId: 'Approver ID',
+      approvalUserName: 'Approver Name',
+      postingAfterQty: 'Posting After Qty',
+      postingUserId: 'Poster ID',
+      postingUserName: 'Poster Name',
+
+      // Form placeholders
+      inputCountOrderId: 'Please input count order ID',
+      inputAdjustOrderId: 'Please input adjust order ID',
+      inputUniqueKeyId: 'Please input unique key ID',
+      inputAdjustOrderNo: 'Please input adjust order no',
+      inputDifferenceTime: 'Please input difference time',
+      inputWarehouseId: 'Please input warehouse ID',
+      inputWarehouseAreaId: 'Please input warehouse area ID',
+      inputWarehousePlaceId: 'Please input warehouse location ID',
+      inputMaterialId: 'Please input material ID',
+      inputMaterialCode: 'Please input material code',
+      inputMaterialName: 'Please input material name',
+      inputMaterialBatch: 'Please input material batch no',
+      inputUsableQty: 'Please input system book qty',
+      inputCountQty: 'Please input actual count qty',
+      inputDifferenceQty: 'Please input difference qty',
+      inputDifferenceAmount: 'Please input difference amount',
+      inputDifferenceReason: 'Please input difference reason',
+      inputHandleUserId: 'Please input handler ID',
+      inputHandleUserName: 'Please input handler name',
+      inputHandleTime: 'Please input handle time',
+      inputApprovalCommentForm: 'Please input approval comment',
+      inputApprovalUserId: 'Please input approver ID',
+      inputApprovalUserName: 'Please input approver name',
+      inputApprovalTime: 'Please input approval time',
+      inputPostingQty: 'Please input posting after qty',
+      inputPostingUserId: 'Please input poster ID',
+      inputPostingUserName: 'Please input poster name',
+      inputPostingTime: 'Please input posting time',
+
+      // Validation messages
+      countOrderIdRequired: 'Please input count order ID',
+      countOrderRequired: 'Please input count order no',
+      differenceOrderRequired: 'Please input difference order no',
+      differenceTimeRequired: 'Please input difference time',
+      lengthInvalid: 'Character length is invalid',
+      uniqueKeyIdLengthInvalid: 'Unique key ID length must not exceed 255!',
+      adjustOrderNoLengthInvalid: 'Adjust order no length must not exceed 32!',
+
+      // Export
+      exportFileName: 'Count Difference.xls'
+    }
+  },
+  mdm: {
+    lighting: {
+      title: 'Lighting Management',
+      warehouse: 'Warehouse',
+      controller: 'Controller',
+      lightbar: 'Light Bar',
+      location: 'Location',
+
+      // Organization Structure
+      structure: {
+        title: 'Organization Structure',
+        refresh: 'Refresh',
+        mainWarehouse: 'Main Warehouse No.1',
+        coldChainWarehouse: 'Cold Chain Warehouse No.2'
+      },
+
+      // Controller Management
+      controllerManagement: {
+        title: 'Manage aisle lights in this warehouse',
+        addController: 'Add Aisle Light',
+        bindLightbar: 'Bind Aisle Light',
+        controllerCode: 'Device Code',
+        ipAddress: 'IP Address',
+        relatedLightbars: 'Related Light Bars',
+        count: '',
+        online: 'Online',
+        offline: 'Offline',
+        enabled: 'Enabled',
+        disabled: 'Disabled'
+      },
+
+      // Light Bar List
+      lightbarList: {
+        title: 'Light Bar List',
+        lightbarName: 'Light Bar Name',
+        deviceId: 'Device ID (Code)',
+        ipAddress: 'IP Address',
+        connectionStatus: 'Connection Status',
+        enableStatus: 'Enable Status',
+        boundLocation: 'Bound Location',
+        bindLocation: 'Bind Location',
+        bindNewLightbar: 'Bind New Light Bar',
+        unbindLightbar: 'Unbind Light Bar',
+        unbindConfirm: 'Are you sure to unbind this light bar? All location bindings under this light bar will be deleted.',
+        unbindSuccess: 'Unbind successfully',
+        unbindFailed: 'Unbind failed'
+      },
+
+      // Bind Location
+      bindLocation: {
+        title: 'Bind Location',
+        tip: 'Associate the light bar with specific locations in the current warehouse',
+        currentWarehouse: 'Current Warehouse',
+        selectLocation: 'Select Location',
+        searchPlaceholder: 'Please select location...',
+        searchTip: 'Support search by location code or name',
+        selectedLocations: 'Selected Locations',
+        bindSuccess: 'Bind successfully',
+        bindFailed: 'Bind failed',
+        selectAtLeastOne: 'Please select at least one location'
+      },
+
+      // Bind Light Bar
+      bindLightbar: {
+        title: 'Bind New Light Bar',
+        tip: 'Select available light bars from IoT system for binding',
+        availableDevices: 'Available Device List',
+        searchPlaceholder: 'Please select device...',
+        selectedDevices: 'Selected Devices',
+        noDevices: 'No available devices',
+        bindSuccess: 'Bind successfully',
+        bindFailed: 'Bind failed',
+        selectAtLeastOne: 'Please select at least one device'
+      },
+
+      // Common
+      common: {
+        confirm: 'Confirm',
+        cancel: 'Cancel',
+        back: 'Back',
+        search: 'Search',
+        reset: 'Reset',
+        operation: 'Operation',
+        loading: 'Loading...',
+        noData: 'No Data'
+      }
     }
   }
 }

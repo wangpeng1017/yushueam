@@ -9,3 +9,4 @@ auto-*.d.ts
 .idea
 .history
 .qoder/rules/*
+.qoder

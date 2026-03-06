@@ -129,6 +129,12 @@ export enum DICT_TYPE {
   STRATEGY_AGE_START_POINT = 'strategy_age_start_point',
   STRATEGY_AGE_WORK_ASSIGN = 'strategy_age_work_assign',
 
+  // ========== 编码规则 ==========
+  STRATEGY_CODE_RULE_TYPE = 'strategy_code_rule_type', // 规则类型
+  STRATEGY_CODE_APPLICABLE_SYSTEM = 'strategy_code_applicable_system', // 适用系统
+  STRATEGY_CODE_RESET_CYCLE = 'strategy_code_reset_cycle', // 重置周期
+  STRATEGY_CODE_DATE_FORMAT = 'strategy_code_date_format', // 日期格式
+
   // ========== 盘点 ==========
   COUNT_TYPE = 'count_type',
   COUNT_SCOPE_TYPE = 'count_scope_type',
@@ -150,7 +156,7 @@ export enum DICT_TYPE {
   WMS_PUT_ON_TASK_STATUS = 'put_on_task_status',
   WMS_PUT_ON_TASK_TYPE = 'put_on_task_type',
   WMS_PUT_ON_TASK_EXECUTE_STATUS = 'WMS_PUT_ON_TASK_EXECUTE_STATUS',
-  
+
   // wms 检验记录
   INSPECTION_TYPE = 'inspection_type', // 检验类型
   SOURCE_ORDER_TYPE = 'source_order_type', // 来源单据类型
@@ -159,9 +165,9 @@ export enum DICT_TYPE {
   JUDGE_RESULT = 'judge_result', // 判定结果
 
   // wms mdm
-  MATERIAL_PACKAGE_UNIT = "material-package-unit",
-  MATERIAL_PACKAGE_BARCODE_TYPE = "barcode_type",
-  MATERIAL_STORAGE_CONDITION = "storage_condition",
+  MATERIAL_PACKAGE_UNIT = 'material-package-unit',
+  MATERIAL_PACKAGE_BARCODE_TYPE = 'barcode_type',
+  MATERIAL_STORAGE_CONDITION = 'storage_condition',
 
   // wms inventory
   WMS_INVENTORY_STATUS = 'stock_status',

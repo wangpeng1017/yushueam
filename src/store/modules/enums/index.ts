@@ -14,14 +14,9 @@
  */
 
 // 导出所有枚举 store
-export { useInventoryEnumStore, useInventoryEnumStoreWithOut } from './inventoryEnums'
-export { useInboundEnumStore, useInboundEnumStoreWithOut } from './inboundEnums'
 export { useMdmEnumStore, useMdmEnumStoreWithOut } from './mdmEnums'
 
 // 导出类型
-export type { EnumEntity } from './inventoryEnums'
-export type { InventoryEnumState } from './inventoryEnums'
-export type { InboundEnumState } from './inboundEnums'
 export type { MdmEnumState } from './mdmEnums'
 
 /**
@@ -39,14 +34,6 @@ export type { MdmEnumState } from './mdmEnums'
 export const clearAllEnumCaches = () => {
   // 动态导入所有枚举 store 并清除缓存
   Promise.all([
-    import('./inventoryEnums').then(({ useInventoryEnumStore }) => {
-      const store = useInventoryEnumStore()
-      store.resetEnums()
-    }),
-    import('./inboundEnums').then(({ useInboundEnumStore }) => {
-      const store = useInboundEnumStore()
-      store.resetEnums()
-    }),
     import('./mdmEnums').then(({ useMdmEnumStore }) => {
       const store = useMdmEnumStore()
       store.resetEnums()

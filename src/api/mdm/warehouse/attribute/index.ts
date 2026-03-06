@@ -9,9 +9,9 @@ export interface WarehouseAttributeDto {
     id: number
     warehouseId: string
     attributeName: string
-    storageEnvironment: string
-    storageUnitPreference: string
-    materialType: string
+    storageEnvironment: Array<string>
+    storageUnitPreference: Array<string>
+    materialType: Array<string>
     inventoryTurnoverFeature: string
     cleanlinessLevel: string
     securityLevel: string
@@ -33,9 +33,9 @@ export interface WarehouseAttributeDto {
 export interface WarehouseAttributeSaveDto {
     warehouseId: string
     attributeName: string
-    storageEnvironment: string
-    storageUnitPreference: string
-    materialType: string
+    storageEnvironment: Array<string>
+    storageUnitPreference: Array<string>
+    materialType: Array<string>
     inventoryTurnoverFeature: string
     cleanlinessLevel: string
     securityLevel: string
@@ -53,9 +53,9 @@ export interface WarehouseAttributeUpdateDto {
     id: number
     warehouseId: string
     attributeName: string
-    storageEnvironment: string
-    storageUnitPreference: string
-    materialType: string
+    storageEnvironment: Array<string>
+    storageUnitPreference: Array<string>
+    materialType: Array<string>
     inventoryTurnoverFeature: string
     cleanlinessLevel: string
     securityLevel: string

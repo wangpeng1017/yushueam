@@ -20,6 +20,29 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   },
   {
+    path: '/',
+    component: Layout,
+    redirect: 'index',
+    name: 'Home',
+    meta: {
+      noTagsView: true,
+      hidden: true
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/mdm/warehouse/page.vue'),
+        name: 'Index',
+        meta: {
+          title: t('router.home'),
+          icon: 'ep:home-filled',
+          noCache: false,
+          affix: true
+        }
+      }
+    ]
+  },
+  {
     path: '/user',
     component: Layout,
     name: 'UserInfo',

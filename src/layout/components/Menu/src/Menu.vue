@@ -74,7 +74,7 @@ export default defineComponent({
       if (unref(layout) === 'top') {
         return renderMenu()
       } else {
-        return <ElScrollbar>{renderMenu()}</ElScrollbar>
+        return <div className="overflow-auto h-full ">{renderMenu()}</div>
       }
     }
 
@@ -158,7 +158,7 @@ $prefix-cls: #{$namespace}-menu;
       color: var(--left-menu-text-active-color) !important;
       background-color: var(--left-menu-bg-active-color) !important;
       position: relative;
-      
+
       // 添加左侧边框高亮
       &::before {
         content: '';
@@ -167,7 +167,7 @@ $prefix-cls: #{$namespace}-menu;
         top: 0;
         bottom: 0;
         width: 3px;
-        background-color: #0097BA;
+        background-color: #0097ba;
         border-radius: 0 2px 2px 0;
       }
 
@@ -197,7 +197,7 @@ $prefix-cls: #{$namespace}-menu;
     & > .is-active > .#{$elNamespace}-sub-menu__title {
       position: relative;
       background-color: var(--left-menu-collapse-bg-active-color) !important;
-      
+
       // 添加左侧边框高亮
       &::before {
         content: '';
@@ -206,7 +206,7 @@ $prefix-cls: #{$namespace}-menu;
         top: 0;
         bottom: 0;
         width: 3px;
-        background-color: #0097BA;
+        background-color: #0097ba;
         border-radius: 0 2px 2px 0;
       }
     }
@@ -288,7 +288,7 @@ $prefix-cls: #{$namespace}-menu-popper;
   .el-menu-item.is-active {
     position: relative;
     background-color: var(--left-menu-bg-active-color) !important;
-    
+
     // 添加左侧边框高亮
     &::before {
       content: '';
@@ -297,7 +297,7 @@ $prefix-cls: #{$namespace}-menu-popper;
       top: 0;
       bottom: 0;
       width: 3px;
-      background-color: #0097BA;
+      background-color: #0097ba;
       border-radius: 0 2px 2px 0;
     }
 

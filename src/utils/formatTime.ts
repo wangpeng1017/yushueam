@@ -192,23 +192,25 @@ export function formatPast2(ms: number): string {
 
 /**
  * element plus 的时间 Formatter 实现，使用 YYYY-MM-DD HH:mm:ss 格式
+ * 在非表格场景（如 el-descriptions）可传 null 作为 row/column，仅用 cellValue 格式化。
  *
- * @param row 行数据
- * @param column 字段
+ * @param row 行数据（表格内使用，非表格可传 null）
+ * @param column 列配置（表格内使用，非表格可传 null）
  * @param cellValue 字段值
  */
-export function dateFormatter(_row: any, _column: TableColumnCtx<any>, cellValue: any): string {
+export function dateFormatter(_row: any, _column: TableColumnCtx<any> | null, cellValue: any): string {
   return cellValue ? formatDate(cellValue) : ''
 }
 
 /**
  * element plus 的时间 Formatter 实现，使用 YYYY-MM-DD 格式
+ * 在非表格场景可传 null 作为 row/column。
  *
- * @param row 行数据
- * @param column 字段
+ * @param row 行数据（非表格可传 null）
+ * @param column 列配置（非表格可传 null）
  * @param cellValue 字段值
  */
-export function dateFormatter2(_row: any, _column: TableColumnCtx<any>, cellValue: any): string {
+export function dateFormatter2(_row: any, _column: TableColumnCtx<any> | null, cellValue: any): string {
   return cellValue ? formatDate(cellValue, 'YYYY-MM-DD') : ''
 }
 
