@@ -10,3 +10,4 @@ auto-*.d.ts
 .history
 .qoder/rules/*
 .qoder
+.kiro
