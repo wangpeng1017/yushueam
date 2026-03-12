@@ -1,6 +1,6 @@
 import request from '@/config/axios'
 
-const prefix = '/mdm/lighting/query'
+const prefix = '/mdm/lighting/device'
 
 /**
  * 亮灯查询 DTO
@@ -43,6 +43,6 @@ export interface LightingQueryVo {
  */
 export const queryLightingDevices = (data: LightingQueryDto) =>
   request.post({
-    url: prefix + '/lightingDevices',
+    url: prefix + '/query',
     data
   })

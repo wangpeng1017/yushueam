@@ -57,7 +57,11 @@
             </div>
           </div>
           <div class="header-right">
-            <el-button round class="btn-bind-aisle" @click="handleBatchBind">
+            <el-button 
+              v-hasPermi="['mdm:lighting:lightbar:bind']"
+              round 
+              class="btn-bind-aisle" 
+              @click="handleBatchBind">
               <el-icon class="link-icon"><Link /></el-icon>
               {{ t('mdm.lighting.controllerManagement.bindLightbar') }}
             </el-button>
@@ -97,7 +101,14 @@
             </div>
             
             <div class="card-hover-actions">
-              <el-button type="danger" plain round size="small" class="btn-remove" @click.stop="handleCardAction('delete', controller)">
+              <el-button 
+                v-hasPermi="['mdm:lighting:controller:delete']"
+                type="danger" 
+                plain 
+                round 
+                size="small" 
+                class="btn-remove" 
+                @click.stop="handleCardAction('delete', controller)">
                 <el-icon><Delete /></el-icon> {{ t('common.delete') }}
               </el-button>
             </div>

@@ -18,7 +18,10 @@
         </div>
       </div>
       <div class="header-right">
-        <el-button type="primary" @click="handleBindLightbar">
+        <el-button 
+          v-hasPermi="['mdm:lighting:lightbar:bind']"
+          type="primary" 
+          @click="handleBindLightbar">
           <el-icon><Plus /></el-icon>
           {{ t('mdm.lighting.lightbarList.bindNewLightbar') }}
         </el-button>
@@ -45,7 +48,7 @@
         <template #default="{ row }">
           <div class="connection-status" :class="row.onlineStatus === 'ONLINE' ? 'is-online' : 'is-offline'">
             <el-icon><Connection /></el-icon>
-            <span>{{ lightingEnumStore.getOnlineStatusText(row.onlineStatus) }}</span>
+            <span>{{ mdmEnumStore.getOnlineStatusText(row.onlineStatus) }}</span>
           </div>
         </template>
       </el-table-column>
@@ -54,7 +57,7 @@
         <template #default="{ row }">
           <div class="enable-status">
             <div class="status-dot" :class="row.enableFlag === 1 ? 'dot-success' : 'dot-info'"></div>
-            <span>{{ lightingEnumStore.getEnableFlagText(String(row.enableFlag)) }}</span>
+            <span>{{ mdmEnumStore.getEnableFlagText(String(row.enableFlag)) }}</span>
           </div>
         </template>
       </el-table-column>
@@ -70,7 +73,13 @@
               {{ row.boundLocations[0].locationCode || `WH-SH-STO-${row.boundLocations[0].locationId}` }}
             </div>
           </div>
-          <el-button v-else round size="small" class="btn-bind-location" @click="handleBindLocation(row)">
+          <el-button 
+            v-else 
+            v-hasPermi="['mdm:lighting:location:bind']"
+            round 
+            size="small" 
+            class="btn-bind-location" 
+            @click="handleBindLocation(row)">
             <el-icon><Link /></el-icon>
             {{ t('mdm.lighting.lightbarList.bindLocation') }}
           </el-button>
@@ -79,22 +88,34 @@
       
       <el-table-column :label="t('common.operation')" width="80" fixed="right" align="center">
         <template #default="{ row }">
-          <el-dropdown @command="(cmd) => handleCommand(cmd, row)" trigger="click">
+          <el-dropdown 
+            v-hasPermi="['mdm:lighting:lightbar:unbind', 'mdm:lighting:lightbar:disable', 'mdm:lighting:lightbar:remove']"
+            @command="(cmd) => handleCommand(cmd, row)" 
+            trigger="click">
             <el-button link>
               <el-icon class="more-icon"><MoreFilled /></el-icon>
             </el-button>
             <template #dropdown>
               <el-dropdown-menu class="custom-dropdown-menu">
-                <el-dropdown-item command="unbind" class="item-unbind">
+                <el-dropdown-item 
+                  v-hasPermi="['mdm:lighting:lightbar:unbind']"
+                  command="unbind" 
+                  class="item-unbind">
                   <el-icon><RefreshLeft /></el-icon>
                   {{ t('mdm.lighting.lightbarList.unbindLightbar') }}
                 </el-dropdown-item>
-                <el-dropdown-item command="disable" :class="row.enableFlag === 1 ? 'item-disable' : 'item-enable'">
+                <el-dropdown-item 
+                  v-hasPermi="['mdm:lighting:lightbar:disable']"
+                  command="disable" 
+                  :class="row.enableFlag === 1 ? 'item-disable' : 'item-enable'">
                   <el-icon v-if="row.enableFlag === 1"><Hide /></el-icon>
                   <el-icon v-else><View /></el-icon>
-                  {{ row.enableFlag === 1 ? lightingEnumStore.getEnableFlagText('0') : lightingEnumStore.getEnableFlagText('1') }}
+                  {{ row.enableFlag === 1 ? mdmEnumStore.getEnableFlagText('0') : mdmEnumStore.getEnableFlagText('1') }}
                 </el-dropdown-item>
-                <el-dropdown-item command="remove" class="item-remove">
+                <el-dropdown-item 
+                  v-hasPermi="['mdm:lighting:lightbar:remove']"
+                  command="remove" 
+                  class="item-remove">
                   <el-icon><Delete /></el-icon>
                   {{ t('common.delete') }}
                 </el-dropdown-item>
@@ -145,10 +166,10 @@ import {
 import * as LightbarApi from '@/api/mdm/lighting/lightbar'
 import BindLocationDialog from './BindLocationDialog.vue'
 import BindLightbarDialog from './BindLightbarDialog.vue'
-import { useLightingEnumStore } from '@/store/modules/enums/lightingEnums'
+import { useMdmEnumStore } from '@/store/modules/enums'
 
 const { t } = useI18n()
-const lightingEnumStore = useLightingEnumStore()
+const mdmEnumStore = useMdmEnumStore()
 
 interface Props {
   controllerId: number
@@ -188,8 +209,8 @@ const loadLightbarList = async () => {
 // 初始化时加载枚举数据
 const loadEnums = async () => {
   await Promise.all([
-    lightingEnumStore.loadOnlineStatus(),
-    lightingEnumStore.loadEnableFlag()
+    mdmEnumStore.loadOnlineStatus(),
+    mdmEnumStore.loadEnableFlag()
   ])
 }
 
@@ -267,7 +288,7 @@ const handleCommand = async (command: string, row: LightbarApi.LightBarBindingVo
   } else if (command === 'disable') {
     try {
       const targetStatus = row.enableFlag === 1 ? '0' : '1'
-      const action = lightingEnumStore.getEnableFlagText(targetStatus)
+      const action = mdmEnumStore.getEnableFlagText(targetStatus)
       await ElMessageBox.confirm(
         `${t('common.confirmText')}${action}?`,
         t('common.confirmTitle'),

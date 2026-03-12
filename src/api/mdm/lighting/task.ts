@@ -5,90 +5,128 @@ const prefix = '/mdm/lighting/task'
 /**
  * 亮灯任务创建 DTO
  */
-export interface LightingTaskCreateDto {
-  taskName?: string
+export interface TaskCreateDto {
+  taskType: string
+  bizType: string
+  bizId: string
   targetType: string
-  targetIds: string[]
-  executionStrategy?: string
-  remark?: string
+  targetExpression: string
+  action: string
+  executionStrategy: string
+  priority?: number
+  metadata?: string
+}
+
+/**
+ * 亮灯任务执行 DTO
+ */
+export interface TaskExecuteDto {
+  taskId: string
+}
+
+/**
+ * 亮灯任务取消 DTO
+ */
+export interface TaskCancelDto {
+  taskId: string
 }
 
 /**
  * 亮灯任务分页查询 DTO
  */
-export interface LightingTaskPageDto {
+export interface TaskPageDto {
   pageNo: number
   pageSize: number
-  taskName?: string
+  taskId?: string
+  bizType?: string
+  bizId?: string
   taskStatus?: string
-  targetType?: string
-  executionStrategy?: string
+  startTime?: string
+  endTime?: string
 }
 
 /**
  * 亮灯任务 VO
  */
-export interface LightingTaskVo {
-  id: number
-  taskName?: string
+export interface TaskVo {
+  taskId: string
+  bizType?: string
+  bizId?: string
   taskStatus: string
-  targetType: string
-  targetIds: string[]
-  executionStrategy: string
+  locationIds: number[]
+  action: string
+  color?: string
+  duration?: number
   totalCommands?: number
   successCommands?: number
   failedCommands?: number
   remark?: string
   createTime?: string
   updateTime?: string
+  executeTime?: string
+  cancelTime?: string
 }
 
 /**
- * 亮灯任务分页 VO
+ * 任务执行结果 VO
  */
-export interface LightingTaskPageVo {
-  list: LightingTaskVo[]
-  total: number
+export interface TaskResultVo {
+  taskId: string
+  taskStatus: string
+  totalCommands: number
+  successCommands: number
+  failedCommands: number
+  errors?: string[]
 }
 
 /**
- * 创建亮灯任务
+ * 创建并执行亮灯任务
  */
-export const createLightingTask = (data: LightingTaskCreateDto) =>
+export const createAndExecuteTask = (data: TaskCreateDto) =>
   request.post({
-    url: prefix + '/create',
+    url: prefix + '/createAndExecute',
     data
   })
 
 /**
  * 执行亮灯任务
  */
-export const executeLightingTask = (taskId: number) =>
+export const executeTask = (data: TaskExecuteDto) =>
   request.post({
-    url: prefix + `/execute/${taskId}`
+    url: prefix + '/execute',
+    data
   })
 
 /**
  * 取消亮灯任务
  */
-export const cancelLightingTask = (taskId: number) =>
+export const cancelTask = (data: TaskCancelDto) =>
   request.post({
-    url: prefix + `/cancel/${taskId}`
+    url: prefix + '/cancel',
+    data
   })
 
 /**
- * 分页查询亮灯任务
+ * 查询任务详情
  */
-export const getLightingTaskPage = (params: LightingTaskPageDto) =>
+export const getTaskDetail = (taskId: string) =>
   request.get({
+    url: prefix + `/detail/${taskId}`
+  })
+
+/**
+ * 根据业务单据查询任务
+ */
+export const getTaskByBiz = (bizType: string, bizId: string) =>
+  request.get({
+    url: prefix + `/byBiz/${bizType}/${bizId}`
+  })
+
+/**
+ * 分页查询任务列表
+ */
+export const getTaskPage = (data: TaskPageDto) =>
+  request.post({
     url: prefix + '/page',
-    params
-  })
-
-/**
- * 获取亮灯任务详情
- */
-export const getLightingTask = (taskId: number) =>
-  request.get({
-    url: prefix + `/get/${taskId}`
+    data
   })

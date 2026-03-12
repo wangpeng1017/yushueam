@@ -1,6 +1,6 @@
 import request from '@/config/axios'
 
-const prefix = '/mdm/lighting/location'
+const prefix = '/mdm/lighting/controller/location'
 
 /**
  * 库位绑定 DTO

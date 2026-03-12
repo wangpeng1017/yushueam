@@ -1,6 +1,6 @@
 import request from '@/config/axios'
 
-const prefix = '/mdm/lighting/lightbar'
+const prefix = '/mdm/lighting/controller/lightbar'
 
 /**
  * 灯条绑定 DTO
@@ -115,7 +115,7 @@ export const batchBindLightBar = (data: LightBarBatchBindDto) =>
  */
 export const listLightBarByController = (controllerId: number) =>
   request.get({
-    url: prefix + `/list/${controllerId}`
+    url: `/mdm/lighting/controller/lightbar/list/${controllerId}`
   })
 
 /**
