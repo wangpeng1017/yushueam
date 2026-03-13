@@ -22,11 +22,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="设备类型名称" prop="typeName">
-            <el-input
-              v-model="formData.typeName"
-              maxlength="30"
-              placeholder="请输入设备类型名称"
-            />
+            <el-input v-model="formData.typeName" maxlength="30" placeholder="请输入设备类型名称" />
           </el-form-item>
         </el-col>
       </el-row>

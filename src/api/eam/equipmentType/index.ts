@@ -36,8 +36,7 @@ export interface EamBaseEquipmentTypeUpdateDto extends EamBaseEquipmentTypeSaveD
 const prefix = '/mdm/eamBaseEquipmentType'
 
 /** 分页查询 */
-export const getEquipmentTypePage = (params: any) =>
-  request.get({ url: prefix + '/list', params })
+export const getEquipmentTypePage = (params: any) => request.get({ url: prefix + '/list', params })
 
 /** 全量列表（不分页），可选按 categoryCode 筛选 */
 export const getEquipmentTypeList = (categoryCode?: string) =>
