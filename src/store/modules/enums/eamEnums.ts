@@ -4,6 +4,7 @@ import { useCache } from '@/hooks/web/useCache'
 const { wsCache } = useCache('sessionStorage')
 
 import * as SupplierApi from '@/api/eam/supplier'
+import * as EquipmentApi from '@/api/eam/optEquipment'
 
 /**
  * 枚举实体接口
@@ -27,6 +28,18 @@ export interface EamEnumState {
   // 供应商状态枚举
   supplierStatus: EnumEntity[]
 
+  // 设备型号枚举
+  equipmentMode: EnumEntity[]
+
+  // 资产状态枚举
+  equipmentStatus: EnumEntity[]
+
+  // 运行状态枚举
+  operationStatus: EnumEntity[]
+
+  // 启停用状态枚举
+  equipmentRevstop: EnumEntity[]
+
   // 记录已加载的枚举
   loadedEnums: Set<string>
 }
@@ -40,10 +53,16 @@ export const useEamEnumStore = defineStore('eamEnum', {
     supplierCategory: [],
     supplierGoods: [],
     supplierStatus: [],
+    equipmentMode: [],
+    equipmentStatus: [],
+    operationStatus: [],
+    equipmentRevstop: [],
     loadedEnums: new Set<string>()
   }),
 
   getters: {
+    // ==================== 供应商相关 getters ====================
+
     /**
      * 获取供应商类别列表
      */
@@ -106,10 +125,82 @@ export const useEamEnumStore = defineStore('eamEnum', {
         }
         return typeMap[value] || 'info'
       }
+    },
+
+    // ==================== 设备档案相关 getters ====================
+
+    /**
+     * 获取设备型号列表
+     */
+    getEquipmentModeList(): EnumEntity[] {
+      return this.equipmentMode
+    },
+
+    /**
+     * 根据值获取设备型号文本
+     */
+    getEquipmentModeText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.equipmentMode.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    /**
+     * 获取资产状态列表
+     */
+    getEquipmentStatusList(): EnumEntity[] {
+      return this.equipmentStatus
+    },
+
+    /**
+     * 根据值获取资产状态文本
+     */
+    getEquipmentStatusText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.equipmentStatus.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    /**
+     * 获取运行状态列表
+     */
+    getOperationStatusList(): EnumEntity[] {
+      return this.operationStatus
+    },
+
+    /**
+     * 根据值获取运行状态文本
+     */
+    getOperationStatusText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.operationStatus.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    /**
+     * 获取启停用状态列表
+     */
+    getEquipmentRevstopList(): EnumEntity[] {
+      return this.equipmentRevstop
+    },
+
+    /**
+     * 根据值获取启停用状态文本
+     */
+    getEquipmentRevstopText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.equipmentRevstop.find((e) => e.value === value)
+        return item?.text || value
+      }
     }
   },
 
   actions: {
+    // ==================== 供应商相关 actions ====================
+
     /**
      * 加载供应商类别枚举
      */
@@ -199,6 +290,124 @@ export const useEamEnumStore = defineStore('eamEnum', {
       ])
     },
 
+    // ==================== 设备档案相关 actions ====================
+
+    /**
+     * 加载设备型号枚举
+     */
+    async loadEquipmentMode() {
+      if (this.loadedEnums.has('equipmentMode')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_equipmentMode'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.equipmentMode = cached
+        this.loadedEnums.add('equipmentMode')
+        return
+      }
+
+      try {
+        const data = await EquipmentApi.listOfMode()
+        this.equipmentMode = data || []
+        this.loadedEnums.add('equipmentMode')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载设备型号枚举失败:', error)
+      }
+    },
+
+    /**
+     * 加载资产状态枚举
+     */
+    async loadEquipmentStatus() {
+      if (this.loadedEnums.has('equipmentStatus')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_equipmentStatus'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.equipmentStatus = cached
+        this.loadedEnums.add('equipmentStatus')
+        return
+      }
+
+      try {
+        const data = await EquipmentApi.listOfStatus()
+        this.equipmentStatus = data || []
+        this.loadedEnums.add('equipmentStatus')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载资产状态枚举失败:', error)
+      }
+    },
+
+    /**
+     * 加载运行状态枚举
+     */
+    async loadOperationStatus() {
+      if (this.loadedEnums.has('operationStatus')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_operationStatus'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.operationStatus = cached
+        this.loadedEnums.add('operationStatus')
+        return
+      }
+
+      try {
+        const data = await EquipmentApi.listOfOperationStatus()
+        this.operationStatus = data || []
+        this.loadedEnums.add('operationStatus')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载运行状态枚举失败:', error)
+      }
+    },
+
+    /**
+     * 加载启停用状态枚举
+     */
+    async loadEquipmentRevstop() {
+      if (this.loadedEnums.has('equipmentRevstop')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_equipmentRevstop'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.equipmentRevstop = cached
+        this.loadedEnums.add('equipmentRevstop')
+        return
+      }
+
+      try {
+        const data = await EquipmentApi.listOfRevstop()
+        this.equipmentRevstop = data || []
+        this.loadedEnums.add('equipmentRevstop')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载启停用状态枚举失败:', error)
+      }
+    },
+
+    /**
+     * 批量加载设备档案相关枚举
+     */
+    async loadEquipmentEnums() {
+      await Promise.all([
+        this.loadEquipmentMode(),
+        this.loadEquipmentStatus(),
+        this.loadOperationStatus(),
+        this.loadEquipmentRevstop()
+      ])
+    },
+
     /**
      * 重置 EAM 模块枚举缓存
      */
@@ -206,9 +415,17 @@ export const useEamEnumStore = defineStore('eamEnum', {
       wsCache.delete('enum_eam_supplierCategory')
       wsCache.delete('enum_eam_supplierGoods')
       wsCache.delete('enum_eam_supplierStatus')
+      wsCache.delete('enum_eam_equipmentMode')
+      wsCache.delete('enum_eam_equipmentStatus')
+      wsCache.delete('enum_eam_operationStatus')
+      wsCache.delete('enum_eam_equipmentRevstop')
       this.supplierCategory = []
       this.supplierGoods = []
       this.supplierStatus = []
+      this.equipmentMode = []
+      this.equipmentStatus = []
+      this.operationStatus = []
+      this.equipmentRevstop = []
       this.loadedEnums.clear()
     }
   }
