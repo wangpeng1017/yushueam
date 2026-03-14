@@ -162,11 +162,10 @@
     ref="equipmentTypeSelectRef"
     title="选择设备类型"
     :columns="equipmentTypeColumns"
-    :fetch-api="EquipmentApi.getEquipmentTypeAllList"
+    :fetch-api="EquipmentApi.getEquipmentTypePage"
     :field-mapping="equipmentTypeMapping"
-    :show-pagination="false"
-    :paginated="false"
-    width="700px"
+    :paginated="true"
+    width="850px"
     @select="handleEquipmentTypeSelect"
   />
 
@@ -178,7 +177,7 @@
     :fetch-api="EquipmentApi.getEquipmentCategoryList"
     :field-mapping="equipmentCategoryMapping"
     :paginated="true"
-    width="700px"
+    width="650px"
     @select="handleEquipmentCategorySelect"
   />
 
@@ -190,7 +189,7 @@
     :fetch-api="EquipmentApi.getSupplierList"
     :field-mapping="supplierMapping"
     :paginated="true"
-    width="700px"
+    width="1000px"
     @select="handleSupplierSelect"
   />
 </template>
@@ -267,10 +266,10 @@ const resetForm = () => {
 // ==================== 设备类型选择器 ====================
 const equipmentTypeSelectRef = ref()
 const equipmentTypeColumns: TableColumn[] = [
-  { prop: 'typeCode', label: '类型编码', width: 120, searchable: true },
-  { prop: 'typeName', label: '类型名称', minWidth: 150, searchable: true },
-  { prop: 'categoryCode', label: '分类编码', width: 120 },
-  { prop: 'categoryName', label: '分类名称', minWidth: 120 }
+  { prop: 'typeCode', label: '设备类型编码', width: 140, searchable: true },
+  { prop: 'typeName', label: '设备类型名称', minWidth: 150, searchable: true },
+  { prop: 'categoryCode', label: '设备分类编号', width: 120 },
+  { prop: 'categoryName', label: '设备分类名称', minWidth: 120 }
 ]
 const equipmentTypeMapping: FieldMapping[] = [
   { from: 'typeCode', to: 'equipmentType' },
@@ -291,8 +290,8 @@ const handleEquipmentTypeSelect = (_row: any, mapped: Record<string, any>) => {
 // ==================== 设备分类选择器 ====================
 const equipmentCategorySelectRef = ref()
 const equipmentCategoryColumns: TableColumn[] = [
-  { prop: 'categoryCode', label: '分类编码', width: 150, searchable: true },
-  { prop: 'categoryName', label: '分类名称', minWidth: 200, searchable: true }
+  { prop: 'categoryCode', label: '设备分类编码', width: 200, searchable: true },
+  { prop: 'categoryName', label: '设备分类名称', minWidth: 200, searchable: true }
 ]
 const equipmentCategoryMapping: FieldMapping[] = [
   { from: 'categoryCode', to: 'equipmentCategory' },
@@ -309,14 +308,35 @@ const handleEquipmentCategorySelect = (_row: any, mapped: Record<string, any>) =
 // ==================== 供应商选择器 ====================
 const supplierSelectRef = ref()
 const supplierColumns: TableColumn[] = [
-  { prop: 'supplierSn', label: '供应商编号', width: 150, searchable: true },
-  { prop: 'supplierName', label: '供应商名称', minWidth: 200, searchable: true }
+  { prop: 'supplierSn', label: '供应商编号', width: 120, searchable: true },
+  { prop: 'supplierName', label: '供应商名称', minWidth: 150, searchable: true },
+  {
+    prop: 'supplierCategory',
+    label: '供应商类别',
+    width: 120,
+    formatter: (_row: any, value: any) => eamEnumStore.getSupplierCategoryText(value ?? '')
+  },
+  { prop: 'createTime', label: '建档日期', width: 170 },
+  {
+    prop: 'supplierGoods',
+    label: '供应设备类别',
+    width: 120,
+    formatter: (_row: any, value: any) => eamEnumStore.getSupplierGoodsText(value ?? '')
+  },
+  {
+    prop: 'supplierStatus',
+    label: '供应商状态',
+    width: 100,
+    formatter: (_row: any, value: any) => eamEnumStore.getSupplierStatusText(value ?? '')
+  }
 ]
 const supplierMapping: FieldMapping[] = [
   { from: 'supplierSn', to: 'equipmentSupplier' },
   { from: 'supplierName', to: 'equipmentSupplierName' }
 ]
-const openSupplierSelect = () => {
+const openSupplierSelect = async () => {
+  // 确保供应商相关枚举已加载（用于列格式化）
+  await eamEnumStore.loadSupplierEnums()
   supplierSelectRef.value.open()
 }
 const handleSupplierSelect = (_row: any, mapped: Record<string, any>) => {

@@ -93,12 +93,16 @@ export const listOfRevstop = () => request.get({ url: prefix + '/listOfRevstop' 
 
 // ==================== 关联数据查询方法 ====================
 
-/** 获取设备类型全量列表（不分页），用于搜索下拉和弹窗选择 */
+/** 获取设备类型全量列表（不分页），用于搜索下拉 */
 export const getEquipmentTypeAllList = (categoryCode?: string) =>
   request.get({
     url: '/mdm/eamBaseEquipmentType/scanDeviceTypeList',
     params: categoryCode ? { categoryCode } : {}
   })
+
+/** 获取设备类型分页列表（用于弹窗选择） */
+export const getEquipmentTypePage = (params?: any) =>
+  request.get({ url: '/mdm/eamBaseEquipmentType/list', params })
 
 /** 获取设备分类列表（用于 Tab 数据源和弹窗选择） */
 export const getEquipmentCategoryList = (params?: any) =>
