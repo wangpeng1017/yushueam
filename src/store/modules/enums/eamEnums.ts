@@ -5,6 +5,7 @@ const { wsCache } = useCache('sessionStorage')
 
 import * as SupplierApi from '@/api/eam/supplier'
 import * as EquipmentApi from '@/api/eam/optEquipment'
+import * as SpotInspectionStandardApi from '@/api/eam/spotInspectionStandard'
 
 /**
  * 枚举实体接口
@@ -40,6 +41,12 @@ export interface EamEnumState {
   // 启停用状态枚举
   equipmentRevstop: EnumEntity[]
 
+  // 点巡检标准-参数单位枚举
+  paramsUnit: EnumEntity[]
+
+  // 点巡检标准-是否枚举
+  yesNo: EnumEntity[]
+
   // 记录已加载的枚举
   loadedEnums: Set<string>
 }
@@ -57,6 +64,8 @@ export const useEamEnumStore = defineStore('eamEnum', {
     equipmentStatus: [],
     operationStatus: [],
     equipmentRevstop: [],
+    paramsUnit: [],
+    yesNo: [],
     loadedEnums: new Set<string>()
   }),
 
@@ -193,6 +202,42 @@ export const useEamEnumStore = defineStore('eamEnum', {
     getEquipmentRevstopText(): (value: string) => string {
       return (value: string) => {
         const item = this.equipmentRevstop.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    // ==================== 点巡检标准相关 getters ====================
+
+    /**
+     * 获取参数单位列表
+     */
+    getParamsUnitList(): EnumEntity[] {
+      return this.paramsUnit
+    },
+
+    /**
+     * 根据值获取参数单位文本
+     */
+    getParamsUnitText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.paramsUnit.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    /**
+     * 获取是否枚举列表
+     */
+    getYesNoList(): EnumEntity[] {
+      return this.yesNo
+    },
+
+    /**
+     * 根据值获取是否枚举文本
+     */
+    getYesNoText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.yesNo.find((e) => e.value === value)
         return item?.text || value
       }
     }
@@ -408,6 +453,67 @@ export const useEamEnumStore = defineStore('eamEnum', {
       ])
     },
 
+    // ==================== 点巡检标准相关 actions ====================
+
+    /**
+     * 加载参数单位枚举
+     */
+    async loadParamsUnit() {
+      if (this.loadedEnums.has('paramsUnit')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_paramsUnit'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.paramsUnit = cached
+        this.loadedEnums.add('paramsUnit')
+        return
+      }
+
+      try {
+        const data = await SpotInspectionStandardApi.listOfParamsUnit()
+        this.paramsUnit = data || []
+        this.loadedEnums.add('paramsUnit')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载参数单位枚举失败:', error)
+      }
+    },
+
+    /**
+     * 加载是否枚举
+     */
+    async loadYesNo() {
+      if (this.loadedEnums.has('yesNo')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_yesNo'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.yesNo = cached
+        this.loadedEnums.add('yesNo')
+        return
+      }
+
+      try {
+        const data = await SpotInspectionStandardApi.listOfYesNo()
+        this.yesNo = data || []
+        this.loadedEnums.add('yesNo')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载是否枚举失败:', error)
+      }
+    },
+
+    /**
+     * 批量加载点巡检标准相关枚举
+     */
+    async loadSpotInspectionEnums() {
+      await Promise.all([this.loadParamsUnit(), this.loadYesNo()])
+    },
+
     /**
      * 重置 EAM 模块枚举缓存
      */
@@ -419,6 +525,8 @@ export const useEamEnumStore = defineStore('eamEnum', {
       wsCache.delete('enum_eam_equipmentStatus')
       wsCache.delete('enum_eam_operationStatus')
       wsCache.delete('enum_eam_equipmentRevstop')
+      wsCache.delete('enum_eam_paramsUnit')
+      wsCache.delete('enum_eam_yesNo')
       this.supplierCategory = []
       this.supplierGoods = []
       this.supplierStatus = []
@@ -426,6 +534,8 @@ export const useEamEnumStore = defineStore('eamEnum', {
       this.equipmentStatus = []
       this.operationStatus = []
       this.equipmentRevstop = []
+      this.paramsUnit = []
+      this.yesNo = []
       this.loadedEnums.clear()
     }
   }
