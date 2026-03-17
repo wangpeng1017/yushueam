@@ -515,6 +515,18 @@ export const useEamEnumStore = defineStore('eamEnum', {
     },
 
     /**
+     * 批量加载参数巡检配置相关枚举
+     */
+    async loadParamConfEnums() {
+      await Promise.all([
+        this.loadSupplierStatus(),
+        this.loadEquipmentMode(),
+        this.loadParamsUnit(),
+        this.loadYesNo()
+      ])
+    },
+
+    /**
      * 重置 EAM 模块枚举缓存
      */
     resetEnums() {
