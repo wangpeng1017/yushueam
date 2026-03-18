@@ -314,5 +314,11 @@ export enum DICT_TYPE {
   COOPERPARTNERS_PUNTER_SETTLEMENT = 'cooperpartners_punter_settlement',
   SUPPLIER_EVALUATION_LEVEL = 'supplier_evaluation_level',
   COOPERATION_STATUS = 'cooperation_status',
-  SUPPLIER_TYPE = 'supplier_type'
+  SUPPLIER_TYPE = 'supplier_type',
+
+  // ========== EAM - 设备资产管理模块 ==========
+  EAM_SPARE_PART_STATUS = 'eam_spare_part_status', // 备件状态
+  EAM_SPARE_PART_LEVEL = 'eam_spare_part_level', // 备件层级
+  EAM_EQUIPMENT_STATUS = 'eam_equipment_status', // 设备状态
+  EAM_EQUIPMENT_OPERATION_STATUS = 'eam_equipment_operation_status' // 设备运行状态
 }
