@@ -328,7 +328,7 @@ const total = ref(0)
 const list = ref<ParamConfApi.ParamConfVo[]>([])
 const queryParams = reactive({
   pageNo: 1,
-  pageSize: 10,
+  pageSize: 5,
   deviceTypeDesc: undefined as string | undefined,
   deviceModel: undefined as string | undefined,
   deviceSupName: undefined as string | undefined
@@ -518,7 +518,7 @@ const itemTotal = ref(0)
 const itemList = ref<ParamConfApi.ParamItemVo[]>([])
 const itemQueryParams = reactive({
   pageNo: 1,
-  pageSize: 10
+  pageSize: 5
 })
 const itemSelectedIds = ref<string[]>([])
 

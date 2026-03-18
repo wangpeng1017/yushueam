@@ -309,7 +309,7 @@ const total = ref(0)
 const list = ref<StandardApi.StandardVo[]>([])
 const queryParams = reactive({
   pageNo: 1,
-  pageSize: 10,
+  pageSize: 5,
   code: undefined as string | undefined,
   name: undefined as string | undefined,
   equipmentTypeCode: undefined as string | undefined
@@ -417,7 +417,7 @@ const itemTotal = ref(0)
 const itemList = ref<StandardApi.StandardItemVo[]>([])
 const itemQueryParams = reactive({
   pageNo: 1,
-  pageSize: 10
+  pageSize: 5
 })
 const itemSelectedIds = ref<string[]>([])
 

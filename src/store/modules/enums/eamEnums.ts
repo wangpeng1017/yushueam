@@ -527,6 +527,19 @@ export const useEamEnumStore = defineStore('eamEnum', {
     },
 
     /**
+     * 批量加载点巡检计划相关枚举
+     * 包含：供应商状态(启用状态)、设备型号、是否枚举、参数单位
+     */
+    async loadSpotInspectionPlanEnums() {
+      await Promise.all([
+        this.loadSupplierStatus(),
+        this.loadEquipmentMode(),
+        this.loadYesNo(),
+        this.loadParamsUnit()
+      ])
+    },
+
+    /**
      * 重置 EAM 模块枚举缓存
      */
     resetEnums() {
