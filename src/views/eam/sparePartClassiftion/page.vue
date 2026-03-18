@@ -81,21 +81,21 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" />
-      <el-table-column label="分类名称" align="center" prop="classifName" width="200" />
-      <el-table-column label="上级分类" align="center" prop="classifParentName" width="200">
+      <el-table-column label="分类名称" align="center" prop="classifName"/>
+      <el-table-column label="上级分类" align="center" prop="classifParentName" >
         <template #default="scope">
           {{ scope.row.classifParentName ?? '-' }}
         </template>
       </el-table-column>
-      <el-table-column label="排序" align="center" prop="sort" width="100" />
-      <el-table-column label="状态" align="center" prop="status" width="100">
+      <el-table-column label="排序" align="center" prop="sort" />
+      <el-table-column label="状态" align="center" prop="status" >
         <template #default="scope">
           <el-tag :type="getStatusTagType(scope.row.status)">
             {{ getStatusLabel(scope.row.status) }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="创建人" align="center" prop="createByPersonName" width="120" />
+      <el-table-column label="创建人" align="center" prop="createByPersonName"  />
       <el-table-column
         label="创建时间"
         align="center"
@@ -103,7 +103,7 @@
         width="180"
         :formatter="dateFormatter"
       />
-      <el-table-column label="修改人" align="center" prop="updateByPersonName" width="120" />
+      <el-table-column label="修改人" align="center" prop="updateByPersonName"  />
       <el-table-column
         label="修改时间"
         align="center"
@@ -111,7 +111,7 @@
         width="180"
         :formatter="dateFormatter"
       />
-      <el-table-column label="操作" align="center" fixed="right" width="200">
+      <el-table-column label="操作" align="center" fixed="right" >
         <template #default="scope">
           <!-- <el-button
             link
