@@ -6,6 +6,7 @@ const { wsCache } = useCache('sessionStorage')
 import * as SupplierApi from '@/api/eam/supplier'
 import * as EquipmentApi from '@/api/eam/optEquipment'
 import * as SpotInspectionStandardApi from '@/api/eam/spotInspectionStandard'
+import * as SpotInspectionWorkApi from '@/api/eam/spotInspectionWork'
 
 /**
  * 枚举实体接口
@@ -47,6 +48,9 @@ export interface EamEnumState {
   // 点巡检标准-是否枚举
   yesNo: EnumEntity[]
 
+  // 工单状态枚举
+  workOrderStatus: EnumEntity[]
+
   // 记录已加载的枚举
   loadedEnums: Set<string>
 }
@@ -66,6 +70,7 @@ export const useEamEnumStore = defineStore('eamEnum', {
     equipmentRevstop: [],
     paramsUnit: [],
     yesNo: [],
+    workOrderStatus: [],
     loadedEnums: new Set<string>()
   }),
 
@@ -239,6 +244,39 @@ export const useEamEnumStore = defineStore('eamEnum', {
       return (value: string) => {
         const item = this.yesNo.find((e) => e.value === value)
         return item?.text || value
+      }
+    },
+
+    // ==================== 工单状态相关 getters ====================
+
+    /**
+     * 获取工单状态列表
+     */
+    getWorkOrderStatusList(): EnumEntity[] {
+      return this.workOrderStatus
+    },
+
+    /**
+     * 根据值获取工单状态文本
+     */
+    getWorkOrderStatusText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.workOrderStatus.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    /**
+     * 根据值获取工单状态标签类型（用于 el-tag type）
+     */
+    getWorkOrderStatusType(): (value: string) => string {
+      return (value: string) => {
+        const typeMap: Record<string, string> = {
+          '1': 'warning',
+          '2': '',
+          '3': 'success'
+        }
+        return typeMap[value] || 'info'
       }
     }
   },
@@ -539,6 +577,46 @@ export const useEamEnumStore = defineStore('eamEnum', {
       ])
     },
 
+    // ==================== 工单状态相关 actions ====================
+
+    /**
+     * 加载工单状态枚举
+     */
+    async loadWorkOrderStatus() {
+      if (this.loadedEnums.has('workOrderStatus')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_workOrderStatus'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.workOrderStatus = cached
+        this.loadedEnums.add('workOrderStatus')
+        return
+      }
+
+      try {
+        const data = await SpotInspectionWorkApi.listOfStatus()
+        this.workOrderStatus = data || []
+        this.loadedEnums.add('workOrderStatus')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载工单状态枚举失败:', error)
+      }
+    },
+
+    /**
+     * 批量加载点巡检工单相关枚举
+     * 包含：工单状态、是否枚举、设备型号
+     */
+    async loadSpotInspectionWorkEnums() {
+      await Promise.all([
+        this.loadWorkOrderStatus(),
+        this.loadYesNo(),
+        this.loadEquipmentMode()
+      ])
+    },
+
     /**
      * 重置 EAM 模块枚举缓存
      */
@@ -552,6 +630,7 @@ export const useEamEnumStore = defineStore('eamEnum', {
       wsCache.delete('enum_eam_equipmentRevstop')
       wsCache.delete('enum_eam_paramsUnit')
       wsCache.delete('enum_eam_yesNo')
+      wsCache.delete('enum_eam_workOrderStatus')
       this.supplierCategory = []
       this.supplierGoods = []
       this.supplierStatus = []
@@ -561,6 +640,7 @@ export const useEamEnumStore = defineStore('eamEnum', {
       this.equipmentRevstop = []
       this.paramsUnit = []
       this.yesNo = []
+      this.workOrderStatus = []
       this.loadedEnums.clear()
     }
   }
