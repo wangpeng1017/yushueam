@@ -185,7 +185,7 @@ const loadTreeData = async () => {
         // 使用备件分类结构
         treeProps.value = { label: 'classifName', children: 'children' }
         treeNodeKey.value = 'id'
-        treeData.value = listToTree(res ?? [], {
+        treeData.value = listToTree(res.filter((item) => item.status === 'ON') ?? [], {
           id: 'id',
           children: 'children',
           pid: 'classifParentId'
