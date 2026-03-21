@@ -7,6 +7,7 @@ import * as SupplierApi from '@/api/eam/supplier'
 import * as EquipmentApi from '@/api/eam/optEquipment'
 import * as SpotInspectionStandardApi from '@/api/eam/spotInspectionStandard'
 import * as SpotInspectionWorkApi from '@/api/eam/spotInspectionWork'
+import * as MaintenancePlanApi from '@/api/eam/maintenancePlan'
 
 /**
  * 枚举实体接口
@@ -51,6 +52,9 @@ export interface EamEnumState {
   // 工单状态枚举
   workOrderStatus: EnumEntity[]
 
+  // 保养级别枚举
+  maintenanceLevel: EnumEntity[]
+
   // 记录已加载的枚举
   loadedEnums: Set<string>
 }
@@ -71,6 +75,7 @@ export const useEamEnumStore = defineStore('eamEnum', {
     paramsUnit: [],
     yesNo: [],
     workOrderStatus: [],
+    maintenanceLevel: [],
     loadedEnums: new Set<string>()
   }),
 
@@ -277,6 +282,25 @@ export const useEamEnumStore = defineStore('eamEnum', {
           '3': 'success'
         }
         return typeMap[value] || 'info'
+      }
+    },
+
+    // ==================== 保养级别相关 getters ====================
+
+    /**
+     * 获取保养级别列表
+     */
+    getMaintenanceLevelList(): EnumEntity[] {
+      return this.maintenanceLevel
+    },
+
+    /**
+     * 根据值获取保养级别文本
+     */
+    getMaintenanceLevelText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.maintenanceLevel.find((e) => e.value === value)
+        return item?.text || value
       }
     }
   },
@@ -610,11 +634,43 @@ export const useEamEnumStore = defineStore('eamEnum', {
      * 包含：工单状态、是否枚举、设备型号
      */
     async loadSpotInspectionWorkEnums() {
-      await Promise.all([
-        this.loadWorkOrderStatus(),
-        this.loadYesNo(),
-        this.loadEquipmentMode()
-      ])
+      await Promise.all([this.loadWorkOrderStatus(), this.loadYesNo(), this.loadEquipmentMode()])
+    },
+
+    // ==================== 保养级别相关 actions ====================
+
+    /**
+     * 加载保养级别枚举
+     */
+    async loadMaintenanceLevel() {
+      if (this.loadedEnums.has('maintenanceLevel')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_maintenanceLevel'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.maintenanceLevel = cached
+        this.loadedEnums.add('maintenanceLevel')
+        return
+      }
+
+      try {
+        const data = await MaintenancePlanApi.listOfMaintenanceLevel()
+        this.maintenanceLevel = data || []
+        this.loadedEnums.add('maintenanceLevel')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载保养级别枚举失败:', error)
+      }
+    },
+
+    /**
+     * 批量加载保养计划相关枚举
+     * 包含：供应商状态(启用状态)、保养级别
+     */
+    async loadMaintenancePlanEnums() {
+      await Promise.all([this.loadSupplierStatus(), this.loadMaintenanceLevel()])
     },
 
     /**
@@ -631,6 +687,7 @@ export const useEamEnumStore = defineStore('eamEnum', {
       wsCache.delete('enum_eam_paramsUnit')
       wsCache.delete('enum_eam_yesNo')
       wsCache.delete('enum_eam_workOrderStatus')
+      wsCache.delete('enum_eam_maintenanceLevel')
       this.supplierCategory = []
       this.supplierGoods = []
       this.supplierStatus = []
@@ -641,6 +698,7 @@ export const useEamEnumStore = defineStore('eamEnum', {
       this.paramsUnit = []
       this.yesNo = []
       this.workOrderStatus = []
+      this.maintenanceLevel = []
       this.loadedEnums.clear()
     }
   }
