@@ -120,12 +120,15 @@ const props = withDefaults(
     showPagination?: boolean
     /** 是否为分页接口，如果是则从 records/total 中取数据 */
     paginated?: boolean
+    /** 额外的固定查询参数，每次请求都会带上 */
+    extraParams?: Record<string, any>
   }>(),
   {
     title: '选择',
     width: '800px',
     showPagination: true,
-    paginated: true
+    paginated: true,
+    extraParams: () => ({})
   }
 )
 
@@ -169,6 +172,8 @@ const loadData = async () => {
       params.pageNo = pageNo.value
       params.pageSize = pageSize.value
     }
+    // 合并额外固定参数
+    Object.assign(params, props.extraParams)
     const res = await props.fetchApi(params)
     if (props.paginated) {
       tableData.value = res?.records ?? []

@@ -8,6 +8,7 @@ import * as EquipmentApi from '@/api/eam/optEquipment'
 import * as SpotInspectionStandardApi from '@/api/eam/spotInspectionStandard'
 import * as SpotInspectionWorkApi from '@/api/eam/spotInspectionWork'
 import * as MaintenancePlanApi from '@/api/eam/maintenancePlan'
+import * as MaintenanceWorkOrderApi from '@/api/eam/maintenanceWorkOrder'
 
 /**
  * 枚举实体接口
@@ -55,6 +56,12 @@ export interface EamEnumState {
   // 保养级别枚举
   maintenanceLevel: EnumEntity[]
 
+  // 保养工单状态枚举
+  maintenanceWorkStatus: EnumEntity[]
+
+  // 保养项状态枚举
+  maintenanceWorkItemStatus: EnumEntity[]
+
   // 记录已加载的枚举
   loadedEnums: Set<string>
 }
@@ -76,6 +83,8 @@ export const useEamEnumStore = defineStore('eamEnum', {
     yesNo: [],
     workOrderStatus: [],
     maintenanceLevel: [],
+    maintenanceWorkStatus: [],
+    maintenanceWorkItemStatus: [],
     loadedEnums: new Set<string>()
   }),
 
@@ -301,6 +310,74 @@ export const useEamEnumStore = defineStore('eamEnum', {
       return (value: string) => {
         const item = this.maintenanceLevel.find((e) => e.value === value)
         return item?.text || value
+      }
+    },
+
+    // ==================== 保养工单状态相关 getters ====================
+
+    /**
+     * 获取保养工单状态列表
+     */
+    getMaintenanceWorkStatusList(): EnumEntity[] {
+      return this.maintenanceWorkStatus
+    },
+
+    /**
+     * 根据值获取保养工单状态文本
+     */
+    getMaintenanceWorkStatusText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.maintenanceWorkStatus.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    /**
+     * 根据值获取保养工单状态标签类型（用于 el-tag type）
+     * 1=未开始(warning) 2=待保养(default) 3=保养中(primary) 4=已完成(success)
+     */
+    getMaintenanceWorkStatusType(): (value: string) => string {
+      return (value: string) => {
+        const typeMap: Record<string, string> = {
+          '1': 'warning',
+          '2': '',
+          '3': '',
+          '4': 'success'
+        }
+        return typeMap[value] || 'info'
+      }
+    },
+
+    // ==================== 保养项状态相关 getters ====================
+
+    /**
+     * 获取保养项状态列表
+     */
+    getMaintenanceWorkItemStatusList(): EnumEntity[] {
+      return this.maintenanceWorkItemStatus
+    },
+
+    /**
+     * 根据值获取保养项状态文本
+     */
+    getMaintenanceWorkItemStatusText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.maintenanceWorkItemStatus.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    /**
+     * 根据值获取保养项状态标签类型
+     * 0=未保养(warning) 1=已保养(success)
+     */
+    getMaintenanceWorkItemStatusType(): (value: string) => string {
+      return (value: string) => {
+        const typeMap: Record<string, string> = {
+          '0': 'warning',
+          '1': 'success'
+        }
+        return typeMap[value] || 'info'
       }
     }
   },
@@ -673,6 +750,72 @@ export const useEamEnumStore = defineStore('eamEnum', {
       await Promise.all([this.loadSupplierStatus(), this.loadMaintenanceLevel()])
     },
 
+    // ==================== 保养工单状态相关 actions ====================
+
+    /**
+     * 加载保养工单状态枚举
+     */
+    async loadMaintenanceWorkStatus() {
+      if (this.loadedEnums.has('maintenanceWorkStatus')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_maintenanceWorkStatus'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.maintenanceWorkStatus = cached
+        this.loadedEnums.add('maintenanceWorkStatus')
+        return
+      }
+
+      try {
+        const data = await MaintenanceWorkOrderApi.listOfWorkOrderStatus()
+        this.maintenanceWorkStatus = data || []
+        this.loadedEnums.add('maintenanceWorkStatus')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载保养工单状态枚举失败:', error)
+      }
+    },
+
+    /**
+     * 加载保养项状态枚举
+     */
+    async loadMaintenanceWorkItemStatus() {
+      if (this.loadedEnums.has('maintenanceWorkItemStatus')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_maintenanceWorkItemStatus'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.maintenanceWorkItemStatus = cached
+        this.loadedEnums.add('maintenanceWorkItemStatus')
+        return
+      }
+
+      try {
+        const data = await MaintenanceWorkOrderApi.listOfItemStatus()
+        this.maintenanceWorkItemStatus = data || []
+        this.loadedEnums.add('maintenanceWorkItemStatus')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载保养项状态枚举失败:', error)
+      }
+    },
+
+    /**
+     * 批量加载保养工单相关枚举
+     * 包含：保养工单状态、保养项状态、保养级别
+     */
+    async loadMaintenanceWorkOrderEnums() {
+      await Promise.all([
+        this.loadMaintenanceWorkStatus(),
+        this.loadMaintenanceWorkItemStatus(),
+        this.loadMaintenanceLevel()
+      ])
+    },
+
     /**
      * 重置 EAM 模块枚举缓存
      */
@@ -688,6 +831,8 @@ export const useEamEnumStore = defineStore('eamEnum', {
       wsCache.delete('enum_eam_yesNo')
       wsCache.delete('enum_eam_workOrderStatus')
       wsCache.delete('enum_eam_maintenanceLevel')
+      wsCache.delete('enum_eam_maintenanceWorkStatus')
+      wsCache.delete('enum_eam_maintenanceWorkItemStatus')
       this.supplierCategory = []
       this.supplierGoods = []
       this.supplierStatus = []
@@ -699,6 +844,8 @@ export const useEamEnumStore = defineStore('eamEnum', {
       this.yesNo = []
       this.workOrderStatus = []
       this.maintenanceLevel = []
+      this.maintenanceWorkStatus = []
+      this.maintenanceWorkItemStatus = []
       this.loadedEnums.clear()
     }
   }
