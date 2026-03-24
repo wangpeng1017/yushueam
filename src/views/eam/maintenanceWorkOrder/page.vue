@@ -195,11 +195,36 @@
 
     <!-- 人员选择弹窗（派工用） -->
     <PersonSelectDialog ref="personDialogRef" @confirm="onDispatchPersonConfirm" />
+
+    <!-- 完成工单确认弹窗 -->
+    <Dialog v-model="completeDialogVisible" title="完成工单确认" width="420px">
+      <el-form
+        ref="completeFormRef"
+        :model="completeFormData"
+        :rules="completeFormRules"
+        label-width="80px"
+      >
+        <el-form-item label="完成日期" prop="endTime">
+          <el-date-picker
+            v-model="completeFormData.endTime"
+            type="datetime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            placeholder="请选择完成日期"
+            class="w-full"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="completeDialogVisible = false">取 消</el-button>
+        <el-button type="primary" :loading="completeSubmitLoading" @click="onCompleteConfirm">
+          确 定
+        </el-button>
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ElMessageBox } from 'element-plus'
 import * as WorkOrderApi from '@/api/eam/maintenanceWorkOrder'
 import { useEamEnumStore } from '@/store/modules/enums'
 import WorkOrderForm from './form.vue'
@@ -406,7 +431,16 @@ const onDispatchPersonConfirm = async (user: {
 }
 
 // ==================== 完成工单 ====================
-const handleComplete = async () => {
+const completeDialogVisible = ref(false)
+const completeSubmitLoading = ref(false)
+const completeFormRef = ref()
+const completeTargetRow = ref<WorkOrderApi.WorkOrderVo | null>(null)
+const completeFormData = reactive({ endTime: '' as string })
+const completeFormRules = {
+  endTime: [{ required: true, message: '请选择完成日期', trigger: 'change' }]
+}
+
+const handleComplete = () => {
   if (selectedRows.value.length !== 1) {
     message.warning('请选择一条数据')
     return
@@ -416,19 +450,32 @@ const handleComplete = async () => {
     message.warning('请选择已开始的工单')
     return
   }
+  completeTargetRow.value = row
+  completeFormData.endTime = ''
+  completeDialogVisible.value = true
+}
+
+const onCompleteConfirm = async () => {
+  const valid = await completeFormRef.value?.validate().catch(() => false)
+  if (!valid) return
+  if (!completeTargetRow.value) return
+  completeSubmitLoading.value = true
   try {
-    await ElMessageBox.confirm('确认要完成该工单吗？', '提示', { type: 'warning' })
     await WorkOrderApi.completeWorkOrder({
-      code: row.code,
-      startTime: row.startTime,
-      endTime: row.endTime
+      code: completeTargetRow.value.code,
+      startTime: completeTargetRow.value.startTime,
+      endTime: completeFormData.endTime
     })
     message.success('完成工单成功')
+    completeDialogVisible.value = false
+    completeTargetRow.value = null
     selectedIds.value = []
     selectedRows.value = []
     getList()
   } catch {
-    // 用户取消
+    // API 异常
+  } finally {
+    completeSubmitLoading.value = false
   }
 }
 
