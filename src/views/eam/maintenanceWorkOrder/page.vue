@@ -70,7 +70,7 @@
           <Icon icon="ep:delete" class="mr-5px" />&nbsp;批量删除
         </el-button>
         <el-button
-          v-hasPermi="[PERMI.UPDATE]"
+          v-hasPermi="[PERMI.DISPATCH]"
           plain
           type="warning"
           :disabled="selectedIds.length !== 1"
@@ -79,7 +79,7 @@
           <Icon icon="ep:user" class="mr-5px" />&nbsp;派工
         </el-button>
         <el-button
-          v-hasPermi="[PERMI.UPDATE]"
+          v-hasPermi="[PERMI.FINISH]"
           plain
           type="success"
           :disabled="selectedIds.length !== 1"
@@ -240,7 +240,9 @@ const PERMI = {
   QUERY: 'eam:maintenanceWorkOrder:query',
   CREATE: 'eam:maintenanceWorkOrder:create',
   UPDATE: 'eam:maintenanceWorkOrder:update',
-  DELETE: 'eam:maintenanceWorkOrder:delete'
+  DELETE: 'eam:maintenanceWorkOrder:delete',
+  DISPATCH: 'eam:maintenanceWorkOrder:dispatch',
+  FINISH: 'eam:maintenanceWorkOrder:finish',
 }
 
 // ==================== 搜索条件 ====================
