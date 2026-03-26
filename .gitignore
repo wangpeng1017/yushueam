@@ -11,3 +11,4 @@ auto-*.d.ts
 .qoder/rules/*
 .qoder
 .kiro
+nul
