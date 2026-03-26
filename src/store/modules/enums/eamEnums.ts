@@ -10,6 +10,7 @@ import * as SpotInspectionWorkApi from '@/api/eam/spotInspectionWork'
 import * as MaintenancePlanApi from '@/api/eam/maintenancePlan'
 import * as MaintenanceWorkOrderApi from '@/api/eam/maintenanceWorkOrder'
 import * as FailureWorkOrderApi from '@/api/eam/failureWorkOrder'
+import * as RepairWorkOrderApi from '@/api/eam/repairWorkOrder'
 
 /**
  * 枚举实体接口
@@ -78,6 +79,18 @@ export interface EamEnumState {
   // 紧急程度枚举
   repairDegree: EnumEntity[]
 
+  // 维修工单状态枚举
+  repairWorkOrderStatus: EnumEntity[]
+
+  // 维修工单来源类型枚举
+  repairWorkOrderSource: EnumEntity[]
+
+  // 维修工单维修级别枚举
+  repairWorkOrderRepairLevel: EnumEntity[]
+
+  // 维修工单维修类型枚举
+  repairWorkOrderRepairType: EnumEntity[]
+
   // 记录已加载的枚举
   loadedEnums: Set<string>
 }
@@ -106,6 +119,10 @@ export const useEamEnumStore = defineStore('eamEnum', {
     failureWorkOrderBreakdownLevel: [],
     failureWorkOrderBreakdownType: [],
     repairDegree: [],
+    repairWorkOrderStatus: [],
+    repairWorkOrderSource: [],
+    repairWorkOrderRepairLevel: [],
+    repairWorkOrderRepairType: [],
     loadedEnums: new Set<string>()
   }),
 
@@ -509,6 +526,94 @@ export const useEamEnumStore = defineStore('eamEnum', {
     getRepairDegreeText(): (value: string) => string {
       return (value: string) => {
         const item = this.repairDegree.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    // ==================== 维修工单相关 getters ====================
+
+    /**
+     * 获取维修工单状态列表
+     */
+    getRepairWorkOrderStatusList(): EnumEntity[] {
+      return this.repairWorkOrderStatus
+    },
+
+    /**
+     * 根据值获取维修工单状态文本
+     */
+    getRepairWorkOrderStatusText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.repairWorkOrderStatus.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    /**
+     * 根据值获取维修工单状态标签类型
+     * 1=草稿(info) 2=待分配(warning) 3=已分配(default) 4=维修中(default) 5=待确认(warning) 6=已完成(success)
+     */
+    getRepairWorkOrderStatusType(): (value: string) => string {
+      return (value: string) => {
+        const typeMap: Record<string, string> = {
+          '1': 'info',
+          '2': 'warning',
+          '3': '',
+          '4': '',
+          '5': 'warning',
+          '6': 'success'
+        }
+        return typeMap[value] || 'info'
+      }
+    },
+
+    /**
+     * 获取维修工单来源类型列表
+     */
+    getRepairWorkOrderSourceList(): EnumEntity[] {
+      return this.repairWorkOrderSource
+    },
+
+    /**
+     * 根据值获取维修工单来源类型文本
+     */
+    getRepairWorkOrderSourceText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.repairWorkOrderSource.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    /**
+     * 获取维修工单维修级别列表
+     */
+    getRepairWorkOrderRepairLevelList(): EnumEntity[] {
+      return this.repairWorkOrderRepairLevel
+    },
+
+    /**
+     * 根据值获取维修工单维修级别文本
+     */
+    getRepairWorkOrderRepairLevelText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.repairWorkOrderRepairLevel.find((e) => e.value === value)
+        return item?.text || value
+      }
+    },
+
+    /**
+     * 获取维修工单维修类型列表
+     */
+    getRepairWorkOrderRepairTypeList(): EnumEntity[] {
+      return this.repairWorkOrderRepairType
+    },
+
+    /**
+     * 根据值获取维修工单维修类型文本
+     */
+    getRepairWorkOrderRepairTypeText(): (value: string) => string {
+      return (value: string) => {
+        const item = this.repairWorkOrderRepairType.find((e) => e.value === value)
         return item?.text || value
       }
     }
@@ -1093,6 +1198,126 @@ export const useEamEnumStore = defineStore('eamEnum', {
       ])
     },
 
+    // ==================== 维修工单相关 actions ====================
+
+    /**
+     * 加载维修工单状态枚举
+     */
+    async loadRepairWorkOrderStatus() {
+      if (this.loadedEnums.has('repairWorkOrderStatus')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_repairWorkOrderStatus'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.repairWorkOrderStatus = cached
+        this.loadedEnums.add('repairWorkOrderStatus')
+        return
+      }
+
+      try {
+        const data = await RepairWorkOrderApi.listOfStatus()
+        this.repairWorkOrderStatus = data || []
+        this.loadedEnums.add('repairWorkOrderStatus')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载维修工单状态枚举失败:', error)
+      }
+    },
+
+    /**
+     * 加载维修工单来源类型枚举
+     */
+    async loadRepairWorkOrderSource() {
+      if (this.loadedEnums.has('repairWorkOrderSource')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_repairWorkOrderSource'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.repairWorkOrderSource = cached
+        this.loadedEnums.add('repairWorkOrderSource')
+        return
+      }
+
+      try {
+        const data = await RepairWorkOrderApi.listOfSource()
+        this.repairWorkOrderSource = data || []
+        this.loadedEnums.add('repairWorkOrderSource')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载维修工单来源类型枚举失败:', error)
+      }
+    },
+
+    /**
+     * 加载维修工单维修级别枚举
+     */
+    async loadRepairWorkOrderRepairLevel() {
+      if (this.loadedEnums.has('repairWorkOrderRepairLevel')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_repairWorkOrderRepairLevel'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.repairWorkOrderRepairLevel = cached
+        this.loadedEnums.add('repairWorkOrderRepairLevel')
+        return
+      }
+
+      try {
+        const data = await RepairWorkOrderApi.listOfRepairLevel()
+        this.repairWorkOrderRepairLevel = data || []
+        this.loadedEnums.add('repairWorkOrderRepairLevel')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载维修工单维修级别枚举失败:', error)
+      }
+    },
+
+    /**
+     * 加载维修工单维修类型枚举
+     */
+    async loadRepairWorkOrderRepairType() {
+      if (this.loadedEnums.has('repairWorkOrderRepairType')) {
+        return
+      }
+
+      const cacheKey = 'enum_eam_repairWorkOrderRepairType'
+      const cached = wsCache.get(cacheKey)
+      if (cached) {
+        this.repairWorkOrderRepairType = cached
+        this.loadedEnums.add('repairWorkOrderRepairType')
+        return
+      }
+
+      try {
+        const data = await RepairWorkOrderApi.listOfRepairType()
+        this.repairWorkOrderRepairType = data || []
+        this.loadedEnums.add('repairWorkOrderRepairType')
+        wsCache.set(cacheKey, data, { exp: 300 })
+      } catch (error) {
+        console.error('加载维修工单维修类型枚举失败:', error)
+      }
+    },
+
+    /**
+     * 批量加载维修工单相关枚举
+     */
+    async loadRepairWorkOrderEnums() {
+      await Promise.all([
+        this.loadRepairWorkOrderStatus(),
+        this.loadRepairWorkOrderSource(),
+        this.loadRepairWorkOrderRepairLevel(),
+        this.loadRepairWorkOrderRepairType(),
+        this.loadRepairDegree(),
+        this.loadYesNo()
+      ])
+    },
+
     /**
      * 重置 EAM 模块枚举缓存
      */
@@ -1115,6 +1340,10 @@ export const useEamEnumStore = defineStore('eamEnum', {
       wsCache.delete('enum_eam_failureWorkOrderBreakdownLevel')
       wsCache.delete('enum_eam_failureWorkOrderBreakdownType')
       wsCache.delete('enum_eam_repairDegree')
+      wsCache.delete('enum_eam_repairWorkOrderStatus')
+      wsCache.delete('enum_eam_repairWorkOrderSource')
+      wsCache.delete('enum_eam_repairWorkOrderRepairLevel')
+      wsCache.delete('enum_eam_repairWorkOrderRepairType')
       this.supplierCategory = []
       this.supplierGoods = []
       this.supplierStatus = []
@@ -1133,6 +1362,10 @@ export const useEamEnumStore = defineStore('eamEnum', {
       this.failureWorkOrderBreakdownLevel = []
       this.failureWorkOrderBreakdownType = []
       this.repairDegree = []
+      this.repairWorkOrderStatus = []
+      this.repairWorkOrderSource = []
+      this.repairWorkOrderRepairLevel = []
+      this.repairWorkOrderRepairType = []
       this.loadedEnums.clear()
     }
   }
