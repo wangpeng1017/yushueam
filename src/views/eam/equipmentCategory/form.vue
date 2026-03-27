@@ -46,11 +46,11 @@
       </el-row>
     </el-form>
     <template #footer>
-      <el-button :disabled="formLoading" type="primary" @click="submitForm">
-        <Icon icon="ep:check" class="mr-5px" />确 定
-      </el-button>
       <el-button @click="dialogVisible = false">
         <Icon icon="ep:close" class="mr-5px" />取 消
+      </el-button>
+      <el-button :disabled="formLoading" type="primary" @click="submitForm">
+        <Icon icon="ep:check" class="mr-5px" />确 定
       </el-button>
     </template>
   </Dialog>

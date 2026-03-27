@@ -1,5 +1,5 @@
 <template>
-  <Dialog v-model="dialogVisible" :title="dialogTitle" width="700px">
+  <Dialog v-model="dialogVisible" :title="dialogTitle" width="900px">
     <el-form
       ref="formRef"
       v-loading="formLoading"
@@ -7,149 +7,205 @@
       :rules="formRules"
       label-width="140px"
     >
-      <el-form-item label="设备编号" prop="equipmentSn">
-        <el-input v-model="formData.equipmentSn" disabled placeholder="系统自动生成" />
-      </el-form-item>
-      <el-form-item label="设备名称" prop="equipmentName">
-        <el-input v-model="formData.equipmentName" placeholder="请输入设备名称" maxlength="21" />
-      </el-form-item>
-      <el-form-item label="设备类型编码" prop="equipmentType">
-        <div class="flex w-full">
-          <el-input
-            v-model="formData.equipmentType"
-            disabled
-            placeholder="请选择设备类型"
-            class="flex-1"
-          />
-          <el-button class="ml-8px" @click="openEquipmentTypeSelect">选择</el-button>
-        </div>
-      </el-form-item>
-      <el-form-item label="设备类型描述">
-        <el-input v-model="formData.equipmentTypeDesc" disabled />
-      </el-form-item>
-      <el-form-item label="设备分类编码" prop="equipmentCategory">
-        <div class="flex w-full">
-          <el-input
-            v-model="formData.equipmentCategory"
-            disabled
-            placeholder="请选择设备分类"
-            class="flex-1"
-          />
-          <el-button class="ml-8px" @click="openEquipmentCategorySelect">选择</el-button>
-        </div>
-      </el-form-item>
-      <el-form-item label="设备分类描述">
-        <el-input v-model="formData.equipmentCategoryDesc" disabled />
-      </el-form-item>
-      <el-form-item label="设备型号" prop="equipmentMode">
-        <el-select
-          v-model="formData.equipmentMode"
-          placeholder="请选择设备型号"
-          clearable
-          class="!w-full"
-        >
-          <el-option
-            v-for="item in eamEnumStore.getEquipmentModeList"
-            :key="item.value"
-            :label="item.text"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="位置号" prop="locationSn">
-        <el-input v-model="formData.locationSn" placeholder="请输入位置号" maxlength="30" />
-      </el-form-item>
-      <el-form-item label="设备标识" prop="equipmentTag">
-        <el-input v-model="formData.equipmentTag" placeholder="请输入设备标识" maxlength="30" />
-      </el-form-item>
-      <el-form-item label="供应商编号" prop="equipmentSupplier">
-        <div class="flex w-full">
-          <el-input
-            v-model="formData.equipmentSupplier"
-            disabled
-            placeholder="请选择供应商"
-            class="flex-1"
-          />
-          <el-button class="ml-8px" @click="openSupplierSelect">选择</el-button>
-        </div>
-      </el-form-item>
-      <el-form-item label="供应商名称">
-        <el-input v-model="formData.equipmentSupplierName" disabled />
-      </el-form-item>
-      <el-form-item label="资产状态" prop="equipmentStatus">
-        <el-select
-          v-model="formData.equipmentStatus"
-          placeholder="请选择资产状态"
-          clearable
-          class="!w-full"
-        >
-          <el-option
-            v-for="item in eamEnumStore.getEquipmentStatusList"
-            :key="item.value"
-            :label="item.text"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="运行状态" prop="operationStatus">
-        <el-select
-          v-model="formData.operationStatus"
-          placeholder="请选择运行状态"
-          clearable
-          class="!w-full"
-        >
-          <el-option
-            v-for="item in eamEnumStore.getOperationStatusList"
-            :key="item.value"
-            :label="item.text"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="启停用状态" prop="equipmentRevstop">
-        <el-select
-          v-model="formData.equipmentRevstop"
-          placeholder="请选择启停用状态"
-          clearable
-          class="!w-full"
-        >
-          <el-option
-            v-for="item in eamEnumStore.getEquipmentRevstopList"
-            :key="item.value"
-            :label="item.text"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="排序号" prop="sequenceNumber">
-        <el-input-number
-          v-model="formData.sequenceNumber"
-          :min="1"
-          :max="99999999"
-          :precision="0"
-          :step="1"
-          controls-position="right"
-          class="!w-full"
-        />
-      </el-form-item>
-      <el-form-item label="购置时间" prop="equipmentPurchase">
-        <el-date-picker
-          v-model="formData.equipmentPurchase"
-          type="date"
-          value-format="YYYY-MM-DD"
-          placeholder="请选择购置时间"
-          class="!w-full"
-        />
-      </el-form-item>
-      <el-form-item label="投入运营时间" prop="equipmentOperating">
-        <el-date-picker
-          v-model="formData.equipmentOperating"
-          type="date"
-          value-format="YYYY-MM-DD"
-          placeholder="请选择投入运营时间"
-          class="!w-full"
-        />
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="设备编号" prop="equipmentSn">
+            <el-input v-model="formData.equipmentSn" disabled placeholder="系统自动生成" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="设备名称" prop="equipmentName">
+            <el-input
+              v-model="formData.equipmentName"
+              placeholder="请输入设备名称"
+              maxlength="21"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="设备类型编码" prop="equipmentType">
+            <div class="flex w-full">
+              <el-input
+                v-model="formData.equipmentType"
+                disabled
+                placeholder="请选择设备类型"
+                class="flex-1"
+              />
+              <el-button class="ml-8px" @click="openEquipmentTypeSelect">选择</el-button>
+            </div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="设备类型描述">
+            <el-input v-model="formData.equipmentTypeDesc" disabled />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="设备分类编码" prop="equipmentCategory">
+            <div class="flex w-full">
+              <el-input
+                v-model="formData.equipmentCategory"
+                disabled
+                placeholder="请选择设备分类"
+                class="flex-1"
+              />
+              <el-button class="ml-8px" @click="openEquipmentCategorySelect">选择</el-button>
+            </div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="设备分类描述">
+            <el-input v-model="formData.equipmentCategoryDesc" disabled />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="设备型号" prop="equipmentMode">
+            <el-select
+              v-model="formData.equipmentMode"
+              placeholder="请选择设备型号"
+              clearable
+              class="!w-full"
+            >
+              <el-option
+                v-for="item in eamEnumStore.getEquipmentModeList"
+                :key="item.value"
+                :label="item.text"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="位置号" prop="locationSn">
+            <el-input v-model="formData.locationSn" placeholder="请输入位置号" maxlength="30" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="设备标识" prop="equipmentTag">
+            <el-input v-model="formData.equipmentTag" placeholder="请输入设备标识" maxlength="30" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="供应商编号" prop="equipmentSupplier">
+            <div class="flex w-full">
+              <el-input
+                v-model="formData.equipmentSupplier"
+                disabled
+                placeholder="请选择供应商"
+                class="flex-1"
+              />
+              <el-button class="ml-8px" @click="openSupplierSelect">选择</el-button>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="供应商名称">
+            <el-input v-model="formData.equipmentSupplierName" disabled />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="资产状态" prop="equipmentStatus">
+            <el-select
+              v-model="formData.equipmentStatus"
+              placeholder="请选择资产状态"
+              clearable
+              class="!w-full"
+            >
+              <el-option
+                v-for="item in eamEnumStore.getEquipmentStatusList"
+                :key="item.value"
+                :label="item.text"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="运行状态" prop="operationStatus">
+            <el-select
+              v-model="formData.operationStatus"
+              placeholder="请选择运行状态"
+              clearable
+              class="!w-full"
+            >
+              <el-option
+                v-for="item in eamEnumStore.getOperationStatusList"
+                :key="item.value"
+                :label="item.text"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="启停用状态" prop="equipmentRevstop">
+            <el-select
+              v-model="formData.equipmentRevstop"
+              placeholder="请选择启停用状态"
+              clearable
+              class="!w-full"
+            >
+              <el-option
+                v-for="item in eamEnumStore.getEquipmentRevstopList"
+                :key="item.value"
+                :label="item.text"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="排序号" prop="sequenceNumber">
+            <el-input-number
+              v-model="formData.sequenceNumber"
+              :min="1"
+              :max="99999999"
+              :precision="0"
+              :step="1"
+              controls-position="right"
+              class="!w-full"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="购置时间" prop="equipmentPurchase">
+            <el-date-picker
+              v-model="formData.equipmentPurchase"
+              type="date"
+              value-format="YYYY-MM-DD"
+              placeholder="请选择购置时间"
+              class="!w-full"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="投入运营时间" prop="equipmentOperating">
+            <el-date-picker
+              v-model="formData.equipmentOperating"
+              type="date"
+              value-format="YYYY-MM-DD"
+              placeholder="请选择投入运营时间"
+              class="!w-full"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
