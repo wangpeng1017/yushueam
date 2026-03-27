@@ -5,7 +5,7 @@ export default {
     startTimeText: '开始时间',
     endTimeText: '结束时间',
     login: '登录',
-    delete:'删除',
+    delete: '删除',
     required: '该项为必填项',
     loginOut: '退出系统',
     document: '项目文档',
@@ -169,7 +169,7 @@ export default {
   router: {
     login: '登录',
     socialLogin: '社交登录',
-    home: '仓库管理',
+    home: '设备档案',
     analysis: '分析页',
     workplace: '工作台'
   },
@@ -2038,7 +2038,7 @@ export default {
       controller: '控制器',
       lightbar: '灯条',
       location: '库位',
-      
+
       // 组织结构
       structure: {
         title: '组织结构',
@@ -2046,7 +2046,7 @@ export default {
         mainWarehouse: '一号主仓库',
         coldChainWarehouse: '二号冷链库'
       },
-      
+
       // 控制器管理
       controllerManagement: {
         title: '管理该仓库下的管道灯',
@@ -2062,7 +2062,7 @@ export default {
         enabled: '已启用',
         disabled: '已禁用'
       },
-      
+
       // 灯条列表
       lightbarList: {
         title: '灯条列表',
@@ -2079,7 +2079,7 @@ export default {
         unbindSuccess: '解绑成功',
         unbindFailed: '解绑失败'
       },
-      
+
       // 绑定库位
       bindLocation: {
         title: '绑定库位',
@@ -2093,7 +2093,7 @@ export default {
         bindFailed: '绑定失败',
         selectAtLeastOne: '请选择至少一个库位'
       },
-      
+
       // 绑定灯条
       bindLightbar: {
         title: '绑定新灯条',
@@ -2106,7 +2106,7 @@ export default {
         bindFailed: '绑定失败',
         selectAtLeastOne: '请选择至少一个设备'
       },
-      
+
       // 通用
       common: {
         confirm: '确定',

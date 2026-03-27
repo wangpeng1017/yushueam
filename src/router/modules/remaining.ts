@@ -31,7 +31,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/mdm/warehouse/page.vue'),
+        component: () => import('@/views/eam/optEquipment/page.vue'),
         name: 'Index',
         meta: {
           title: t('router.home'),
