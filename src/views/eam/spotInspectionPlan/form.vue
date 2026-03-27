@@ -143,7 +143,12 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="启用状态" prop="status">
-            <el-select v-model="formData.status" placeholder="请选择启用状态" class="w-full">
+            <el-select
+              v-model="formData.status"
+              disabled
+              placeholder="请选择启用状态"
+              class="w-full"
+            >
               <el-option
                 v-for="item in eamEnumStore.getSupplierStatusList"
                 :key="item.value"
@@ -211,12 +216,7 @@
               multiple
               class="w-full"
             >
-              <el-option
-                v-for="opt in twoOptions"
-                :key="opt"
-                :label="String(opt)"
-                :value="opt"
-              />
+              <el-option v-for="opt in twoOptions" :key="opt" :label="String(opt)" :value="opt" />
             </el-select>
           </el-form-item>
         </el-col>
@@ -240,7 +240,12 @@
 
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button v-if="mode !== 'view'" type="primary" :loading="submitLoading" @click="handleSubmit">
+      <el-button
+        v-if="mode !== 'view'"
+        type="primary"
+        :loading="submitLoading"
+        @click="handleSubmit"
+      >
         确 定
       </el-button>
     </template>
@@ -382,16 +387,21 @@ const formRules = computed(() => {
     skipCode: [{ required: true, message: '请选择是否可跳过', trigger: 'change' }],
     hasParamPlan: [{ required: true, message: '请选择是否参数巡检', trigger: 'change' }],
     periodicFrequencyType: [{ required: true, message: '请选择循环周期', trigger: 'change' }],
-    status: [{ required: true, message: '请选择启用状态', trigger: 'change' }]
+    status: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
+    validityPeriod: [{ required: true, message: '请输入执行有效期', trigger: 'change' }]
   }
   // 参数巡检时设备型号必填
   if (formData.hasParamPlan === '1') {
-    rules.equipmentModel = [{ required: true, message: '参数巡检时设备型号必填', trigger: 'change' }]
+    rules.equipmentModel = [
+      { required: true, message: '参数巡检时设备型号必填', trigger: 'change' }
+    ]
   }
   // oneStr 必填验证
   if (currentFreqConfig.value) {
     if (currentFreqConfig.value.oneMode === 'default') {
-      rules.oneStr = [{ required: true, message: '请选择' + currentFreqConfig.value.oneTitle, trigger: 'change' }]
+      rules.oneStr = [
+        { required: true, message: '请选择' + currentFreqConfig.value.oneTitle, trigger: 'change' }
+      ]
     } else {
       rules.oneStr = [
         {
@@ -409,7 +419,13 @@ const formRules = computed(() => {
     // twoStr 验证
     if (showTwoField.value) {
       if (isTwoFieldNumber.value) {
-        rules.twoStr = [{ required: true, message: '请输入' + currentFreqConfig.value.twoTitle, trigger: 'change' }]
+        rules.twoStr = [
+          {
+            required: true,
+            message: '请输入' + currentFreqConfig.value.twoTitle,
+            trigger: 'change'
+          }
+        ]
       } else {
         rules.twoStr = [
           {
@@ -463,11 +479,9 @@ const handleParamPlanChange = async (val: string) => {
   // 编辑模式下，从"否"切换到"是"时弹出确认
   if (mode.value === 'edit' && val === '1' && prevHasParamPlan.value === '0') {
     try {
-      await ElMessageBox.confirm(
-        '切换为参数巡检后将清空现有检查项，是否继续？',
-        '提示',
-        { type: 'warning' }
-      )
+      await ElMessageBox.confirm('切换为参数巡检后将清空现有检查项，是否继续？', '提示', {
+        type: 'warning'
+      })
       // 用户确认，继续
     } catch {
       // 用户取消，恢复原值
@@ -501,7 +515,9 @@ const assemblePeriodicFrequency = (): string => {
   const isDefault = currentFreqConfig.value?.oneMode === 'default'
   // 统一转为数组
   const oneArr: (string | number)[] = isDefault
-    ? (formData.oneStr !== undefined && formData.oneStr !== '' ? [formData.oneStr] : [])
+    ? formData.oneStr !== undefined && formData.oneStr !== ''
+      ? [formData.oneStr]
+      : []
     : [...formData.oneStrArr]
 
   if (type === '每日' || type === '每班') {

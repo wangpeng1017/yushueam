@@ -333,7 +333,8 @@ const formRules = computed(() => {
     planStartTime: [{ required: true, message: '请选择开始日期', trigger: 'change' }],
     planEndTime: [{ required: true, message: '请选择结束日期', trigger: 'change' }],
     periodicFrequencyType: [{ required: true, message: '请选择循环周期', trigger: 'change' }],
-    status: [{ required: true, message: '请选择启用状态', trigger: 'change' }]
+    status: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
+    validityPeriod: [{ required: true, message: '请输入执行有效期', trigger: 'change' }]
   }
   // oneStr 必填验证
   if (currentFreqConfig.value) {
