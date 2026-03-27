@@ -54,6 +54,15 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row :gutter="24">
+        <el-col :span="24">
+          <el-form-item label="图片">
+            <el-tooltip content="最多上传9张图片，仅支持 jpg、png、gif 格式" placement="top">
+              <UploadImgs v-model="formData.attachmentUrls" :limit="9" :drag="false" />
+            </el-tooltip>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
 
     <el-divider />
@@ -175,6 +184,7 @@
 import dayjs from 'dayjs'
 import * as WorkApi from '@/api/eam/spotInspectionWork'
 import { useEamEnumStore } from '@/store/modules/enums'
+import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
 
 defineOptions({ name: 'EamSpotInspectionWorkExecForm' })
 
@@ -198,7 +208,8 @@ const formData = reactive({
   equipmentSupplierName: '',
   deviceMode: '',
   startTime: '',
-  endTime: ''
+  endTime: '',
+  attachmentUrls: [] as string[]
 })
 
 // ==================== 检查项列表 ====================
@@ -222,6 +233,7 @@ const open = (standard: WorkApi.WorkStandardVo, work: WorkApi.WorkVo) => {
   formData.deviceMode = standard.deviceMode || ''
   formData.startTime = standard.startTime || dayjs().format('YYYY-MM-DD HH:mm:ss')
   formData.endTime = standard.endTime || dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss')
+  formData.attachmentUrls = standard.attachments ? standard.attachments.split(',') : []
 
   // 加载检查项
   itemQueryParams.pageNo = 1
@@ -298,7 +310,8 @@ const handleSaveStandard = async () => {
     await WorkApi.updateWorkStandard({
       id: formData.id,
       startTime: formData.startTime,
-      endTime: formData.endTime
+      endTime: formData.endTime,
+      attachments: formData.attachmentUrls.length > 0 ? formData.attachmentUrls.join(',') : ''
     })
     message.success('保存成功')
   } catch {
@@ -351,6 +364,7 @@ const handleConfirmComplete = async () => {
       startTime: formData.startTime,
       endTime: formData.endTime,
       completeDate: confirmForm.completeDate,
+      attachments: formData.attachmentUrls.length > 0 ? formData.attachmentUrls.join(',') : '',
       // 班次/班组已删除，传空字符串
       teamCode: '',
       teamName: '',

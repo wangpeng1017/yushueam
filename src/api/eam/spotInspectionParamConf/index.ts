@@ -23,6 +23,8 @@ export interface ParamConfSaveDto {
   deviceModel: string
   status: string
   statusDesc: string
+  /** 图片地址，多个以逗号分隔 */
+  attachmentUrl?: string
 }
 
 /** 参数巡检配置 VO */
@@ -39,6 +41,8 @@ export interface ParamConfVo {
   statusDesc: string
   createByPersonName: string
   createTime: string
+  /** 图片地址，多个以逗号分隔 */
+  attachmentUrl?: string
 }
 
 /** 参数项查询参数 */

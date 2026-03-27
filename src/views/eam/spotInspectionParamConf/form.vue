@@ -10,20 +10,12 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="配置编号" prop="code">
-            <el-input
-              v-model="formData.code"
-              disabled
-              placeholder="不填写系统自动生成"
-            />
+            <el-input v-model="formData.code" disabled placeholder="不填写系统自动生成" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="配置名称" prop="name">
-            <el-input
-              v-model="formData.name"
-              maxlength="20"
-              placeholder="请输入配置名称"
-            />
+            <el-input v-model="formData.name" maxlength="20" placeholder="请输入配置名称" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -47,11 +39,7 @@
                   </el-icon>
                 </template>
               </el-input>
-              <el-button
-                v-if="mode !== 'view'"
-                type="primary"
-                @click="openTypeSelector"
-              >
+              <el-button v-if="mode !== 'view'" type="primary" @click="openTypeSelector">
                 选择
               </el-button>
             </div>
@@ -96,11 +84,7 @@
                   </el-icon>
                 </template>
               </el-input>
-              <el-button
-                v-if="mode !== 'view'"
-                type="primary"
-                @click="openSupSelector"
-              >
+              <el-button v-if="mode !== 'view'" type="primary" @click="openSupSelector">
                 选择
               </el-button>
             </div>
@@ -124,11 +108,30 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="参数表图片" prop="attachmentUrls">
+            <el-tooltip content="最多上传9张图片" placement="top" :disabled="mode === 'view'">
+              <UploadImgs
+                v-model="formData.attachmentUrls"
+                :limit="9"
+                :disabled="mode === 'view'"
+                :drag="false"
+              />
+            </el-tooltip>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
 
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button v-if="mode !== 'view'" type="primary" :loading="submitLoading" @click="handleSubmit">
+      <el-button
+        v-if="mode !== 'view'"
+        type="primary"
+        :loading="submitLoading"
+        @click="handleSubmit"
+      >
         确 定
       </el-button>
     </template>
@@ -167,6 +170,7 @@ import * as SupplierApi from '@/api/eam/supplier'
 import { useEamEnumStore } from '@/store/modules/enums'
 import TableSelectDialog from '@/components/TableSelectDialog/index.vue'
 import type { TableColumn, FieldMapping } from '@/components/TableSelectDialog/index.vue'
+import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
 
 defineOptions({ name: 'ParamConfForm' })
 
@@ -196,7 +200,8 @@ const formData = reactive({
   deviceSupCode: '',
   deviceSupName: '',
   status: '1',
-  statusDesc: ''
+  statusDesc: '',
+  attachmentUrls: [] as string[]
 })
 
 const formRules = {
@@ -287,6 +292,7 @@ const open = (m: 'create' | 'edit' | 'view', row?: ParamConfApi.ParamConfVo) => 
       formData.deviceSupName = ''
       formData.status = '1'
       formData.statusDesc = eamEnumStore.getSupplierStatusText('1')
+      formData.attachmentUrls = []
     } else if (row) {
       formData.id = row.id
       formData.code = row.code
@@ -298,6 +304,7 @@ const open = (m: 'create' | 'edit' | 'view', row?: ParamConfApi.ParamConfVo) => 
       formData.deviceSupName = row.deviceSupName
       formData.status = row.status
       formData.statusDesc = row.statusDesc
+      formData.attachmentUrls = row.attachmentUrl ? row.attachmentUrl.split(',') : []
     }
   })
 }
@@ -317,7 +324,8 @@ const handleSubmit = async () => {
       deviceSupCode: formData.deviceSupCode,
       deviceSupName: formData.deviceSupName,
       status: formData.status,
-      statusDesc: formData.statusDesc
+      statusDesc: formData.statusDesc,
+      attachmentUrl: formData.attachmentUrls.length > 0 ? formData.attachmentUrls.join(',') : ''
     }
     if (mode.value === 'edit') {
       data.id = formData.id

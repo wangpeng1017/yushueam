@@ -59,6 +59,8 @@ export interface WorkStandardVo {
   skipReason: string
   skipPersonName: string
   createTime: string
+  /** 图片地址，多个以逗号分隔 */
+  attachments?: string
 }
 
 /** 检查项查询参数 */
@@ -93,8 +95,7 @@ export interface WorkStandardItemVo {
 const prefix = '/workOrder/eamSpotInspectionWork'
 
 /** 主表分页查询 */
-export const getWorkPage = (params: WorkDto) =>
-  request.get({ url: prefix + '/list', params })
+export const getWorkPage = (params: WorkDto) => request.get({ url: prefix + '/list', params })
 
 /** 主表按 ID 查询 */
 export const getWorkById = (id: string) =>
@@ -105,8 +106,7 @@ export const updateWork = (data: Record<string, any>) =>
   request.put({ url: prefix + '/edit', data })
 
 /** 工单状态枚举 */
-export const listOfStatus = () =>
-  request.get({ url: prefix + '/listOfStatus' })
+export const listOfStatus = () => request.get({ url: prefix + '/listOfStatus' })
 
 // ==================== 设备子表 API ====================
 

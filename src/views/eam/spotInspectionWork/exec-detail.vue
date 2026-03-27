@@ -40,6 +40,18 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row :gutter="24">
+        <el-col :span="24">
+          <el-form-item label="图片">
+            <UploadImgs
+              v-model="formData.attachmentUrls"
+              :limit="9"
+              :disabled="true"
+              :drag="false"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
 
     <el-divider />
@@ -138,6 +150,7 @@
 <script lang="ts" setup>
 import * as WorkApi from '@/api/eam/spotInspectionWork'
 import { useEamEnumStore } from '@/store/modules/enums'
+import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
 
 defineOptions({ name: 'EamSpotInspectionWorkExecDetail' })
 
@@ -154,7 +167,8 @@ const formData = reactive({
   equipmentSupplierName: '',
   deviceMode: '',
   startTime: '',
-  endTime: ''
+  endTime: '',
+  attachmentUrls: [] as string[]
 })
 
 // ==================== 检查项列表 ====================
@@ -175,6 +189,7 @@ const open = (standard: WorkApi.WorkStandardVo) => {
   formData.deviceMode = standard.deviceMode || ''
   formData.startTime = standard.startTime || ''
   formData.endTime = standard.endTime || ''
+  formData.attachmentUrls = standard.attachments ? standard.attachments.split(',') : []
 
   itemQueryParams.pageNo = 1
   getItemList()
