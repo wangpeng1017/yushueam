@@ -98,8 +98,7 @@
       <el-table-column label="设备类型名称" align="center" prop="typeName" />
       <el-table-column label="设备类别编码" align="center" prop="categoryCode" width="150" />
       <el-table-column label="设备类别名称" align="center" prop="categoryName" />
-      <el-table-column label="创建人姓名" align="center" prop="createByName" width="120" />
-      <el-table-column label="创建人" align="center" prop="createBy" width="120" />
+      <el-table-column label="创建人" align="center" prop="createByName" width="120" />
       <el-table-column
         label="创建日期"
         align="center"
@@ -107,8 +106,7 @@
         width="180"
         :formatter="dateFormatter"
       />
-      <el-table-column label="修改人姓名" align="center" prop="updateByName" width="120" />
-      <el-table-column label="修改人" align="center" prop="updateBy" width="120" />
+      <el-table-column label="修改人" align="center" prop="updateByName" width="120" />
       <el-table-column
         label="修改日期"
         align="center"
