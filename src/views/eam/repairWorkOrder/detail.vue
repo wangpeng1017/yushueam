@@ -84,7 +84,9 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="故障来源">
-                <el-input :model-value="eamEnumStore.getRepairWorkOrderSourceText(detailData.sourceType)" />
+                <el-input
+                  :model-value="eamEnumStore.getRepairWorkOrderSourceText(detailData.sourceType)"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -127,6 +129,19 @@
             <el-col :span="24">
               <el-form-item label="故障描述">
                 <el-input :model-value="detailData.remark" type="textarea" :rows="3" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <el-form-item label="故障图片">
+                <UploadImgs
+                  v-model="detailData.attachmentUrls"
+                  :limit="9"
+                  :disabled="true"
+                  :drag="false"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -242,7 +257,10 @@
                   【{{ record.operateTypeDesc }}】
                 </span>
                 <div
-                  v-if="['revoke', 'reassign', 'transfer'].includes(record.operateType) && record.operateContent"
+                  v-if="
+                    ['revoke', 'reassign', 'transfer'].includes(record.operateType) &&
+                    record.operateContent
+                  "
                   class="record-reason"
                 >
                   {{ record.operateContent }}
@@ -260,6 +278,7 @@
 <script lang="ts" setup>
 import * as RepairWorkOrderApi from '@/api/eam/repairWorkOrder'
 import { useEamEnumStore } from '@/store/modules/enums'
+import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
 
 defineOptions({ name: 'RepairWorkOrderDetail' })
 
@@ -289,6 +308,7 @@ const detailData = reactive({
   createByPersonName: '',
   createTime: '',
   remark: '',
+  attachmentUrls: [] as string[],
   // 维修信息
   repairPersonName: '',
   repairLevelText: '',
@@ -366,6 +386,7 @@ const open = async (row: RepairWorkOrderApi.RepairWorkOrderVo) => {
   detailData.createByPersonName = data.createByPersonName || ''
   detailData.createTime = data.createTime || ''
   detailData.remark = data.remark || ''
+  detailData.attachmentUrls = data.attachments ? data.attachments.split(',') : []
   // 维修信息
   detailData.repairPersonName = data.repairPersonName || ''
   detailData.repairLevelText = data.repairLevelText || ''

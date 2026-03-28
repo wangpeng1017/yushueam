@@ -178,18 +178,35 @@ const itemList = ref<any[]>([])
 const itemQueryParams = reactive({ pageNo: 1, pageSize: 50 })
 
 /** 打开弹窗 */
-const open = (standard: WorkApi.WorkStandardVo) => {
+const open = async (standard: WorkApi.WorkStandardVo) => {
   currentStandard.value = standard
   dialogVisible.value = true
 
-  formData.deviceSn = standard.deviceSn || ''
-  formData.deviceName = standard.deviceName || ''
-  formData.equipmentTypeDesc = standard.equipmentTypeDesc || ''
-  formData.equipmentSupplierName = standard.equipmentSupplierName || ''
-  formData.deviceMode = standard.deviceMode || ''
-  formData.startTime = standard.startTime || ''
-  formData.endTime = standard.endTime || ''
-  formData.attachmentUrls = standard.attachments ? standard.attachments.split(',') : []
+  // 从后端接口获取最新基本信息
+  try {
+    const latest = await WorkApi.getWorkStandardById(standard.id)
+    if (latest) {
+      currentStandard.value = latest
+      formData.deviceSn = latest.deviceSn || ''
+      formData.deviceName = latest.deviceName || ''
+      formData.equipmentTypeDesc = latest.equipmentTypeDesc || ''
+      formData.equipmentSupplierName = latest.equipmentSupplierName || ''
+      formData.deviceMode = latest.deviceMode || ''
+      formData.startTime = latest.startTime || ''
+      formData.endTime = latest.endTime || ''
+      formData.attachmentUrls = latest.attachments ? latest.attachments.split(',') : []
+    }
+  } catch {
+    // 接口异常时降级使用传入数据
+    formData.deviceSn = standard.deviceSn || ''
+    formData.deviceName = standard.deviceName || ''
+    formData.equipmentTypeDesc = standard.equipmentTypeDesc || ''
+    formData.equipmentSupplierName = standard.equipmentSupplierName || ''
+    formData.deviceMode = standard.deviceMode || ''
+    formData.startTime = standard.startTime || ''
+    formData.endTime = standard.endTime || ''
+    formData.attachmentUrls = standard.attachments ? standard.attachments.split(',') : []
+  }
 
   itemQueryParams.pageNo = 1
   getItemList()

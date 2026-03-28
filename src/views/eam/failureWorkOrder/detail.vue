@@ -68,6 +68,19 @@
               </el-form-item>
             </el-col>
           </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <el-form-item label="图片">
+                <UploadImgs
+                  v-model="detailData.attachmentUrls"
+                  :limit="9"
+                  :disabled="true"
+                  :drag="false"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </el-tab-pane>
 
@@ -103,6 +116,7 @@
 
 <script lang="ts" setup>
 import * as FailureWorkOrderApi from '@/api/eam/failureWorkOrder'
+import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
 
 defineOptions({ name: 'FailureWorkOrderDetail' })
 
@@ -120,7 +134,8 @@ const detailData = reactive({
   breakdownLevelText: '',
   breakdownTypeText: '',
   repairDegreeText: '',
-  remark: ''
+  remark: '',
+  attachmentUrls: [] as string[]
 })
 
 // ==================== 处理记录 ====================
@@ -166,6 +181,7 @@ const open = async (row: FailureWorkOrderApi.FailureWorkOrderVo) => {
   detailData.breakdownTypeText = data.breakdownTypeText || ''
   detailData.repairDegreeText = data.repairDegreeText || ''
   detailData.remark = data.remark || ''
+  detailData.attachmentUrls = data.attachments ? data.attachments.split(',') : []
 
   // 加载处理记录
   if (data.failureCode) {

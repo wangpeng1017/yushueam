@@ -152,20 +152,17 @@ export interface PlanItemVo {
 const prefix = '/workOrder/eamSpotInspectionPlan'
 
 /** 主表分页查询 */
-export const getPlanPage = (params: PlanDto) =>
-  request.get({ url: prefix + '/list', params })
+export const getPlanPage = (params: PlanDto) => request.get({ url: prefix + '/list', params })
 
 /** 主表按 ID 查询 */
 export const getPlanById = (id: string) =>
   request.get({ url: prefix + '/queryById', params: { id } })
 
 /** 主表新增 */
-export const createPlan = (data: PlanSaveDto) =>
-  request.post({ url: prefix + '/add', data })
+export const createPlan = (data: PlanSaveDto) => request.post({ url: prefix + '/add', data })
 
 /** 主表编辑 */
-export const updatePlan = (data: PlanSaveDto) =>
-  request.put({ url: prefix + '/edit', data })
+export const updatePlan = (data: PlanSaveDto) => request.put({ url: prefix + '/edit', data })
 
 /** 主表删除 */
 export const deletePlan = (id: string) =>

@@ -120,12 +120,24 @@
           </el-form-item>
         </el-col>
       </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="故障图片">
+            <el-tooltip content="最多上传9张图片，仅支持 jpg、png、gif 格式" placement="top">
+              <UploadImgs v-model="formData.attachmentUrls" :limit="9" :drag="false" />
+            </el-tooltip>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
 
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
       <el-button type="primary" :loading="submitLoading" @click="handleSave">保 存</el-button>
-      <el-button type="primary" :loading="submitLoading" @click="handleSaveAndPublish">保存并发布</el-button>
+      <el-button type="primary" :loading="submitLoading" @click="handleSaveAndPublish"
+        >保存并发布</el-button
+      >
     </template>
 
     <!-- ==================== 设备选择弹窗 ==================== -->
@@ -149,6 +161,7 @@ import * as FailureWorkOrderApi from '@/api/eam/failureWorkOrder'
 import { useEamEnumStore } from '@/store/modules/enums'
 import TableSelectDialog from '@/components/TableSelectDialog/index.vue'
 import type { TableColumn, FieldMapping } from '@/components/TableSelectDialog/index.vue'
+import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
 
 defineOptions({ name: 'RepairWorkOrderForm' })
 
@@ -183,15 +196,14 @@ const formData = reactive({
   breakdownTime: '',
   breakdownLevel: undefined as string | undefined,
   breakdownLevelText: '',
-  remark: ''
+  remark: '',
+  attachmentUrls: [] as string[]
 })
 
 /** hasBreakdown 是否为"是" */
 const isBreakdown = computed(() => {
   // yesNo 枚举的值可能是 '1'/'0' 或 '是'/'否'，需兼容
-  const yesItem = eamEnumStore.getYesNoList.find(
-    (e) => e.text === '是' || e.value === '1'
-  )
+  const yesItem = eamEnumStore.getYesNoList.find((e) => e.text === '是' || e.value === '1')
   return formData.hasBreakdown === yesItem?.value
 })
 
@@ -264,10 +276,7 @@ const open = async (type: 'create' | 'update', row?: RepairWorkOrderApi.RepairWo
   dialogVisible.value = true
 
   // 加载枚举
-  await Promise.all([
-    eamEnumStore.loadYesNo(),
-    eamEnumStore.loadRepairWorkOrderRepairLevel()
-  ])
+  await Promise.all([eamEnumStore.loadYesNo(), eamEnumStore.loadRepairWorkOrderRepairLevel()])
 
   await nextTick()
   formRef.value?.clearValidate()
@@ -299,6 +308,7 @@ const resetFormData = () => {
   formData.breakdownLevel = undefined
   formData.breakdownLevelText = ''
   formData.remark = ''
+  formData.attachmentUrls = []
 }
 
 const fillFormData = (data: any) => {
@@ -316,6 +326,7 @@ const fillFormData = (data: any) => {
   formData.breakdownLevel = data.breakdownLevel || undefined
   formData.breakdownLevelText = data.breakdownLevelText || ''
   formData.remark = data.remark || ''
+  formData.attachmentUrls = data.attachments ? data.attachments.split(',') : []
 }
 
 /** 构建提交数据 */
@@ -334,7 +345,8 @@ const buildSubmitData = () => {
     breakdownTime: formData.breakdownTime,
     breakdownLevel: formData.breakdownLevel,
     breakdownLevelText: formData.breakdownLevelText,
-    remark: formData.remark
+    remark: formData.remark,
+    attachments: formData.attachmentUrls.length > 0 ? formData.attachmentUrls.join(',') : ''
   }
 }
 

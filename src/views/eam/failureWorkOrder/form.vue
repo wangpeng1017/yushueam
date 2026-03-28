@@ -150,6 +150,16 @@
           </el-form-item>
         </el-col>
       </el-row>
+
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="图片">
+            <el-tooltip content="最多上传9张图片，仅支持 jpg、png、gif 格式" placement="top">
+              <UploadImgs v-model="formData.attachmentUrls" :limit="9" :drag="false" />
+            </el-tooltip>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
 
     <template #footer>
@@ -181,6 +191,7 @@ import { useEamEnumStore } from '@/store/modules/enums'
 import TableSelectDialog from '@/components/TableSelectDialog/index.vue'
 import type { TableColumn, FieldMapping } from '@/components/TableSelectDialog/index.vue'
 import PersonSelectDialog from '@/components/PersonSelectDialog/index.vue'
+import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
 
 defineOptions({ name: 'FailureWorkOrderForm' })
 
@@ -218,7 +229,8 @@ const formData = reactive({
   breakdownTypeText: '',
   repairDegree: undefined as string | undefined,
   repairDegreeText: '',
-  remark: ''
+  remark: '',
+  attachmentUrls: [] as string[]
 })
 
 const formRules = {
@@ -338,6 +350,7 @@ const resetFormData = () => {
   formData.repairDegree = undefined
   formData.repairDegreeText = ''
   formData.remark = ''
+  formData.attachmentUrls = []
 }
 
 const fillFormData = (data: any) => {
@@ -359,6 +372,7 @@ const fillFormData = (data: any) => {
   formData.repairDegree = data.repairDegree || undefined
   formData.repairDegreeText = data.repairDegreeText || ''
   formData.remark = data.remark || ''
+  formData.attachmentUrls = data.attachments ? data.attachments.split(',') : []
 }
 
 // ==================== 提交 ====================
@@ -382,7 +396,8 @@ const handleSubmit = async () => {
       breakdownTypeText: formData.breakdownTypeText,
       repairDegree: formData.repairDegree,
       repairDegreeText: formData.repairDegreeText,
-      remark: formData.remark
+      remark: formData.remark,
+      attachments: formData.attachmentUrls.length > 0 ? formData.attachmentUrls.join(',') : ''
     }
     if (mode.value === 'edit') {
       await FailureWorkOrderApi.updateFailureWorkOrder({

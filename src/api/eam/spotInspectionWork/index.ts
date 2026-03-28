@@ -116,6 +116,10 @@ const standardPrefix = '/workOrder/eamSpotInspectionWorkStandard'
 export const getWorkStandardPage = (params: WorkStandardDto) =>
   request.get({ url: standardPrefix + '/list', params })
 
+/** 设备子表按 ID 查询 */
+export const getWorkStandardById = (id: string) =>
+  request.get({ url: standardPrefix + '/queryById', params: { id } })
+
 /** 设备子表编辑（保存开始/结束时间） */
 export const updateWorkStandard = (data: Record<string, any>) =>
   request.put({ url: standardPrefix + '/edit', data })

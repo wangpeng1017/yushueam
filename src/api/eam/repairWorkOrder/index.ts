@@ -95,6 +95,7 @@ export interface RepairWorkOrderCreateVo {
   breakdownLevel?: string
   breakdownLevelText?: string
   remark?: string
+  attachments?: string
 }
 
 /** 编辑工单参数 */

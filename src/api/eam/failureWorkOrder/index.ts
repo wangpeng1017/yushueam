@@ -41,6 +41,8 @@ export interface FailureWorkOrderVo {
   auditorIdea: string
   createByPersonName: string
   createTime: string
+  /** 图片地址，多个以逗号分隔 */
+  attachments?: string
 }
 
 /** 处理记录 VO */
