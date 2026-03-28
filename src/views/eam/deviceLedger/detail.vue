@@ -70,7 +70,13 @@
       >
         <el-table-column label="开始时间" align="center" prop="startTime" width="180" />
         <el-table-column label="结束时间" align="center" prop="endTime" width="180" />
-        <el-table-column label="点检结果" align="center" prop="status" width="100" />
+        <el-table-column label="点检结果" align="center" prop="status" width="100">
+          <template #default="scope">
+            <el-tag :type="eamEnumStore.getWorkOrderStatusType(scope.row.status) as any">
+              {{ eamEnumStore.getWorkOrderStatusText(scope.row.status) }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="点检员" align="center" prop="personName" min-width="100" />
       </el-table>
       <div class="pagination-wrap">
@@ -97,7 +103,13 @@
         <el-table-column label="故障时间" align="center" prop="breakdownTime" width="180" />
         <el-table-column label="维修开始时间" align="center" prop="repairBeginTime" width="180" />
         <el-table-column label="维修结束时间" align="center" prop="repairEndTime" width="180" />
-        <el-table-column label="维修状态" align="center" prop="status" width="100" />
+        <el-table-column label="维修状态" align="center" prop="status" width="100">
+          <template #default="scope">
+            <el-tag :type="eamEnumStore.getRepairWorkOrderStatusType(scope.row.status) as any">
+              {{ eamEnumStore.getRepairWorkOrderStatusText(scope.row.status) }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="维修人" align="center" prop="repairPersonName" min-width="100" />
       </el-table>
       <div class="pagination-wrap">
@@ -128,7 +140,13 @@
             {{ formatUseTime(scope.row.useTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="保养状态" align="center" prop="status" width="100" />
+        <el-table-column label="保养状态" align="center" prop="status" width="100">
+          <template #default="scope">
+            <el-tag :type="eamEnumStore.getMaintenanceWorkStatusType(scope.row.status) as any">
+              {{ eamEnumStore.getMaintenanceWorkStatusText(scope.row.status) }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="保养人" align="center" prop="personName" min-width="100" />
       </el-table>
       <div class="pagination-wrap">
@@ -285,6 +303,9 @@ const open = async (id: string) => {
 
   try {
     await eamEnumStore.loadEquipmentEnums()
+    await eamEnumStore.loadSpotInspectionWorkEnums()
+    await eamEnumStore.loadRepairWorkOrderEnums()
+    await eamEnumStore.loadMaintenanceWorkOrderEnums()
     const res = await DeviceLedgerApi.getDeviceLedgerById(id)
     currentEquipmentSn.value = res.equipmentSn ?? ''
     formData.value = {
