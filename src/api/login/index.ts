@@ -70,7 +70,8 @@ export const loginOut = (clientId, oauth2Token) => {
 // 获取用户权限信息
 export const getInfo = () => {
   return request.get({
-    url: '/system/auth/get-permission-info?clientUuid=' + import.meta.env.VITE_APP_API_CLIENT_UUID
+    // url: '/system/auth/get-permission-info?clientUuid=' + import.meta.env.VITE_APP_API_CLIENT_UUID
+    url: '/system/auth/get-permission-info'
   })
 }
 
