@@ -126,8 +126,8 @@ const getList = async () => {
   try {
     // 设置时间范围
     if (dateRange.value && dateRange.value.length === 2) {
-      queryParams.date_begin = dateRange.value[0]
-      queryParams.date_end = dateRange.value[1]
+      queryParams.date_begin = dateRange.value[0] + ' 00:00:00'
+      queryParams.date_end = dateRange.value[1] + ' 23:59:59'
     } else {
       queryParams.date_begin = undefined
       queryParams.date_end = undefined
@@ -165,8 +165,8 @@ const handleExport = async () => {
     // 设置时间范围
     const exportParams = { ...queryParams }
     if (dateRange.value && dateRange.value.length === 2) {
-      exportParams.date_begin = dateRange.value[0]
-      exportParams.date_end = dateRange.value[1]
+      exportParams.date_begin = dateRange.value[0] + ' 00:00:00'
+      exportParams.date_end = dateRange.value[1] + ' 23:59:59'
     }
     
     const data = await EquipmentPaperlessApi.exportEquipmentPaperless(exportParams)
