@@ -150,7 +150,7 @@
         >
           <Icon icon="ep:promotion" class="mr-5px" />&nbsp;提交申请
         </el-button>
-        <el-button
+        <!-- <el-button
           v-hasPermi="[PERMI.AUDIT_PASS]"
           plain
           type="primary"
@@ -158,7 +158,7 @@
           @click="handleAuditPass"
         >
           <Icon icon="ep:check" class="mr-5px" />&nbsp;审核通过
-        </el-button>
+        </el-button> -->
         <el-button
           v-hasPermi="[PERMI.REJECT]"
           plain
