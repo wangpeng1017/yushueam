@@ -85,12 +85,7 @@
       </el-table-column>
       <el-table-column label="停机时长" align="center" prop="shutdownDurationText" width="100" />
       <el-table-column label="确认人" align="center" prop="confirmPersonName" width="100" />
-      <el-table-column
-        label="报修工单号"
-        align="center"
-        prop="failureWorkOrderCode"
-        width="160"
-      />
+      <el-table-column label="报修工单号" align="center" prop="failureWorkOrderCode" width="160" />
       <el-table-column
         label="报修时间"
         align="center"
@@ -113,7 +108,7 @@
             link
             class="btn-other"
             @click="handleView(row)"
-            v-hasPermi="['eam:repairWorkRecord:query']"
+            v-hasPermi="['eam:repairWorkOrder:query']"
           >
             &nbsp;查看
           </el-button>
