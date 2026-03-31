@@ -134,7 +134,7 @@
         <el-table-column label="结束日期" align="center" prop="endDate" width="120" />
         <el-table-column label="创建人" align="center" prop="createByPersonName" width="100" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
-        <el-table-column label="操作" align="center" fixed="right" width="220">
+        <el-table-column label="操作" align="center" fixed="right" width="280">
           <template #default="scope">
             <el-button
               link
@@ -151,6 +151,14 @@
               @click="openForm('edit', scope.row)"
             >
               &nbsp;编辑
+            </el-button>
+            <el-button
+              link
+              class="btn-other"
+              v-hasPermi="[PERMI.CREATE]"
+              @click="handleCreateWorkOrder(scope.row)"
+            >
+              &nbsp;生成工单
             </el-button>
             <el-button
               link
@@ -675,6 +683,23 @@ const onFormSuccess = () => {
     if (currentPlan.value.hasParamPlan !== '1') {
       getItemList()
     }
+  }
+}
+
+// ==================== 手动生成工单 ====================
+const handleCreateWorkOrder = async (row: PlanApi.PlanVo) => {
+  if (row.status !== STATUS_ENABLED) {
+    message.warning('只有启用状态的计划才能生成工单')
+    return
+  }
+  try {
+    await ElMessageBox.confirm(`确认要根据计划【${row.name}】立即生成工单吗？`, '生成工单', {
+      type: 'warning'
+    })
+    await PlanApi.createWorkOrder(row.code)
+    message.success('工单生成成功')
+  } catch {
+    // 用户取消
   }
 }
 

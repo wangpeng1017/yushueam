@@ -184,6 +184,10 @@ export const queryDictItem = (): Promise<PeriodicFrequencyTypeVo[]> =>
 export const pageListByResourcesTree = (params: any) =>
   request.get({ url: prefix + '/pageListByResourcesTree', params })
 
+/** 根据计划手动创建工单 */
+export const createWorkOrder = (planCode: string) =>
+  request.post({ url: prefix + '/createWorkOrder', params: { planCode } })
+
 // ==================== 设备子表 API ====================
 
 const devicePrefix = '/workOrder/eamSpotInspectionPlanDevice'
