@@ -174,7 +174,7 @@ const eamEnumStore = useEamEnumStore()
 
 // ==================== 权限标识 ====================
 const PERMI = {
-  QUERY: 'eam:spotInspectionRecord:query'
+  QUERY: 'eam:spotInspectionWork:query'
 }
 
 // ==================== 主表列表 ====================
