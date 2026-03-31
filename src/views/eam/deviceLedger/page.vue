@@ -191,7 +191,7 @@ const eamEnumStore = useEamEnumStore()
 
 // ==================== 权限标识 ====================
 const PERMI = {
-  QUERY: 'eam:deviceLedger:query'
+  QUERY: 'eam:optEquipment:query'
 }
 
 // ==================== 左侧设备类型树 ====================
