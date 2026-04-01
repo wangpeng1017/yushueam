@@ -68,6 +68,7 @@
               v-model="formData.maintenanceLevel"
               placeholder="请选择保养级别"
               clearable
+              :disabled="mode === 'edit' && ['2', '3'].includes(formData.status)"
               class="w-full"
               @change="handleMaintenanceLevelChange"
             >
@@ -90,6 +91,7 @@
               type="datetime"
               value-format="YYYY-MM-DD HH:mm:ss"
               placeholder="请选择计划保养开始时间"
+              :disabled="mode === 'edit' && ['2', '3'].includes(formData.status)"
               class="w-full"
             />
           </el-form-item>
@@ -101,6 +103,7 @@
               type="datetime"
               value-format="YYYY-MM-DD HH:mm:ss"
               placeholder="请选择计划保养结束时间"
+              :disabled="mode === 'edit' && ['2', '3'].includes(formData.status)"
               class="w-full"
             />
           </el-form-item>
@@ -135,75 +138,77 @@
         </el-col>
       </el-row>
 
-      <!-- ==================== 处理情况 ==================== -->
-      <div class="section-title">处理情况</div>
+      <!-- ==================== 处理情况（新增时隐藏） ==================== -->
+      <template v-if="mode !== 'create'">
+        <div class="section-title">处理情况</div>
 
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="保养状态" prop="status">
-            <el-select v-model="formData.status" disabled class="w-full">
-              <el-option
-                v-for="item in eamEnumStore.getMaintenanceWorkStatusList"
-                :key="item.value"
-                :label="item.text"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="保养状态" prop="status">
+              <el-select v-model="formData.status" disabled class="w-full">
+                <el-option
+                  v-for="item in eamEnumStore.getMaintenanceWorkStatusList"
+                  :key="item.value"
+                  :label="item.text"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="保养开始时间">
-            <el-date-picker
-              v-model="formData.startTime"
-              type="datetime"
-              value-format="YYYY-MM-DD HH:mm:ss"
-              placeholder="请选择保养开始时间"
-              disabled
-              class="w-full"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="保养结束时间">
-            <el-date-picker
-              v-model="formData.endTime"
-              type="datetime"
-              value-format="YYYY-MM-DD HH:mm:ss"
-              placeholder="请选择保养结束时间"
-              disabled
-              class="w-full"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="保养用时">
-            <div class="use-time-wrap">
-              <el-input-number
-                v-model="useTimeHours"
-                :min="0"
-                :precision="0"
-                controls-position="right"
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="保养开始时间">
+              <el-date-picker
+                v-model="formData.startTime"
+                type="datetime"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                placeholder="请选择保养开始时间"
                 disabled
-                class="use-time-input"
+                class="w-full"
               />
-              <span class="use-time-unit">小时</span>
-              <el-input-number
-                v-model="useTimeMinutes"
-                :min="0"
-                :max="59"
-                :precision="0"
-                controls-position="right"
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="保养结束时间">
+              <el-date-picker
+                v-model="formData.endTime"
+                type="datetime"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                placeholder="请选择保养结束时间"
                 disabled
-                class="use-time-input"
+                class="w-full"
               />
-              <span class="use-time-unit">分</span>
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="保养用时">
+              <div class="use-time-wrap">
+                <el-input-number
+                  v-model="useTimeHours"
+                  :min="0"
+                  :precision="0"
+                  controls-position="right"
+                  disabled
+                  class="use-time-input"
+                />
+                <span class="use-time-unit">小时</span>
+                <el-input-number
+                  v-model="useTimeMinutes"
+                  :min="0"
+                  :max="59"
+                  :precision="0"
+                  controls-position="right"
+                  disabled
+                  class="use-time-input"
+                />
+                <span class="use-time-unit">分</span>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </template>
 
       <el-row :gutter="20">
         <el-col :span="16">
@@ -225,7 +230,7 @@
     <div class="item-section">
       <div class="item-section-header">
         <span>保养项</span>
-        <div v-if="mode !== 'view'" class="item-section-toolbar">
+        <div v-if="canEditItems" class="item-section-toolbar">
           <el-button plain type="success" size="small" @click="openStandardSelector">
             <Icon icon="ep:document-add" class="mr-5px" />&nbsp;选择保养标准
           </el-button>
@@ -250,7 +255,7 @@
         :show-overflow-tooltip="true"
         @selection-change="handleItemSelectionChange"
       >
-        <el-table-column v-if="mode !== 'view'" type="selection" width="50" align="center" />
+        <el-table-column v-if="canEditItems" type="selection" width="50" align="center" />
         <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column label="保养部位" align="center" prop="maintenancePart" min-width="200" />
         <el-table-column label="保养标准" align="center" prop="remark" min-width="200" />
@@ -275,13 +280,7 @@
           </template>
         </el-table-column>
         <el-table-column label="排序" align="center" prop="seq" width="80" />
-        <el-table-column
-          v-if="mode !== 'view'"
-          label="操作"
-          align="center"
-          fixed="right"
-          width="140"
-        >
+        <el-table-column v-if="canEditItems" label="操作" align="center" fixed="right" width="140">
           <template #default="scope">
             <el-button link class="btn-edit" @click="openItemForm('edit', scope.$index)">
               &nbsp;编辑
@@ -407,6 +406,14 @@ const formRules = {
   workStartTime: [{ required: true, message: '请选择计划保养开始时间', trigger: 'change' }],
   overdueTime: [{ required: true, message: '请选择计划保养结束时间', trigger: 'change' }]
 }
+
+/** 是否允许增删改保养项（新增和编辑status=1时可以，status=2/3只能勾选） */
+const canEditItems = computed(() => {
+  if (mode.value === 'view') return false
+  if (mode.value === 'create') return true
+  // edit 模式：只有 status=1 时允许增删改
+  return formData.status === '1'
+})
 
 // ==================== 本地保养项数组 ====================
 const localItemList = ref<WorkOrderApi.WorkOrderItemLocal[]>([])
