@@ -134,7 +134,7 @@
               link
               class="btn-edit"
               v-hasPermi="[PERMI.UPDATE]"
-              :disabled="scope.row.status !== '1'"
+              :disabled="!['1', '2', '3'].includes(scope.row.status)"
               @click="openForm('edit', scope.row)"
             >
               &nbsp;编辑
@@ -204,6 +204,15 @@
         :rules="completeFormRules"
         label-width="80px"
       >
+        <el-form-item label="开始时间" prop="startTime">
+          <el-date-picker
+            v-model="completeFormData.startTime"
+            type="datetime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            placeholder="请选择开始时间"
+            class="w-full"
+          />
+        </el-form-item>
         <el-form-item label="完成日期" prop="endTime">
           <el-date-picker
             v-model="completeFormData.endTime"
@@ -242,7 +251,7 @@ const PERMI = {
   UPDATE: 'eam:maintenanceWorkOrder:update',
   DELETE: 'eam:maintenanceWorkOrder:delete',
   DISPATCH: 'eam:maintenanceWorkOrder:dispatch',
-  FINISH: 'eam:maintenanceWorkOrder:finish',
+  FINISH: 'eam:maintenanceWorkOrder:finish'
 }
 
 // ==================== 搜索条件 ====================
@@ -419,7 +428,7 @@ const onDispatchPersonConfirm = async (user: {
   try {
     await WorkOrderApi.dispatchWorkOrder({
       id: dispatchTargetRow.value.id,
-      personSn: user.username,
+      personSn: String(user.id),
       personName: user.nickname
     })
     message.success('派工成功')
@@ -437,8 +446,9 @@ const completeDialogVisible = ref(false)
 const completeSubmitLoading = ref(false)
 const completeFormRef = ref()
 const completeTargetRow = ref<WorkOrderApi.WorkOrderVo | null>(null)
-const completeFormData = reactive({ endTime: '' as string })
+const completeFormData = reactive({ startTime: '' as string, endTime: '' as string })
 const completeFormRules = {
+  startTime: [{ required: true, message: '请选择开始时间', trigger: 'change' }],
   endTime: [{ required: true, message: '请选择完成日期', trigger: 'change' }]
 }
 
@@ -448,11 +458,12 @@ const handleComplete = () => {
     return
   }
   const row = selectedRows.value[0]
-  if (!row.startTime) {
-    message.warning('请选择已开始的工单')
+  if (!['2', '3'].includes(row.status)) {
+    message.warning('仅待保养或保养中的工单可完成')
     return
   }
   completeTargetRow.value = row
+  completeFormData.startTime = row.startTime || ''
   completeFormData.endTime = ''
   completeDialogVisible.value = true
 }
@@ -465,7 +476,7 @@ const onCompleteConfirm = async () => {
   try {
     await WorkOrderApi.completeWorkOrder({
       code: completeTargetRow.value.code,
-      startTime: completeTargetRow.value.startTime,
+      startTime: completeFormData.startTime,
       endTime: completeFormData.endTime
     })
     message.success('完成工单成功')

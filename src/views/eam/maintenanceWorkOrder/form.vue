@@ -254,6 +254,26 @@
         <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column label="保养部位" align="center" prop="maintenancePart" min-width="200" />
         <el-table-column label="保养标准" align="center" prop="remark" min-width="200" />
+        <el-table-column label="是否已保养" align="center" prop="status" width="120">
+          <template #default="scope">
+            <el-switch
+              v-if="mode === 'edit' && ['2', '3'].includes(formData.status)"
+              v-model="scope.row.status"
+              active-value="1"
+              inactive-value="0"
+              active-text="已保养"
+              inactive-text="未保养"
+              inline-prompt
+            />
+            <el-tag
+              v-else-if="scope.row.status != null && scope.row.status !== ''"
+              :type="scope.row.status === '1' ? 'success' : 'info'"
+            >
+              {{ scope.row.status === '1' ? '已保养' : '未保养' }}
+            </el-tag>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column label="排序" align="center" prop="seq" width="80" />
         <el-table-column
           v-if="mode !== 'view'"
@@ -502,7 +522,7 @@ const openPersonSelector = () => {
 }
 
 const handlePersonConfirm = (user: { id: number; nickname: string; username: string }) => {
-  formData.personSn = user.username
+  formData.personSn = String(user.id)
   formData.personName = user.nickname
 }
 
@@ -661,11 +681,12 @@ const handleSubmit = async () => {
   const valid = await formRef.value?.validate().catch(() => false)
   if (!valid) return
 
-  // 构建 itemList（清除 id，后端全量替换）
+  // 构建 itemList（清除 id，后端先删后插全量替换）
   const itemList: WorkOrderApi.WorkOrderItemLocal[] = localItemList.value.map((item) => ({
     maintenancePart: item.maintenancePart,
     remark: item.remark,
-    seq: item.seq
+    seq: item.seq,
+    status: item.status
   }))
 
   submitLoading.value = true
