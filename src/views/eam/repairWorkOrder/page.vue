@@ -48,12 +48,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="请选择状态"
-          clearable
-          class="!w-200px"
-        >
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable class="!w-200px">
           <el-option
             v-for="item in statusOptionsForSearch"
             :key="item.value"
@@ -102,17 +97,26 @@
       <el-table-column label="维修单号" align="center" prop="repairCode" width="160" />
       <el-table-column label="维修状态" align="center" prop="status" width="100">
         <template #default="{ row }">
-          <el-tag
-            :type="eamEnumStore.getRepairWorkOrderStatusType(row.status)"
-            size="small"
-          >
+          <el-tag :type="eamEnumStore.getRepairWorkOrderStatusType(row.status)" size="small">
             {{ eamEnumStore.getRepairWorkOrderStatusText(row.status) }}
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="维修人员" align="center" prop="repairPersonName" width="100" />
-      <el-table-column label="维修开始时间" align="center" prop="repairBeginTime" width="170" :formatter="dateFormatter" />
-      <el-table-column label="维修结束时间" align="center" prop="repairEndTime" width="170" :formatter="dateFormatter" />
+      <el-table-column
+        label="维修开始时间"
+        align="center"
+        prop="repairBeginTime"
+        width="170"
+        :formatter="dateFormatter"
+      />
+      <el-table-column
+        label="维修结束时间"
+        align="center"
+        prop="repairEndTime"
+        width="170"
+        :formatter="dateFormatter"
+      />
       <el-table-column label="设备编号" align="center" prop="equipmentSn" width="140" />
       <el-table-column label="设备名称" align="center" prop="equipmentName" width="150" />
       <el-table-column label="设备类型" align="center" prop="equipmentTypeName" width="120" />
@@ -121,7 +125,13 @@
       <el-table-column label="故障描述" align="center" prop="remark" width="150" />
       <el-table-column label="紧急程度" align="center" prop="repairDegreeText" width="100" />
       <el-table-column label="故障等级" align="center" prop="breakdownLevelText" width="100" />
-      <el-table-column label="故障时间" align="center" prop="breakdownTime" width="170" :formatter="dateFormatter" />
+      <el-table-column
+        label="故障时间"
+        align="center"
+        prop="breakdownTime"
+        width="170"
+        :formatter="dateFormatter"
+      />
       <el-table-column label="故障来源" align="center" prop="sourceType" width="100">
         <template #default="{ row }">
           {{ eamEnumStore.getRepairWorkOrderSourceText(row.sourceType) }}
@@ -130,10 +140,22 @@
       <el-table-column label="停机时长" align="center" prop="shutdownDurationText" width="100" />
       <el-table-column label="确认人" align="center" prop="confirmPersonName" width="100" />
       <el-table-column label="报修工单号" align="center" prop="failureWorkOrderCode" width="160" />
-      <el-table-column label="报修时间" align="center" prop="presentTime" width="170" :formatter="dateFormatter" />
+      <el-table-column
+        label="报修时间"
+        align="center"
+        prop="presentTime"
+        width="170"
+        :formatter="dateFormatter"
+      />
       <el-table-column label="报修人" align="center" prop="presentPersonName" width="100" />
       <el-table-column label="创建人" align="center" prop="createByPersonName" width="100" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="170" :formatter="dateFormatter" />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        width="170"
+        :formatter="dateFormatter"
+      />
       <el-table-column label="操作" align="center" fixed="right" width="280">
         <template #default="{ row }">
           <el-button
@@ -142,55 +164,63 @@
             type="primary"
             @click="openForm('update', row)"
             v-hasPermi="['eam:repairWorkOrder:update']"
-          >编辑</el-button>
+            >编辑</el-button
+          >
           <el-button
             v-if="row.status === '1'"
             link
             type="primary"
             @click="handlePublish(row)"
             v-hasPermi="['eam:repairWorkOrder:publish']"
-          >发布工单</el-button>
+            >发布工单</el-button
+          >
           <el-button
             link
             type="primary"
             @click="openDetail(row)"
             v-hasPermi="['eam:repairWorkOrder:query']"
-          >查看</el-button>
+            >查看</el-button
+          >
           <el-button
             v-if="row.status === '2'"
             link
             type="primary"
             @click="handleAssign(row)"
             v-hasPermi="['eam:repairWorkOrder:assign']"
-          >派工</el-button>
+            >派工</el-button
+          >
           <el-button
             v-if="row.status === '2' || row.status === '3'"
             link
             type="warning"
             @click="openRevokeDialog(row)"
             v-hasPermi="['eam:repairWorkOrder:revoke']"
-          >撤单</el-button>
+            >撤单</el-button
+          >
           <el-button
             v-if="['3', '4', '5'].includes(row.status)"
             link
             type="primary"
             @click="openReassignDialog(row)"
             v-hasPermi="['eam:repairWorkOrder:reassign']"
-          >重新派工</el-button>
+            >重新派工</el-button
+          >
           <el-button
             v-if="row.status === '5'"
             link
             type="success"
             @click="handleConfirmComplete(row)"
             v-hasPermi="['eam:repairWorkOrder:confirm']"
-          >完成工单</el-button>
+            >完成工单</el-button
+          >
           <el-button
             v-if="(row.status === '1' || row.status === '2') && row.sourceType === 'ks'"
             link
             type="danger"
             @click="handleDelete(row.id)"
             v-hasPermi="['eam:repairWorkOrder:delete']"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -217,7 +247,12 @@
         <el-input v-model="revokeForm.repairCode" disabled />
       </el-form-item>
       <el-form-item label="撤单原因" prop="reason">
-        <el-input v-model="revokeForm.reason" type="textarea" :rows="4" placeholder="请输入撤单原因" />
+        <el-input
+          v-model="revokeForm.reason"
+          type="textarea"
+          :rows="4"
+          placeholder="请输入撤单原因"
+        />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -254,7 +289,12 @@
         </div>
       </el-form-item>
       <el-form-item label="原因" prop="reason">
-        <el-input v-model="reassignForm.reason" type="textarea" :rows="4" placeholder="请输入重新派工原因" />
+        <el-input
+          v-model="reassignForm.reason"
+          type="textarea"
+          :rows="4"
+          placeholder="请输入重新派工原因"
+        />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -395,14 +435,14 @@ const handlePersonConfirm = async (user: { id: number; nickname: string; usernam
     // 派工
     await RepairWorkOrderApi.assignOrder({
       id: currentActionRow.value.id,
-      repairPersonSn: user.username,
+      repairPersonSn: String(user.id),
       repairPersonName: user.nickname
     })
     message.success('派工成功')
     await getList()
   } else if (personSelectAction.value === 'reassign') {
     // 重新派工 - 回填到重新派工表单
-    reassignForm.repairPersonSn = user.username
+    reassignForm.repairPersonSn = String(user.id)
     reassignForm.repairPersonName = user.nickname
   }
 }

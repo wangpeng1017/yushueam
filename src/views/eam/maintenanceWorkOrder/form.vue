@@ -294,7 +294,7 @@
     </div>
 
     <template #footer>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button @click="dialogVisible = false">关 闭</el-button>
       <el-button
         v-if="mode !== 'view'"
         type="primary"

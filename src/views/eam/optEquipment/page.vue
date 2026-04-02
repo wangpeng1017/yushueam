@@ -186,7 +186,7 @@
       </el-table-column>
       <el-table-column label="购置时间" align="center" prop="equipmentPurchase" width="120" />
       <el-table-column label="投入运营时间" align="center" prop="equipmentOperating" width="120" />
-      <el-table-column label="创建人" align="center" prop="createBy" width="100" />
+      <!-- <el-table-column label="创建人" align="center" prop="createBy" width="100" /> -->
       <el-table-column
         label="创建时间"
         align="center"
@@ -194,14 +194,14 @@
         width="180"
         :formatter="dateFormatter"
       />
-      <el-table-column label="修改人" align="center" prop="updateBy" width="100" />
+      <!-- <el-table-column label="修改人" align="center" prop="updateBy" width="100" />
       <el-table-column
         label="修改时间"
         align="center"
         prop="updateTime"
         width="180"
         :formatter="dateFormatter"
-      />
+      /> -->
       <el-table-column label="操作" align="center" fixed="right" width="200">
         <template #default="scope">
           <el-button
