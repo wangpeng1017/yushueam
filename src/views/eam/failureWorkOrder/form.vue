@@ -286,7 +286,7 @@ const openPersonSelector = () => {
 }
 
 const handlePersonConfirm = (user: { id: number; nickname: string; username: string }) => {
-  formData.personSn = user.username
+  formData.personSn = String(user.id)
   formData.personName = user.nickname
 }
 
