@@ -115,6 +115,8 @@
               v-model="formData.remark"
               type="textarea"
               :rows="4"
+              :maxlength="120"
+              show-word-limit
               placeholder="请输入故障描述"
             />
           </el-form-item>
