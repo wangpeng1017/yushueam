@@ -5,20 +5,18 @@
  *
  * 使用示例：
  * ```typescript
- * import { useInventoryEnumStore } from '@/store/modules/enums'
+ * import { useEamEnumStore } from '@/store/modules/enums'
  *
- * const inventoryEnumStore = useInventoryEnumStore()
- * await inventoryEnumStore.loadInventoryStatus()
- * const statusList = inventoryEnumStore.getInventoryStatusList
+ * const eamEnumStore = useEamEnumStore()
+ * await eamEnumStore.loadEquipmentStatus()
+ * const statusList = eamEnumStore.getEquipmentStatusList
  * ```
  */
 
 // 导出所有枚举 store
-export { useMdmEnumStore, useMdmEnumStoreWithOut } from './mdmEnums'
 export { useEamEnumStore, useEamEnumStoreWithOut } from './eamEnums'
 
 // 导出类型
-export type { MdmEnumState } from './mdmEnums'
 export type { EamEnumState } from './eamEnums'
 
 /**
@@ -36,10 +34,6 @@ export type { EamEnumState } from './eamEnums'
 export const clearAllEnumCaches = () => {
   // 动态导入所有枚举 store 并清除缓存
   Promise.all([
-    import('./mdmEnums').then(({ useMdmEnumStore }) => {
-      const store = useMdmEnumStore()
-      store.resetEnums()
-    }),
     import('./eamEnums').then(({ useEamEnumStore }) => {
       const store = useEamEnumStore()
       store.resetEnums()
