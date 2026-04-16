@@ -48,33 +48,31 @@ const service: AxiosInstance = axios.create({
   }
 })
 
-// ── 生产环境 Mock 拦截器（Vercel部署用） ──
+// ── Mock 拦截器 ──
 import { tryMatchMock } from '@/mock-bridge'
+console.log('[MOCK_BRIDGE_LOADED]', typeof tryMatchMock)
 
-if ((!base_url || base_url === '/admin-api') && import.meta.env.PROD) {
-  console.log('[Mock] 生产环境mock拦截器已注入')
-  service.interceptors.request.use((config) => {
-    const url = config.url || ''
-    const method = config.method || 'get'
-    const headers: Record<string, string> = {}
-    if (config.headers) {
-      Object.keys(config.headers).forEach(k => {
-        headers[k.toLowerCase()] = String(config.headers[k])
-      })
-    }
-    const mockData = tryMatchMock(url, method, config.data, headers)
-    if (mockData) {
-      config.adapter = () => Promise.resolve({
-        data: mockData,
-        status: 200,
-        statusText: 'OK',
-        headers: { 'content-type': 'application/json' },
-        config
-      })
-    }
-    return config
-  })
-}
+service.interceptors.request.use((config) => {
+  const url = config.url || ''
+  const method = config.method || 'get'
+  const headers: Record<string, string> = {}
+  if (config.headers) {
+    Object.keys(config.headers).forEach(k => {
+      headers[k.toLowerCase()] = String(config.headers[k])
+    })
+  }
+  const mockData = tryMatchMock(url, method, config.data, headers)
+  if (mockData) {
+    config.adapter = () => Promise.resolve({
+      data: mockData,
+      status: 200,
+      statusText: 'OK',
+      headers: { 'content-type': 'application/json' },
+      config
+    })
+  }
+  return config
+})
 
 // request拦截器
 service.interceptors.request.use(

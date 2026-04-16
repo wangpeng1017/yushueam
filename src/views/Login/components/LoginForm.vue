@@ -244,19 +244,19 @@ const handleLogin = async (params: any) => {
     }
     authUtil.setToken(res)
     if (!redirect.value) {
-      redirect.value = '/mdm/warehouse'
+      redirect.value = '/index'
       // redirect.value = '/'
     }
     // 判断是否为SSO登录
     if (redirect.value.indexOf('sso') !== -1) {
       window.location.href = window.location.href.replace('/login?redirect=', '')
     } else {
-      await push({ path: '/mdm/warehouse' || permissionStore.addRouters[0].path })
+      await push({ path: '/index' || permissionStore.addRouters[0].path })
       // await push({ path: redirect.value || permissionStore.addRouters[0].path })
     }
   } finally {
     loginLoading.value = false
-    loading.value.close()
+    loading.value?.close()
   }
 }
 
@@ -304,15 +304,15 @@ const codeLogin = async () => {
         })
         authUtil.setToken(res)
         if (!redirect.value) {
-          redirect.value = '/mdm/warehouse'
+          redirect.value = '/index'
           // redirect.value = '/'
         }
-        await push({ path: '/mdm/warehouse' || permissionStore.addRouters[0].path })
+        await push({ path: '/index' || permissionStore.addRouters[0].path })
         // await push({ path: redirect.value || permissionStore.addRouters[0].path })
       } catch (error) {
         console.log(error)
       } finally {
-        loading.value.close()
+        loading.value?.close()
         loginLoading.value = false
       }
     }
