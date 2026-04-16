@@ -68,7 +68,8 @@ service.interceptors.request.use((config) => {
       status: 200,
       statusText: 'OK',
       headers: { 'content-type': 'application/json' },
-      config
+      config,
+      request: { responseType: 'json' }
     })
   }
   return config
