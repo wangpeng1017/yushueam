@@ -49,6 +49,32 @@
           </el-form-item>
         </el-col>
       </el-row>
+
+      <el-divider content-position="left">库存管理</el-divider>
+      <el-row :gutter="20">
+        <el-col :span="8">
+          <el-form-item label="实际库存" prop="actualStock">
+            <el-input-number v-model="formData.actualStock" :min="0" :precision="0" controls-position="right" class="!w-full" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="最高储备定额" prop="maxStock">
+            <el-input-number v-model="formData.maxStock" :min="0" :precision="0" controls-position="right" class="!w-full" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="最低储备定额" prop="minStock">
+            <el-input-number v-model="formData.minStock" :min="0" :precision="0" controls-position="right" class="!w-full" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="关联设备" prop="relatedEquipment">
+            <el-input v-model="formData.relatedEquipment" placeholder="适用的设备编号，如 EW-LP-001" />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
 
     <template #footer>
@@ -86,7 +112,11 @@ const formData = ref<any>({
   name: '',
   specification: '',
   unitName: '',
-  materialGroupNumber: ''
+  materialGroupNumber: '',
+  actualStock: undefined,
+  maxStock: undefined,
+  minStock: undefined,
+  relatedEquipment: ''
 })
 
 const formRules = {
@@ -180,7 +210,11 @@ const resetForm = () => {
     name: '',
     specification: '',
     unitName: '',
-    materialGroupNumber: ''
+    materialGroupNumber: '',
+    actualStock: undefined,
+    maxStock: undefined,
+    minStock: undefined,
+    relatedEquipment: ''
   }
   formRef.value?.resetFields()
 }

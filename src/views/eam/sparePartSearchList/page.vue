@@ -94,6 +94,23 @@
             <el-table-column label="规格型号" align="center" prop="specification"  />
             <el-table-column label="基础单位" align="center" prop="unitName"  />
             <el-table-column label="备件类型" align="center" prop="materialGroupName" />
+            <el-table-column label="实际库存" align="center" prop="actualStock" width="90">
+              <template #default="scope">
+                <span :class="{ 'text-red-500 font-bold': scope.row.actualStock <= scope.row.minStock }">
+                  {{ scope.row.actualStock ?? '--' }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column label="最高储备" align="center" prop="maxStock" width="90" />
+            <el-table-column label="最低储备" align="center" prop="minStock" width="90" />
+            <el-table-column label="库存状态" align="center" width="90">
+              <template #default="scope">
+                <el-tag v-if="scope.row.actualStock != null && scope.row.minStock != null && scope.row.actualStock <= scope.row.minStock" type="danger" size="small">预警</el-tag>
+                <el-tag v-else-if="scope.row.actualStock != null" type="success" size="small">正常</el-tag>
+                <el-tag v-else type="info" size="small">未设置</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="关联设备" align="center" prop="relatedEquipment" min-width="120" />
             <el-table-column label="操作" align="center"  fixed="right">
               <template #default="scope">
                 <el-button

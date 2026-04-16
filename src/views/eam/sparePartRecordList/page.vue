@@ -96,6 +96,13 @@
         <el-table-column label="关联单号" align="center" prop="refWoCode"  />
         <!-- <el-table-column label="工作中心" align="center" prop="workCenterName" width="150" /> -->
         <!-- <el-table-column label="生产车间" align="center" prop="workShopName" width="150" /> -->
+        <el-table-column label="操作类型" align="center" prop="operationType" width="90">
+          <template #default="scope">
+            <el-tag :type="scope.row.operationType === '退库' ? 'warning' : ''">
+              {{ scope.row.operationType }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="创建人" align="center" prop="createByPersonName"  />
         <el-table-column
           label="创建时间"

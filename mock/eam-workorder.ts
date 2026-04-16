@@ -73,14 +73,14 @@ const spotInspectionWorks = [
 // 备件（共用，按使用记录区分车间）
 // ══════════════════════════════════════════════
 const spareParts = [
-  { id: 'SP01', number: 'BJ-001', name: '485通讯端子', specification: '标准', unitName: '个', materialGroupName: '设备配件' },
-  { id: 'SP02', number: 'BJ-002', name: 'NSK PS-2润滑脂', specification: '0.5g/次', unitName: '管', materialGroupName: '耗材' },
-  { id: 'SP03', number: 'BJ-003', name: '张力器羊毛轮', specification: '标准', unitName: '个', materialGroupName: '设备配件' },
-  { id: 'SP04', number: 'BJ-004', name: '急停按钮', specification: 'φ22', unitName: '个', materialGroupName: '设备配件' },
-  { id: 'SP05', number: 'BJ-005', name: '气管接头', specification: '6mm', unitName: '个', materialGroupName: '设备配件' },
-  { id: 'SP06', number: 'BJ-006', name: '批头', specification: 'PH2', unitName: '个', materialGroupName: '设备配件' },
-  { id: 'SP07', number: 'BJ-007', name: 'CNC主轴轴承', specification: '7014C', unitName: '套', materialGroupName: '设备配件' },
-  { id: 'SP08', number: 'BJ-008', name: '注塑机温控模块', specification: 'TC-48', unitName: '块', materialGroupName: '设备配件' },
+  { id: 'SP01', number: 'BJ-001', name: '485通讯端子', specification: '标准', unitName: '个', materialGroupName: '设备配件', actualStock: 12, maxStock: 20, minStock: 5, relatedEquipment: 'EW-LP-001' },
+  { id: 'SP02', number: 'BJ-002', name: 'NSK PS-2润滑脂', specification: '0.5g/次', unitName: '管', materialGroupName: '耗材', actualStock: 3, maxStock: 10, minStock: 3, relatedEquipment: 'C端绕线机类' },
+  { id: 'SP03', number: 'BJ-003', name: '张力器羊毛轮', specification: '标准', unitName: '个', materialGroupName: '设备配件', actualStock: 8, maxStock: 15, minStock: 5, relatedEquipment: 'C端绕线机类' },
+  { id: 'SP04', number: 'BJ-004', name: '急停按钮', specification: 'φ22', unitName: '个', materialGroupName: '设备配件', actualStock: 2, maxStock: 10, minStock: 5, relatedEquipment: '通用' },
+  { id: 'SP05', number: 'BJ-005', name: '气管接头', specification: '6mm', unitName: '个', materialGroupName: '设备配件', actualStock: 20, maxStock: 30, minStock: 10, relatedEquipment: '通用' },
+  { id: 'SP06', number: 'BJ-006', name: '批头', specification: 'PH2', unitName: '个', materialGroupName: '设备配件', actualStock: 1, maxStock: 10, minStock: 3, relatedEquipment: 'B端锁螺丝机' },
+  { id: 'SP07', number: 'BJ-007', name: 'CNC主轴轴承', specification: '7014C', unitName: '套', materialGroupName: '设备配件', actualStock: 2, maxStock: 5, minStock: 2, relatedEquipment: 'CNC设备' },
+  { id: 'SP08', number: 'BJ-008', name: '注塑机温控模块', specification: 'TC-48', unitName: '块', materialGroupName: '设备配件', actualStock: 0, maxStock: 3, minStock: 1, relatedEquipment: 'INJ-001/002' },
 ]
 
 const sparePartRecords = [
@@ -88,6 +88,7 @@ const sparePartRecords = [
   { id: 'SPR02', workshopCode: 'C', sparePartNumber: 'BJ-002', sparePartName: 'NSK PS-2润滑脂', quantity: 3, operationType: '出库', relatedWorkOrder: 'MW-C-0001', operatorName: '陆钟', operateTime: '2026-04-01 09:20', remark: 'C端保养领用' },
   { id: 'SPR03', workshopCode: 'B', sparePartNumber: 'BJ-006', sparePartName: '批头', quantity: 2, operationType: '出库', relatedWorkOrder: 'RW-B-0001', operatorName: '买盼', operateTime: '2026-04-08 10:10', remark: 'B端维修领用' },
   { id: 'SPR04', workshopCode: 'CNC', sparePartNumber: 'BJ-008', sparePartName: '注塑机温控模块', quantity: 1, operationType: '出库', relatedWorkOrder: 'RW-N-0001', operatorName: '刚嘉成', operateTime: '2026-04-14 13:30', remark: '数控机加维修领用' },
+  { id: 'SPR05', workshopCode: 'CNC', sparePartNumber: 'BJ-007', sparePartName: 'CNC主轴轴承', quantity: 1, operationType: '退库', relatedWorkOrder: 'RW-N-0001', operatorName: '刚嘉成', operateTime: '2026-04-14 15:00', remark: '维修后未使用退回' },
 ]
 
 // ── 枚举 ──
