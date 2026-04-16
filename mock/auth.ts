@@ -66,6 +66,7 @@ const eamMenus = [
       { path: 'failureWorkOrder', name: '故障报修', component: 'eam/failureWorkOrder/page', componentName: 'EamFailureWorkOrder', visible: true, keepAlive: true, parentId: 40 },
       { path: 'repairWorkOrder', name: '维修工单', component: 'eam/repairWorkOrder/page', componentName: 'EamRepairWorkOrder', visible: true, keepAlive: true, parentId: 40 },
       { path: 'repairWorkRecord', name: '维修记录', component: 'eam/repairWorkRecord/page', componentName: 'EamRepairWorkRecord', visible: true, keepAlive: true, parentId: 40 },
+      { path: 'repairKnowledge', name: '维修知识库', component: 'eam/repairKnowledge/page', componentName: 'EamRepairKnowledge', visible: true, keepAlive: true, parentId: 40 },
     ]
   },
   {

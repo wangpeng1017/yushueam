@@ -37,12 +37,7 @@ import App from './App.vue'
 
 import './permission'
 
-// 生产环境 Mock（Vercel 部署用，VITE_BASE_URL 为空时启用）
-if (!import.meta.env.VITE_BASE_URL && import.meta.env.PROD) {
-  import('../mock/_prodMock').then(({ setupProdMockServer }) => {
-    setupProdMockServer()
-  })
-}
+// 注：生产环境 Mock 已在 service.ts 中同步注入，无需在此异步加载
 
 import '@/plugins/tongji' // 百度统计
 import Logger from '@/utils/Logger'
