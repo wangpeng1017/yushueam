@@ -43,6 +43,12 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="类型" prop="inspectionType">
+          <el-select v-model="queryParams.inspectionType" placeholder="全部" clearable class="!w-120px">
+            <el-option label="点检" value="1" />
+            <el-option label="巡检" value="2" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="工单生成时间" prop="createTimeRange">
           <el-date-picker
             v-model="createTimeRange"
@@ -86,6 +92,13 @@
         <el-table-column type="selection" width="50" align="center" />
         <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column label="工单编号" align="center" prop="workCode" width="150" />
+        <el-table-column label="类型" align="center" prop="inspectionType" width="80">
+          <template #default="scope">
+            <el-tag :type="scope.row.inspectionType === '2' ? 'warning' : ''">
+              {{ scope.row.inspectionType === '2' ? '巡检' : '点检' }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="巡检状态" align="center" prop="status" width="100">
           <template #default="scope">
             <el-tag :type="eamEnumStore.getWorkOrderStatusType(scope.row.status)">
@@ -254,7 +267,8 @@ const queryParams = reactive({
   pageSize: 10,
   workCode: undefined as string | undefined,
   planName: undefined as string | undefined,
-  status: undefined as string | undefined
+  status: undefined as string | undefined,
+  inspectionType: undefined as string | undefined
 })
 const queryFormRef = ref()
 const selectedRows = ref<WorkApi.WorkVo[]>([])

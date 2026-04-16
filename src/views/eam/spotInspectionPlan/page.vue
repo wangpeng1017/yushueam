@@ -42,6 +42,12 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="类型" prop="inspectionType">
+          <el-select v-model="queryParams.inspectionType" placeholder="全部" clearable class="!w-120px">
+            <el-option label="点检" value="1" />
+            <el-option label="巡检" value="2" />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button @click="handleQuery">
             <Icon icon="ep:search" class="mr-5px" />&nbsp;搜索
@@ -100,6 +106,13 @@
         <el-table-column type="selection" width="50" align="center" />
         <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column label="计划编号" align="center" prop="code" width="150" />
+        <el-table-column label="类型" align="center" prop="inspectionType" width="80">
+          <template #default="scope">
+            <el-tag :type="scope.row.inspectionType === '2' ? 'warning' : ''">
+              {{ scope.row.inspectionType === '2' ? '巡检' : '点检' }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="计划名称" align="center" prop="name" min-width="200" />
         <el-table-column label="设备类型" align="center" prop="equipmentTypeText" width="150" />
         <el-table-column label="设备型号" align="center" prop="equipmentModel" width="120">
@@ -520,7 +533,8 @@ const queryParams = reactive({
   pageSize: 5,
   code: undefined as string | undefined,
   name: undefined as string | undefined,
-  status: undefined as string | undefined
+  status: undefined as string | undefined,
+  inspectionType: undefined as string | undefined
 })
 const queryFormRef = ref()
 const selectedIds = ref<string[]>([])

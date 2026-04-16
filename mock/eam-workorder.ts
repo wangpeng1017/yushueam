@@ -61,12 +61,12 @@ const repairWorkOrders = [
 // 点检工单
 // ══════════════════════════════════════════════
 const spotInspectionWorks = [
-  { id: 'SW-C01', workshopCode: 'C', workCode: 'SW-C-0001', planName: '绕线机日常点检计划', status: '3', hasParamPlan: '2', spotInspection: '8/8', workStartTime: '2026-04-15 08:00', overdueTime: '2026-04-15 09:00', startTime: '2026-04-15 08:05', endTime: '2026-04-15 08:45', personName: '陆钟', createTime: '2026-04-15 08:00' },
-  { id: 'SW-C02', workshopCode: 'C', workCode: 'SW-C-0002', planName: '绕线机日常点检计划', status: '2', hasParamPlan: '2', spotInspection: '3/8', workStartTime: '2026-04-16 08:00', overdueTime: '2026-04-16 09:00', startTime: '2026-04-16 08:10', endTime: '', personName: '陆钟', createTime: '2026-04-16 08:00' },
-  { id: 'SW-B01', workshopCode: 'B', workCode: 'SW-B-0001', planName: '锁螺丝机日常点检计划', status: '3', hasParamPlan: '2', spotInspection: '5/5', workStartTime: '2026-04-15 08:00', overdueTime: '2026-04-15 09:00', startTime: '2026-04-15 08:00', endTime: '2026-04-15 08:30', personName: '买盼', createTime: '2026-04-15 08:00' },
-  { id: 'SW-B02', workshopCode: 'B', workCode: 'SW-B-0002', planName: '锁螺丝机日常点检计划', status: '1', hasParamPlan: '2', spotInspection: '0/5', workStartTime: '2026-04-16 08:00', overdueTime: '2026-04-16 09:00', startTime: '', endTime: '', personName: '', createTime: '2026-04-16 08:00' },
-  { id: 'SW-N01', workshopCode: 'CNC', workCode: 'SW-N-0001', planName: 'CNC日常点检计划', status: '3', hasParamPlan: '1', spotInspection: '30/30', workStartTime: '2026-04-15 08:00', overdueTime: '2026-04-15 10:00', startTime: '2026-04-15 08:00', endTime: '2026-04-15 09:30', personName: '刚嘉成', createTime: '2026-04-15 08:00' },
-  { id: 'SW-N02', workshopCode: 'CNC', workCode: 'SW-N-0002', planName: 'CNC日常点检计划', status: '2', hasParamPlan: '1', spotInspection: '12/30', workStartTime: '2026-04-16 08:00', overdueTime: '2026-04-16 10:00', startTime: '2026-04-16 08:10', endTime: '', personName: '刚嘉成', createTime: '2026-04-16 08:00' },
+  { id: 'SW-C01', workshopCode: 'C', workCode: 'SW-C-0001', planName: '绕线机日常点检计划', status: '3', hasParamPlan: '2', inspectionType: '1', spotInspection: '8/8', workStartTime: '2026-04-15 08:00', overdueTime: '2026-04-15 09:00', startTime: '2026-04-15 08:05', endTime: '2026-04-15 08:45', personName: '陆钟', createTime: '2026-04-15 08:00' },
+  { id: 'SW-C02', workshopCode: 'C', workCode: 'SW-C-0002', planName: '绕线机日常点检计划', status: '2', hasParamPlan: '2', inspectionType: '1', spotInspection: '3/8', workStartTime: '2026-04-16 08:00', overdueTime: '2026-04-16 09:00', startTime: '2026-04-16 08:10', endTime: '', personName: '陆钟', createTime: '2026-04-16 08:00' },
+  { id: 'SW-B01', workshopCode: 'B', workCode: 'SW-B-0001', planName: '锁螺丝机日常点检计划', status: '3', hasParamPlan: '2', inspectionType: '1', spotInspection: '5/5', workStartTime: '2026-04-15 08:00', overdueTime: '2026-04-15 09:00', startTime: '2026-04-15 08:00', endTime: '2026-04-15 08:30', personName: '买盼', createTime: '2026-04-15 08:00' },
+  { id: 'SW-B02', workshopCode: 'B', workCode: 'SW-B-0002', planName: 'B端电子车间巡检工单', status: '1', hasParamPlan: '2', inspectionType: '2', spotInspection: '0/5', workStartTime: '2026-04-16 08:00', overdueTime: '2026-04-16 09:00', startTime: '', endTime: '', personName: '', createTime: '2026-04-16 08:00' },
+  { id: 'SW-N01', workshopCode: 'CNC', workCode: 'SW-N-0001', planName: 'CNC日常点检计划', status: '3', hasParamPlan: '1', inspectionType: '1', spotInspection: '30/30', workStartTime: '2026-04-15 08:00', overdueTime: '2026-04-15 10:00', startTime: '2026-04-15 08:00', endTime: '2026-04-15 09:30', personName: '刚嘉成', createTime: '2026-04-15 08:00' },
+  { id: 'SW-N02', workshopCode: 'CNC', workCode: 'SW-N-0002', planName: '数控车间巡检工单', status: '2', hasParamPlan: '1', inspectionType: '2', spotInspection: '12/30', workStartTime: '2026-04-16 08:00', overdueTime: '2026-04-16 10:00', startTime: '2026-04-16 08:10', endTime: '', personName: '刚嘉成', createTime: '2026-04-16 08:00' },
 ]
 
 // ══════════════════════════════════════════════
@@ -169,9 +169,11 @@ export default [
     response: ({ query, headers }) => {
       const ws = getWorkshopByToken(headers?.authorization)
       const standards = [
-        { id: 'SIS-C01', workshopCode: 'C', code: 'SIS-C-001', name: '绕线机日常点检标准', equipmentTypeText: '加工类设备', remark: '日检6项+月检4项', createTime: '2025-01-01' },
-        { id: 'SIS-B01', workshopCode: 'B', code: 'SIS-B-001', name: '自动锁螺丝机日常点检标准', equipmentTypeText: '加工类设备', remark: '日检6项：外观/电源/面板/锁付/夹具/耗材', createTime: '2025-01-01' },
-        { id: 'SIS-N01', workshopCode: 'CNC', code: 'SIS-N-001', name: 'CNC日常点检标准', equipmentTypeText: '数控设备', remark: '含参数点检', createTime: '2025-02-01' },
+        { id: 'SIS-C01', workshopCode: 'C', code: 'SIS-C-001', name: '绕线机日常点检标准', equipmentTypeText: '加工类设备', inspectionType: '1', remark: '日检6项+月检4项', createTime: '2025-01-01' },
+        { id: 'SIS-C02', workshopCode: 'C', code: 'SIS-C-002', name: 'C端电子车间巡检标准', equipmentTypeText: '', inspectionType: '2', remark: '环境巡视、温湿度、异常声响', createTime: '2025-02-01' },
+        { id: 'SIS-B01', workshopCode: 'B', code: 'SIS-B-001', name: '自动锁螺丝机日常点检标准', equipmentTypeText: '加工类设备', inspectionType: '1', remark: '日检6项：外观/电源/面板/锁付/夹具/耗材', createTime: '2025-01-01' },
+        { id: 'SIS-N01', workshopCode: 'CNC', code: 'SIS-N-001', name: 'CNC日常点检标准', equipmentTypeText: '数控设备', inspectionType: '1', remark: '含参数点检', createTime: '2025-02-01' },
+        { id: 'SIS-N02', workshopCode: 'CNC', code: 'SIS-N-002', name: '数控车间巡检标准', equipmentTypeText: '', inspectionType: '2', remark: '设备运行状态巡视', createTime: '2025-03-01' },
       ]
       return { code: 200, data: paginate(filterByWorkshop(standards, ws), query?.pageNo, query?.pageSize) }
     }
@@ -183,9 +185,10 @@ export default [
     response: ({ query, headers }) => {
       const ws = getWorkshopByToken(headers?.authorization)
       const plans = [
-        { id: 'SIP-C01', workshopCode: 'C', code: 'SP-C-001', name: '绕线机日常点检计划', equipmentTypeText: '加工类设备', startDate: '2025-01-01', endDate: '2026-12-31', periodicFrequencyType: '1', status: '1', createTime: '2025-01-01' },
-        { id: 'SIP-B01', workshopCode: 'B', code: 'SP-B-001', name: '锁螺丝机日常点检计划', equipmentTypeText: '加工类设备', startDate: '2025-02-01', endDate: '2026-12-31', periodicFrequencyType: '1', status: '1', createTime: '2025-02-01' },
-        { id: 'SIP-N01', workshopCode: 'CNC', code: 'SP-N-001', name: 'CNC日常点检计划', equipmentTypeText: '数控设备', startDate: '2025-02-01', endDate: '2026-12-31', periodicFrequencyType: '1', status: '1', createTime: '2025-02-01' },
+        { id: 'SIP-C01', workshopCode: 'C', code: 'SP-C-001', name: '绕线机日常点检计划', equipmentTypeText: '加工类设备', inspectionType: '1', startDate: '2025-01-01', endDate: '2026-12-31', periodicFrequencyType: '1', status: '1', createTime: '2025-01-01' },
+        { id: 'SIP-C02', workshopCode: 'C', code: 'SP-C-002', name: 'C端电子车间巡检计划', equipmentTypeText: '', inspectionType: '2', startDate: '2025-02-01', endDate: '2026-12-31', periodicFrequencyType: '1', status: '1', createTime: '2025-02-01' },
+        { id: 'SIP-B01', workshopCode: 'B', code: 'SP-B-001', name: '锁螺丝机日常点检计划', equipmentTypeText: '加工类设备', inspectionType: '1', startDate: '2025-02-01', endDate: '2026-12-31', periodicFrequencyType: '1', status: '1', createTime: '2025-02-01' },
+        { id: 'SIP-N01', workshopCode: 'CNC', code: 'SP-N-001', name: 'CNC日常点检计划', equipmentTypeText: '数控设备', inspectionType: '1', startDate: '2025-02-01', endDate: '2026-12-31', periodicFrequencyType: '1', status: '1', createTime: '2025-02-01' },
       ]
       return { code: 200, data: paginate(filterByWorkshop(plans, ws), query?.pageNo, query?.pageSize) }
     }

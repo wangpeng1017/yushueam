@@ -51,6 +51,7 @@ const eamMenus = [
     name: '点巡检管理', icon: 'ep:document-checked', component: '#',
     visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
     children: [
+      { path: 'inspectionRoute', name: '巡检路线', component: 'eam/inspectionRoute/page', componentName: 'EamInspectionRoute', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionStandard', name: '点检标准', component: 'eam/spotInspectionStandard/page', componentName: 'EamSpotInspectionStandard', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionPlan', name: '点检计划', component: 'eam/spotInspectionPlan/page', componentName: 'EamSpotInspectionPlan', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionWork', name: '点检工单', component: 'eam/spotInspectionWork/page', componentName: 'EamSpotInspectionWork', visible: true, keepAlive: true, parentId: 30 },
