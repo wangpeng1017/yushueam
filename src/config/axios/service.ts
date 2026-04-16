@@ -240,6 +240,24 @@ service.interceptors.response.use(
     }
   },
   (error: AxiosError) => {
+    // Mock模式兜底：未被mock匹配的请求返回默认成功响应，而不是弹报错
+    if (import.meta.env.VITE_BASE_URL === '' || !import.meta.env.VITE_BASE_URL) {
+      const url = error.config?.url || ''
+      const method = (error.config?.method || 'get').toLowerCase()
+      console.warn(`[Mock兜底] ${method.toUpperCase()} ${url} → 返回默认响应`)
+      // 根据请求类型返回合理的默认数据
+      if (method === 'get') {
+        if (/list|page|record/i.test(url)) {
+          return { data: { code: 200, data: { records: [], total: 0 } } }
+        }
+        if (/tree/i.test(url)) {
+          return { data: { code: 200, data: [] } }
+        }
+        return { data: { code: 200, data: {} } }
+      }
+      return { data: { code: 200, data: true } }
+    }
+
     console.log('err' + error) // for debug
     let { message } = error
     const { t } = useI18n()

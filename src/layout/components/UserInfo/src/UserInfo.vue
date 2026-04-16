@@ -8,6 +8,8 @@ import { useUserStore } from '@/store/modules/user'
 import LockDialog from './components/LockDialog.vue'
 import LockPage from './components/LockPage.vue'
 import { useLockStore } from '@/store/modules/lock'
+import { setToken, getAccessToken } from '@/utils/auth'
+import { CACHE_KEY, useCache, deleteUserCache } from '@/hooks/web/useCache'
 
 defineOptions({ name: 'UserInfo' })
 
@@ -25,6 +27,28 @@ const prefixCls = getPrefixCls('user-info')
 
 const avatar = computed(() => userStore.user.avatar || avatarImg)
 const userName = computed(() => userStore.user.nickname ?? 'Admin')
+
+// ── 车间切换器（所有用户都可见，方便演示） ──
+const WORKSHOP_OPTIONS = [
+  { value: 'mock-token-all', label: '全部车间' },
+  { value: 'mock-token-c',   label: 'C端车间' },
+  { value: 'mock-token-b',   label: 'B端车间' },
+  { value: 'mock-token-cnc', label: '数控机加车间' },
+]
+// 始终显示切换器，根据当前token选中对应项
+const currentWorkshop = ref(getAccessToken() || 'mock-token-all')
+
+const handleWorkshopChange = async (token: string) => {
+  setToken({
+    accessToken: token,
+    refreshToken: 'mock-refresh',
+    expiresTime: Date.now() + 24 * 60 * 60 * 1000
+  })
+  // 清除用户缓存并刷新，让新token生效
+  deleteUserCache()
+  userStore.$reset()
+  window.location.reload()
+}
 
 // 锁定屏幕
 const lockStore = useLockStore()
@@ -56,6 +80,22 @@ const toDocument = () => {
 </script>
 
 <template>
+  <!-- 车间切换器 -->
+  <ElSelect
+    v-model="currentWorkshop"
+    class="mr-10px"
+    style="width: 140px"
+    size="small"
+    @change="handleWorkshopChange"
+  >
+    <ElOption
+      v-for="item in WORKSHOP_OPTIONS"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+    />
+  </ElSelect>
+
   <ElDropdown class="custom-hover" :class="prefixCls" trigger="click">
     <div class="flex items-center">
       <ElAvatar :src="avatar" alt="" class="w-[calc(var(--logo-height)-25px)] rounded-[50%]" />

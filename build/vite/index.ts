@@ -15,6 +15,7 @@ import topLevelAwait from 'vite-plugin-top-level-await'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons-ng'
 import UnoCSS from 'unocss/vite'
+import { viteMockServe } from 'vite-plugin-mock'
 
 export function createVitePlugins() {
   const root = process.cwd()
@@ -28,6 +29,12 @@ export function createVitePlugins() {
     Vue(),
     VueJsx(),
     UnoCSS(),
+    viteMockServe({
+      mockPath: 'mock',
+      localEnabled: true,   // 开发模式启用
+      prodEnabled: false,    // 生产构建由 mockjs 方案处理
+      logger: true
+    }),
     progress(),
     PurgeIcons(),
     ElementPlus({}),
