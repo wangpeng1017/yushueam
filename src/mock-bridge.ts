@@ -8,11 +8,9 @@ import equipmentMock from '../mock/eam-equipment'
 import workorderMock from '../mock/eam-workorder'
 import extraMock from '../mock/eam-extra'
 import routeMock from '../mock/eam-inspection-route'
+import knowledgeMock from '../mock/eam-knowledge'
 import projectMock from '../mock/eam-project'
 import iotOeeMock from '../mock/eam-iot-oee'
-
-let knowledgeMock: any[] = []
-try { const m = await import('../mock/eam-knowledge'); knowledgeMock = m.default || [] } catch {}
 
 const allMocks = [...authMock, ...equipmentMock, ...workorderMock, ...extraMock, ...routeMock, ...knowledgeMock, ...projectMock, ...iotOeeMock]
 
