@@ -206,6 +206,120 @@
           </el-form-item>
         </el-col>
       </el-row>
+
+      <!-- ==================== 宇树扩展字段 ==================== -->
+      <el-divider content-position="left">组织归属</el-divider>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="所属车间" prop="workshopName">
+            <el-select v-model="formData.workshopName" placeholder="请选择所属车间" clearable class="!w-full">
+              <el-option label="C端车间" value="C端车间" />
+              <el-option label="B端车间" value="B端车间" />
+              <el-option label="数控机加车间" value="数控机加车间" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="所属产线" prop="productionLineName">
+            <el-input v-model="formData.productionLineName" placeholder="如：715线、G1线、PACK线" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="责任部门" prop="departmentName">
+            <el-input v-model="formData.departmentName" placeholder="请输入责任部门" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="责任人" prop="responsiblePersonName">
+            <el-input v-model="formData.responsiblePersonName" placeholder="请输入责任人" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="维保单位" prop="maintenanceUnit">
+            <el-input v-model="formData.maintenanceUnit" placeholder="如：工艺部/外部供应商" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="维保周期" prop="maintenanceCycle">
+            <el-input v-model="formData.maintenanceCycle" placeholder="如：每月例行保养" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="操作指导文件" prop="hasOperationGuide">
+            <el-select v-model="formData.hasOperationGuide" placeholder="是否有SOP" clearable class="!w-full">
+              <el-option label="是" value="1" />
+              <el-option label="否" value="0" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-divider content-position="left">数控机加专属（IoT）</el-divider>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="设备厂家" prop="manufacturer">
+            <el-select v-model="formData.manufacturer" placeholder="请选择设备厂家" clearable filterable allow-create class="!w-full">
+              <el-option label="台群" value="台群" />
+              <el-option label="乔峰" value="乔峰" />
+              <el-option label="哈斯" value="哈斯" />
+              <el-option label="华中" value="华中" />
+              <el-option label="广数" value="广数" />
+              <el-option label="锐锋" value="锐锋" />
+              <el-option label="新代" value="新代" />
+              <el-option label="汇川" value="汇川" />
+              <el-option label="三菱" value="三菱" />
+              <el-option label="西门子" value="西门子" />
+              <el-option label="海天国际" value="海天国际" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="系统及版本" prop="systemVersion">
+            <el-input v-model="formData.systemVersion" placeholder="如：三菱系统M80、FANUC系统0i-MF" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="通讯协议" prop="commProtocol">
+            <el-select v-model="formData.commProtocol" placeholder="请选择通讯协议" clearable class="!w-full">
+              <el-option label="Modbus-TCP" value="Modbus-TCP" />
+              <el-option label="Modbus-RTU" value="Modbus-RTU" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="通讯接口" prop="commInterface">
+            <el-select v-model="formData.commInterface" placeholder="请选择通讯接口" clearable class="!w-full">
+              <el-option label="以太网接口" value="以太网接口" />
+              <el-option label="9针串口(RS485,RS232)" value="9针串口(RS485,RS232)" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-divider content-position="left">C端非标专属</el-divider>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="设备来源" prop="equipmentSource">
+            <el-select v-model="formData.equipmentSource" placeholder="请选择设备来源" clearable class="!w-full">
+              <el-option label="自研" value="自研" />
+              <el-option label="外购" value="外购" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="关联研制项目" prop="projectId">
+            <el-input v-model="formData.projectId" placeholder="关联EM-07研制项目编号" />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
@@ -286,7 +400,23 @@ const formData = ref({
   equipmentRevstop: '',
   sequenceNumber: undefined as number | undefined,
   equipmentPurchase: '',
-  equipmentOperating: ''
+  equipmentOperating: '',
+  // 宇树扩展字段
+  workshopName: '',
+  productionLineName: '',
+  departmentName: '',
+  responsiblePersonName: '',
+  maintenanceUnit: '',
+  maintenanceCycle: '',
+  hasOperationGuide: '',
+  // 数控机加IoT
+  manufacturer: '',
+  systemVersion: '',
+  commProtocol: '',
+  commInterface: '',
+  // C端非标
+  equipmentSource: '',
+  projectId: ''
 })
 
 const formRules = reactive({
@@ -314,7 +444,23 @@ const resetForm = () => {
     equipmentRevstop: '',
     sequenceNumber: undefined,
     equipmentPurchase: '',
-    equipmentOperating: ''
+    equipmentOperating: '',
+    // 宇树扩展字段
+    workshopName: '',
+    productionLineName: '',
+    departmentName: '',
+    responsiblePersonName: '',
+    maintenanceUnit: '',
+    maintenanceCycle: '',
+    hasOperationGuide: '',
+    // 数控机加IoT
+    manufacturer: '',
+    systemVersion: '',
+    commProtocol: '',
+    commInterface: '',
+    // C端非标
+    equipmentSource: '',
+    projectId: ''
   }
   formRef.value?.resetFields()
 }
@@ -433,7 +579,23 @@ const open = async (type: string, id?: string) => {
         equipmentRevstop: res.equipmentRevstop ?? '',
         sequenceNumber: res.sequenceNumber ?? undefined,
         equipmentPurchase: res.equipmentPurchase ?? '',
-        equipmentOperating: res.equipmentOperating ?? ''
+        equipmentOperating: res.equipmentOperating ?? '',
+        // 宇树扩展字段
+        workshopName: res.workshopName ?? '',
+        productionLineName: res.productionLineName ?? '',
+        departmentName: res.departmentName ?? '',
+        responsiblePersonName: res.responsiblePersonName ?? '',
+        maintenanceUnit: res.maintenanceUnit ?? '',
+        maintenanceCycle: res.maintenanceCycle ?? '',
+        hasOperationGuide: res.hasOperationGuide ?? '',
+        // 数控机加IoT
+        manufacturer: res.manufacturer ?? '',
+        systemVersion: res.systemVersion ?? '',
+        commProtocol: res.commProtocol ?? '',
+        commInterface: res.commInterface ?? '',
+        // C端非标
+        equipmentSource: res.equipmentSource ?? '',
+        projectId: res.projectId ?? ''
       }
     } finally {
       formLoading.value = false

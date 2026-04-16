@@ -186,6 +186,16 @@
       </el-table-column>
       <el-table-column label="购置时间" align="center" prop="equipmentPurchase" width="120" />
       <el-table-column label="投入运营时间" align="center" prop="equipmentOperating" width="120" />
+      <!-- 宇树扩展字段 -->
+      <el-table-column label="所属车间" align="center" prop="workshopName" width="110" />
+      <el-table-column label="所属产线" align="center" prop="productionLineName" width="110" />
+      <el-table-column label="责任人" align="center" prop="responsiblePersonName" width="100" />
+      <el-table-column label="维保单位" align="center" prop="maintenanceUnit" width="100" />
+      <el-table-column label="设备厂家" align="center" prop="manufacturer" width="100" />
+      <el-table-column label="系统版本" align="center" prop="systemVersion" width="140" />
+      <el-table-column label="通讯协议" align="center" prop="commProtocol" width="110" />
+      <el-table-column label="通讯接口" align="center" prop="commInterface" width="150" />
+      <el-table-column label="设备来源" align="center" prop="equipmentSource" width="90" />
       <!-- <el-table-column label="创建人" align="center" prop="createBy" width="100" /> -->
       <el-table-column
         label="创建时间"
