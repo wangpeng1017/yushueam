@@ -78,6 +78,23 @@ const eamMenus = [
       { path: 'sparePartSearchList', name: '备件库查询', component: 'eam/sparePartSearchList/page', componentName: 'EamSparePartSearchList', visible: true, keepAlive: true, parentId: 50 },
       { path: 'sparePartRecordList', name: '备件使用记录', component: 'eam/sparePartRecordList/page', componentName: 'EamSparePartRecordList', visible: true, keepAlive: true, parentId: 50 },
     ]
+  },
+  {
+    path: '/eam/project',
+    name: '非标研制', icon: 'ep:cpu', component: '#',
+    visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
+    children: [
+      { path: 'customEquipmentProject', name: '研制项目', component: 'eam/customEquipmentProject/page', componentName: 'EamCustomEquipmentProject', visible: true, keepAlive: true, parentId: 60 },
+    ]
+  },
+  {
+    path: '/eam/iot',
+    name: 'IoT/OEE', icon: 'ep:data-line', component: '#',
+    visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
+    children: [
+      { path: 'deviceMonitor', name: '设备运行监控', component: 'eam/deviceMonitor/page', componentName: 'EamDeviceMonitor', visible: true, keepAlive: true, parentId: 70 },
+      { path: 'oeeAnalysis', name: 'OEE分析看板', component: 'eam/oeeAnalysis/page', componentName: 'EamOeeAnalysis', visible: true, keepAlive: true, parentId: 70 },
+    ]
   }
 ]
 
