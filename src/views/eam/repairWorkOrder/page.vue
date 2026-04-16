@@ -93,7 +93,7 @@
     </el-row>
 
     <!-- 数据表格 -->
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" :row-class-name="getRepairRowClassName" @row-dblclick="handleRepairRowDblClick">
       <el-table-column label="维修单号" align="center" prop="repairCode" width="160" />
       <el-table-column label="维修状态" align="center" prop="status" width="100">
         <template #default="{ row }">
@@ -234,6 +234,52 @@
     />
   </ContentWrap>
 
+  <!-- ==================== 备件耗用子表 ==================== -->
+  <ContentWrap>
+    <div class="item-section-title">备件耗用</div>
+    <div class="item-section-toolbar">
+      <el-button plain type="primary" :disabled="!currentRepair" @click="openSparePartForm">
+        <Icon icon="ep:plus" class="mr-5px" />&nbsp;新增备件
+      </el-button>
+    </div>
+    <el-table v-loading="sparePartLoading" :data="sparePartList" :stripe="true" :show-overflow-tooltip="true">
+      <el-table-column type="index" label="序号" width="60" align="center" />
+      <el-table-column label="备件编号" align="center" prop="sparePartNumber" width="120" />
+      <el-table-column label="备件名称" align="center" prop="sparePartName" min-width="150" />
+      <el-table-column label="使用数量" align="center" prop="quantity" width="90" />
+      <el-table-column label="领用人" align="center" prop="operatorName" width="100" />
+      <el-table-column label="领用时间" align="center" prop="operateTime" width="160" />
+      <el-table-column label="备注" align="center" prop="remark" min-width="150" />
+      <el-table-column label="操作" align="center" fixed="right" width="80">
+        <template #default="scope">
+          <el-button link class="btn-delete" @click="handleSparePartDelete(scope.row)">&nbsp;删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </ContentWrap>
+
+  <!-- 新增备件弹窗 -->
+  <Dialog v-model="sparePartDialogVisible" title="新增备件耗用" width="500px">
+    <el-form ref="sparePartFormRef" :model="sparePartFormData" label-width="100px">
+      <el-form-item label="备件编号" prop="sparePartNumber" :rules="[{required:true,message:'必填'}]">
+        <el-input v-model="sparePartFormData.sparePartNumber" placeholder="如：BJ-001" />
+      </el-form-item>
+      <el-form-item label="备件名称" prop="sparePartName" :rules="[{required:true,message:'必填'}]">
+        <el-input v-model="sparePartFormData.sparePartName" placeholder="如：485通讯端子" />
+      </el-form-item>
+      <el-form-item label="使用数量" prop="quantity" :rules="[{required:true,message:'必填'}]">
+        <el-input-number v-model="sparePartFormData.quantity" :min="1" :precision="0" />
+      </el-form-item>
+      <el-form-item label="备注">
+        <el-input v-model="sparePartFormData.remark" placeholder="领用说明" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="sparePartDialogVisible = false">取消</el-button>
+      <el-button type="primary" @click="submitSparePart">确定</el-button>
+    </template>
+  </Dialog>
+
   <!-- 创建/编辑表单弹窗 -->
   <RepairWorkOrderForm ref="formRef" @success="getList" />
 
@@ -309,12 +355,14 @@
 
 <script lang="ts" setup>
 import { CircleClose } from '@element-plus/icons-vue'
+import { ElMessageBox } from 'element-plus'
 import { dateFormatter } from '@/utils/formatTime'
 import * as RepairWorkOrderApi from '@/api/eam/repairWorkOrder'
 import { useEamEnumStore } from '@/store/modules/enums'
 import RepairWorkOrderForm from './form.vue'
 import RepairWorkOrderDetail from './detail.vue'
 import PersonSelectDialog from '@/components/PersonSelectDialog/index.vue'
+import { Dialog } from '@/components/Dialog'
 
 defineOptions({ name: 'EamRepairWorkOrder' })
 
@@ -564,6 +612,73 @@ const handleDelete = async (id: string) => {
   await getList()
 }
 
+// ==================== 备件耗用子表 ====================
+
+const currentRepair = ref<RepairWorkOrderApi.RepairWorkOrderVo | null>(null)
+const sparePartList = ref<any[]>([])
+const sparePartLoading = ref(false)
+const sparePartDialogVisible = ref(false)
+const sparePartFormRef = ref()
+const sparePartFormData = reactive({
+  sparePartNumber: '',
+  sparePartName: '',
+  quantity: 1,
+  remark: ''
+})
+
+const getRepairRowClassName = ({ row }: { row: RepairWorkOrderApi.RepairWorkOrderVo }) => {
+  return currentRepair.value?.id === row.id ? 'row-selected' : ''
+}
+
+const handleRepairRowDblClick = (row: RepairWorkOrderApi.RepairWorkOrderVo) => {
+  if (row.id === currentRepair.value?.id) return
+  currentRepair.value = row
+  getSparePartList()
+}
+
+const getSparePartList = async () => {
+  if (!currentRepair.value) return
+  sparePartLoading.value = true
+  try {
+    const res = await RepairWorkOrderApi.getRepairWorkOrderSparePartList(currentRepair.value.repairCode)
+    sparePartList.value = res ?? []
+  } finally {
+    sparePartLoading.value = false
+  }
+}
+
+const openSparePartForm = () => {
+  sparePartFormData.sparePartNumber = ''
+  sparePartFormData.sparePartName = ''
+  sparePartFormData.quantity = 1
+  sparePartFormData.remark = ''
+  sparePartDialogVisible.value = true
+}
+
+const submitSparePart = async () => {
+  const valid = await sparePartFormRef.value?.validate().catch(() => false)
+  if (!valid) return
+  if (!currentRepair.value) return
+  await RepairWorkOrderApi.addRepairWorkOrderSparePart({
+    repairCode: currentRepair.value.repairCode,
+    ...sparePartFormData
+  })
+  message.success('新增成功')
+  sparePartDialogVisible.value = false
+  await getSparePartList()
+}
+
+const handleSparePartDelete = async (row: any) => {
+  await ElMessageBox.confirm('确认删除该备件记录？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
+  await RepairWorkOrderApi.deleteRepairWorkOrderSparePart(row.id)
+  message.success('删除成功')
+  await getSparePartList()
+}
+
 // ==================== 初始化 ====================
 
 onMounted(async () => {
@@ -576,6 +691,37 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+.item-section-title {
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #303133;
+}
+
+.item-section-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+// 选中行高亮
+:deep(.el-table .row-selected) {
+  --el-table-tr-bg-color: #e6f0fa !important;
+
+  td.el-table__cell {
+    background-color: #e6f0fa !important;
+  }
+}
+
+// 删除按钮样式
+:deep(.el-button.btn-delete) {
+  color: var(--el-color-danger);
+
+  &:hover {
+    color: rgb(245 108 108 / 75%);
+  }
+}
+
 .selector-wrap {
   display: flex;
   gap: 8px;

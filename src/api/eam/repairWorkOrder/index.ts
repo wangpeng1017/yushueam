@@ -223,3 +223,26 @@ export const listOfRepairType = () => request.get({ url: prefix + '/listOfRepair
 
 /** 紧急程度枚举 */
 export const listOfRepairDegree = () => request.get({ url: prefix + '/listOfRepairDegree' })
+
+// ==================== 备件耗用子表 API ====================
+
+const sparePartPrefix = '/workOrder/eamRepairWorkOrderSparePart'
+
+/** 查询维修工单备件列表 */
+export const getRepairWorkOrderSparePartList = (repairCode: string) =>
+  request
+    .get({ url: sparePartPrefix + '/list', params: { repairCode } })
+    .then((res: any) => res?.records ?? res ?? [])
+
+/** 新增备件耗用 */
+export const addRepairWorkOrderSparePart = (data: {
+  repairCode: string
+  sparePartNumber: string
+  sparePartName: string
+  quantity: number
+  remark?: string
+}) => request.post({ url: sparePartPrefix + '/add', data })
+
+/** 删除备件耗用 */
+export const deleteRepairWorkOrderSparePart = (id: string) =>
+  request.delete({ url: sparePartPrefix + '/delete', params: { id } })

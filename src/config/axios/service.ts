@@ -48,41 +48,32 @@ const service: AxiosInstance = axios.create({
   }
 })
 
-// ── 生产环境 Mock 拦截器（Vercel部署用，同步注入，最高优先级） ──
+// ── 生产环境 Mock 拦截器（Vercel部署用） ──
+import { tryMatchMock } from '@/mock-bridge'
+
 if ((!base_url || base_url === '/admin-api') && import.meta.env.PROD) {
-  let _tryMatchMock: any = null
-  try {
-    // 同步引入（构建时 tree-shaking 会保留）
-    const prodMock = require('../../mock/_prodMock')
-    _tryMatchMock = prodMock.tryMatchMock
-    prodMock.setupProdMockServer()
-  } catch (e) {
-    console.warn('[Mock] 生产mock加载失败:', e)
-  }
-  if (_tryMatchMock) {
-    service.interceptors.request.use((config) => {
-      const url = config.url || ''
-      const method = config.method || 'get'
-      const headers: Record<string, string> = {}
-      if (config.headers) {
-        Object.keys(config.headers).forEach(k => {
-          headers[k.toLowerCase()] = String(config.headers[k])
-        })
-      }
-      const mockData = _tryMatchMock(url, method, config.data, headers)
-      if (mockData) {
-        // 用自定义 adapter 短路请求，不发真实 HTTP
-        config.adapter = () => Promise.resolve({
-          data: mockData,
-          status: 200,
-          statusText: 'OK',
-          headers: { 'content-type': 'application/json' },
-          config
-        })
-      }
-      return config
-    })
-  }
+  console.log('[Mock] 生产环境mock拦截器已注入')
+  service.interceptors.request.use((config) => {
+    const url = config.url || ''
+    const method = config.method || 'get'
+    const headers: Record<string, string> = {}
+    if (config.headers) {
+      Object.keys(config.headers).forEach(k => {
+        headers[k.toLowerCase()] = String(config.headers[k])
+      })
+    }
+    const mockData = tryMatchMock(url, method, config.data, headers)
+    if (mockData) {
+      config.adapter = () => Promise.resolve({
+        data: mockData,
+        status: 200,
+        statusText: 'OK',
+        headers: { 'content-type': 'application/json' },
+        config
+      })
+    }
+    return config
+  })
 }
 
 // request拦截器

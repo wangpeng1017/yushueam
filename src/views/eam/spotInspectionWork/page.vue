@@ -175,7 +175,7 @@
       >
         <el-table-column type="selection" width="50" align="center" />
         <el-table-column type="index" label="序号" width="60" align="center" />
-        <el-table-column label="操作" align="center" width="80">
+        <el-table-column label="操作" align="center" width="140">
           <template #default="scope">
             <!-- 后端实际值域需联调确认：status != '3' 表示非已巡检可执行 -->
             <el-button
@@ -186,6 +186,14 @@
               @click="handleExec(scope.row)"
             >
               &nbsp;执行
+            </el-button>
+            <el-button
+              v-if="scope.row.abnormalNum > 0"
+              link
+              class="btn-other"
+              @click="handleTriggerRepair(scope.row)"
+            >
+              &nbsp;转报修
             </el-button>
           </template>
         </el-table-column>
@@ -232,6 +240,7 @@
 
 <script lang="ts" setup>
 import dayjs from 'dayjs'
+import { ElMessageBox, ElMessage } from 'element-plus'
 import * as WorkApi from '@/api/eam/spotInspectionWork'
 import { useEamEnumStore } from '@/store/modules/enums'
 import PersonSelectDialog from '@/components/PersonSelectDialog/index.vue'
@@ -455,6 +464,19 @@ const handleViewDetail = () => {
   execDetailRef.value.open(deviceSelectedRows.value[0])
 }
 
+// ==================== 转故障报修 ====================
+
+const handleTriggerRepair = async (row: WorkApi.WorkStandardVo) => {
+  const deviceId = row.deviceSn || (row as any).equipmentSn || ''
+  await ElMessageBox.confirm(
+    `设备 ${deviceId} 发现 ${row.abnormalNum} 项异常，是否转为故障报修？`,
+    '转故障报修',
+    { confirmButtonText: '确认报修', cancelButtonText: '取消', type: 'warning' }
+  )
+  // Mock: 直接提示成功
+  ElMessage.success('已生成故障报修工单，请到"维修管理-故障报修"中查看')
+}
+
 // ==================== 公共方法 ====================
 const clearSubSection = () => {
   currentWork.value = null
@@ -511,6 +533,14 @@ onMounted(async () => {
 
   &:hover {
     color: rgb(0 151 186 / 75%);
+  }
+}
+
+:deep(.el-button.btn-other) {
+  color: var(--el-color-warning);
+
+  &:hover {
+    color: rgb(230 162 60 / 75%);
   }
 }
 </style>

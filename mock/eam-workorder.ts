@@ -259,4 +259,36 @@ export default [
       return { code: 200, data: paginate(filterByWorkshop(repairWorkOrders, ws), query?.pageNo, query?.pageSize) }
     }
   },
+
+  // ══ 维修工单备件耗用 ══
+  {
+    url: '/admin-api/workOrder/eamRepairWorkOrderSparePart/list',
+    method: 'get',
+    response: ({ query }) => {
+      const repairCode = query?.repairCode || ''
+      const allParts: Record<string, any[]> = {
+        'RW-C-0001': [
+          { id: 'RWSP01', repairCode: 'RW-C-0001', sparePartNumber: 'BJ-001', sparePartName: '485通讯端子', quantity: 1, operatorName: 'XXX', operateTime: '2026-03-05 11:05', remark: '更换故障端子' }
+        ],
+        'RW-B-0001': [
+          { id: 'RWSP02', repairCode: 'RW-B-0001', sparePartNumber: 'BJ-006', sparePartName: '批头', quantity: 2, operatorName: '买盼', operateTime: '2026-04-08 10:10', remark: '更换磨损批头' }
+        ],
+        'RW-N-0001': [
+          { id: 'RWSP03', repairCode: 'RW-N-0001', sparePartNumber: 'BJ-008', sparePartName: '注塑机温控模块', quantity: 1, operatorName: '刚嘉成', operateTime: '2026-04-14 13:30', remark: '更换故障温控板' }
+        ]
+      }
+      const data = allParts[repairCode] || []
+      return { code: 200, data: { records: data, total: data.length } }
+    }
+  },
+  {
+    url: '/admin-api/workOrder/eamRepairWorkOrderSparePart/add',
+    method: 'post',
+    response: () => ({ code: 200, data: { id: String(Date.now()) } })
+  },
+  {
+    url: '/admin-api/workOrder/eamRepairWorkOrderSparePart/delete',
+    method: 'delete',
+    response: () => ({ code: 200, data: true })
+  },
 ] as MockMethod[]
