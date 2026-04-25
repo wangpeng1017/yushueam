@@ -1,71 +1,51 @@
 <template>
-  <div
-    :class="prefixCls"
-    class="relative h-[100%] lt-md:px-10px lt-sm:px-10px lt-xl:px-10px lt-xl:px-10px"
-    style="background-color: #00405C;"
-  >
-    <!-- 顶部导航栏 -->
-    <div class="login-header">
-      <div class="flex items-center justify-between px-30px py-10px">
-        <!-- 左侧 logo -->
-        <div class="flex items-center text-white">
-          <img alt="" class="h-40px" style="width: 160px;" src="@/assets/imgs/logoW.svg" />
+  <div :class="prefixCls" class="login-page">
+    <!-- 左侧品牌区 - 丝绸渐变 + 装饰 -->
+    <div :class="`${prefixCls}__left lt-xl:hidden`">
+      <div class="brand-bg"></div>
+      <div class="brand-content">
+        <div class="brand-logo">
+          <img alt="" class="h-44px" src="@/assets/imgs/logoW.svg" />
+          <span class="brand-title">iimake EAM</span>
         </div>
-        <!-- 右侧主题、语言选择 -->
-        <div class="flex items-center space-x-10px">
-          &nbsp;
-          <!-- <ThemeSwitch />
-          <LocaleDropdown /> -->
+        <div class="brand-tagline">
+          <h1 class="tagline-main">智能制造一体化平台</h1>
+          <p class="tagline-sub">让数据驱动制造，让管理更高效</p>
+        </div>
+        <div class="brand-decoration">
+          <img alt="" class="w-full max-w-540px opacity-90" src="@/assets/imgs/logo_banner.png" />
         </div>
       </div>
     </div>
-    
-    <div class="relative mx-auto h-full flex pt-70px">
-      <div
-        :class="`${prefixCls}__left flex-1 relative p-30px lt-xl:hidden overflow-x-hidden overflow-y-auto flex flex-col`"
-      >
-        <!-- 中间区域（留空） -->
-        <div class="flex-1"></div>
-        <!-- 左下角的 banner -->
-        <div class="relative">
-          <img alt="" class="w-full max-w-600px" src="@/assets/imgs/logo_banner.png" />
+
+    <!-- 右侧登录卡片 -->
+    <div :class="`${prefixCls}__right`">
+      <Transition appear enter-active-class="animate__animated animate__fadeInUp">
+        <div class="login-card">
+          <LoginForm class="login-form-wrap" />
+          <MobileForm class="login-form-wrap" />
+          <QrCodeForm class="login-form-wrap" />
+          <RegisterForm class="login-form-wrap" />
+          <SSOLoginVue class="login-form-wrap" />
+          <ForgetPasswordForm class="login-form-wrap" />
         </div>
-      </div>
-      <div
-        class="relative flex-1 p-30px lt-sm:p-10px overflow-x-hidden overflow-y-auto"
-      >
-        <!-- 右边的登录界面 -->
-        <Transition appear enter-active-class="animate__animated animate__bounceInRight">
-          <div
-            class="m-auto h-[calc(100%-60px)] w-[100%] flex items-center at-2xl:max-w-500px at-lg:max-w-500px at-md:max-w-500px at-xl:max-w-500px"
-          >
-            <!-- 账号登录 -->
-            <LoginForm class="m-auto h-auto p-40px login-form-container" style="background-color: rgba(0, 64, 92, 0.3); border-radius: 8px;" />
-            <!-- 手机登录 -->
-            <MobileForm class="m-auto h-auto p-40px login-form-container" style="background-color: rgba(0, 64, 92, 0.3); border-radius: 8px;" />
-            <!-- 二维码登录 -->
-            <QrCodeForm class="m-auto h-auto p-40px login-form-container" style="background-color: rgba(0, 64, 92, 0.3); border-radius: 8px;" />
-            <!-- 注册 -->
-            <RegisterForm class="m-auto h-auto p-40px login-form-container" style="background-color: rgba(0, 64, 92, 0.3); border-radius: 8px;" />
-            <!-- 三方登录 -->
-            <SSOLoginVue class="m-auto h-auto p-40px login-form-container" style="background-color: rgba(0, 64, 92, 0.3); border-radius: 8px;" />
-            <!-- 忘记密码 -->
-            <ForgetPasswordForm class="m-auto h-auto p-40px login-form-container" style="background-color: rgba(0, 64, 92, 0.3); border-radius: 8px;" />
-          </div>
-        </Transition>
-      </div>
+      </Transition>
     </div>
   </div>
 </template>
-<script lang="ts" setup>
-import { underlineToHump } from '@/utils'
 
+<script lang="ts" setup>
 import { useDesign } from '@/hooks/web/useDesign'
 import { useAppStore } from '@/store/modules/app'
-import { ThemeSwitch } from '@/layout/components/ThemeSwitch'
-import { LocaleDropdown } from '@/layout/components/LocaleDropdown'
 
-import { LoginForm, MobileForm, QrCodeForm, RegisterForm, SSOLoginVue, ForgetPasswordForm } from './components'
+import {
+  LoginForm,
+  MobileForm,
+  QrCodeForm,
+  RegisterForm,
+  SSOLoginVue,
+  ForgetPasswordForm
+} from './components'
 
 defineOptions({ name: 'Login' })
 
@@ -78,80 +58,201 @@ const prefixCls = getPrefixCls('login')
 <style lang="scss" scoped>
 $prefix-cls: #{$namespace}-login;
 
-.#{$prefix-cls} {
-  overflow: auto;
-  background-color: #00405C;
+.login-page {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  background-color: #f4f7fb;
+  overflow: hidden;
+}
 
-  &__left {
-    // 移除原背景图
+/* ========== 左侧品牌区 ========== */
+.#{$prefix-cls}__left {
+  flex: 1.2;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(33, 150, 243, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 70%, rgba(124, 158, 250, 0.15) 0%, transparent 55%),
+    linear-gradient(135deg, #eaf2fe 0%, #f7faff 50%, #e8eef9 100%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.7) 50%, transparent 70%),
+      linear-gradient(70deg, transparent 35%, rgba(186, 215, 250, 0.4) 50%, transparent 65%);
+    transform: translateY(-5%) rotate(-8deg);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -15%;
+    right: -10%;
+    width: 70%;
+    height: 70%;
+    background: radial-gradient(circle, rgba(33, 150, 243, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
   }
 }
 
-// 顶部导航栏样式
-.login-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background-color: rgba(0, 64, 92, 0.3);
-  backdrop-filter: blur(10px);
+.brand-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 600px;
+  padding: 60px 60px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-// 登录表单样式
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 90px;
+}
+
+.brand-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a2332;
+  letter-spacing: 0.5px;
+}
+
+.brand-tagline {
+  flex: 1;
+
+  .tagline-main {
+    font-size: 38px;
+    font-weight: 700;
+    color: #1a2332;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+
+  .tagline-sub {
+    font-size: 16px;
+    color: #5a6677;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+  }
+}
+
+.brand-decoration {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+}
+
+/* ========== 右侧登录卡片 ========== */
+.#{$prefix-cls}__right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 30px;
+  position: relative;
+  z-index: 2;
+
+  /* 移动端单列时，整页深底也要变浅 */
+  @media (max-width: 1024px) {
+    background:
+      radial-gradient(ellipse at top right, rgba(33, 150, 243, 0.1) 0%, transparent 60%),
+      linear-gradient(135deg, #f7faff 0%, #ffffff 100%);
+  }
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px 36px;
+  box-shadow:
+    0 20px 50px -10px rgba(15, 23, 42, 0.08),
+    0 10px 24px -6px rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* 表单包装：让原表单组件继承新风格 */
+.login-form-wrap {
+  width: 100%;
+}
+
+/* 覆写表单内部样式 - 浅色 */
 :deep(.login-form) {
-  // 表单文字颜色为白色
-  color: white;
-  
-  // 标签文字为白色
-  .el-form-item__label {
-    color: white !important;
-  }
-  
-  // 复选框文字为白色
-  .el-checkbox__label {
-    color: white !important;
-  }
-  
-  // 链接文字为白色
-  .el-link {
-    color: white !important;
-  }
-  
-  // 输入框样式
-  .el-input__wrapper {
-    background-color: white;
-  }
-  
-  // 输入框内文字为黑色
-  .el-input__inner {
-    color: black !important;
-  }
-}
+  background: transparent !important;
+  padding: 0 !important;
+  color: #1a2332;
 
-// 登录框容器背景样式
-.login-form-container {
-  background-color: rgba(0, 64, 92, 0.3) !important;
-  border-radius: 8px !important;
-  backdrop-filter: blur(10px);
+  .el-form-item__label {
+    color: #1a2332 !important;
+  }
+
+  .el-checkbox__label {
+    color: #5a6677 !important;
+  }
+
+  .el-link {
+    color: var(--primary-color) !important;
+  }
+
+  .el-input__wrapper {
+    background-color: #f7f9fc !important;
+    box-shadow: 0 0 0 1px transparent inset !important;
+    border-radius: 8px !important;
+    padding: 6px 12px !important;
+
+    &:hover {
+      background-color: #f0f4f8 !important;
+      box-shadow: 0 0 0 1px var(--primary-color-hover) inset !important;
+    }
+
+    &.is-focus {
+      background-color: #ffffff !important;
+      box-shadow:
+        0 0 0 1px var(--primary-color) inset,
+        0 0 0 3px rgba(33, 150, 243, 0.12) !important;
+    }
+  }
+
+  .el-input__inner {
+    color: #1a2332 !important;
+    font-size: 14px;
+
+    &::placeholder {
+      color: #a0a8b3 !important;
+    }
+  }
+
+  .el-button--primary {
+    height: 44px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%) !important;
+    border: none !important;
+    box-shadow: 0 6px 16px rgba(33, 150, 243, 0.32) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(33, 150, 243, 0.4) !important;
+    }
+  }
 }
 </style>
-
-<!-- <style lang="scss">
-.dark .login-form {
-  .el-divider__text {
-    background-color: var(--login-bg-color);
-  }
-
-  .el-card {
-    background-color: var(--login-bg-color);
-  }
-}
-
-// 登录框容器全局样式
-.login-form-container {
-  background-color: rgba(0, 64, 92, 0.3) !important;
-  border-radius: 8px !important;
-  backdrop-filter: blur(10px);
-}
-</style> -->

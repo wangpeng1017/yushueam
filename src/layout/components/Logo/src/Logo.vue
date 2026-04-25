@@ -62,25 +62,31 @@ watch(
       :class="[
         prefixCls,
         layout !== 'classic' ? `${prefixCls}__Top` : '',
-        'flex flex-col items-center justify-center cursor-pointer relative decoration-none overflow-hidden py-8px'
+        'flex items-center cursor-pointer relative decoration-none overflow-hidden'
       ]"
-      :style="{ height: layout === 'classic' ? '90px' : 'var(--logo-height)' }"
-      to="/" >
+      :style="{
+        height: 'var(--logo-height)',
+        padding: '0 16px',
+        gap: '10px',
+        justifyContent: show ? 'flex-start' : 'center'
+      }"
+      to="/"
+    >
       <img
-        :style="{ width: layout === 'classic' ? '100px' : 'calc(var(--logo-height) - 10px)' }"
-        class="mb-10px"
+        :style="{ width: '28px', height: '28px' }"
         src="@/assets/imgs/logoW.svg"
       />
       <div
         v-if="show"
         :class="[
-          'text-16px font-700 text-center leading-tight',
+          'text-[16px] font-700 leading-tight whitespace-nowrap',
           {
-            'text-[var(--logo-title-text-color)]': layout === 'classic',
+            'text-white': layout === 'classic',
             'text-[var(--top-header-text-color)]':
               layout === 'topLeft' || layout === 'top' || layout === 'cutMenu'
           }
         ]"
+        style="letter-spacing: 0.8px;"
       >
         {{ title }}
       </div>

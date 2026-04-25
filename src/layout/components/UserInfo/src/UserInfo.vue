@@ -96,10 +96,10 @@ const toDocument = () => {
     />
   </ElSelect>
 
-  <ElDropdown class="custom-hover" :class="prefixCls" trigger="click">
-    <div class="flex items-center">
-      <ElAvatar :src="avatar" alt="" class="w-[calc(var(--logo-height)-25px)] rounded-[50%]" />
-      <span class="pl-[5px] text-14px text-[var(--top-header-text-color)] <lg:hidden">
+  <ElDropdown class="user-info-dropdown" :class="prefixCls" trigger="click">
+    <div class="flex items-center px-8px py-4px rounded-8px hover:bg-[#f5f9ff] cursor-pointer transition-all">
+      <ElAvatar :src="avatar" alt="" class="w-32px h-32px rounded-[50%]" />
+      <span class="pl-8px text-14px text-[var(--top-header-text-color)] whitespace-nowrap <lg:hidden">
         {{ userName }}
       </span>
     </div>

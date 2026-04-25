@@ -63,7 +63,7 @@ export default defineComponent({
         {layout.value !== 'top' ? (
           <div class="h-full flex items-center">
             {hamburger.value && layout.value !== 'cutMenu' ? (
-              <Collapse class="custom-hover" color="#0097BA"></Collapse>
+              <Collapse class="custom-hover" color="#2196f3"></Collapse>
             ) : undefined}
             {breadcrumb.value ? <Breadcrumb class="lt-md:hidden"></Breadcrumb> : undefined}
           </div>
@@ -71,20 +71,20 @@ export default defineComponent({
         <div class="h-full flex items-center">
           {hasTenantVisitPermission.value ? <TenantVisit /> : undefined}
           {screenfull.value ? (
-            <Screenfull class="custom-hover" color="#0097BA"></Screenfull>
+            <Screenfull class="custom-hover" color="#2196f3"></Screenfull>
           ) : undefined}
-          {search.value ? <RouterSearch isModal={false} color="#0097BA"/> : undefined}
+          {search.value ? <RouterSearch isModal={false} color="#2196f3"/> : undefined}
           {size.value ? (
-            <SizeDropdown class="custom-hover" color="#0097BA"></SizeDropdown>
+            <SizeDropdown class="custom-hover" color="#2196f3"></SizeDropdown>
           ) : undefined}
           {locale.value ? (
             <LocaleDropdown
               class="custom-hover"
-              color="#0097BA"
+              color="#2196f3"
             ></LocaleDropdown>
           ) : undefined}
           {message.value ? (
-            <Message class="custom-hover" color="#0097BA"></Message>
+            <Message class="custom-hover" color="#2196f3"></Message>
           ) : undefined}
           <UserInfo></UserInfo>
         </div>
@@ -99,5 +99,23 @@ $prefix-cls: #{$namespace}-tool-header;
 
 .#{$prefix-cls} {
   transition: left var(--transition-time-02);
+  background-color: var(--top-header-bg-color);
+  box-shadow: 0 1px 0 0 var(--border-color-light);
+
+  :deep(.custom-hover) {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    margin: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      background-color: rgba(33, 150, 243, 0.08);
+    }
+  }
 }
 </style>

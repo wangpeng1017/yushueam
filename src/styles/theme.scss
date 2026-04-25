@@ -1,48 +1,55 @@
-/* Vben Admin 风格主题样式 */
+/* ========== 宇树科技 UI 风格 - 高级灰白质感 ========== */
 
-/* 卡片样式 - Vben 简洁风 */
+/* 卡片 - 大圆角 + 极柔阴影 */
 .el-card {
   border-radius: var(--border-radius-base);
-  box-shadow: var(--shadow-base);
+  box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-color);
-  transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-  
+  background-color: #ffffff;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
   &:hover {
     box-shadow: var(--shadow-md);
   }
-  
+
   .el-card__header {
-    border-bottom: 1px solid var(--border-color);
-    padding: 16px 20px;
-    background-color: #fafafa;
+    border-bottom: 1px solid var(--border-color-light);
+    padding: 14px 20px;
+    background-color: transparent;
+    font-weight: 600;
   }
-  
+
   .el-card__body {
     padding: 20px;
   }
 }
 
-/* 按钮样式 - Vben 扫平风格 */
+/* 按钮 - 现代圆润 */
 .el-button {
   border-radius: var(--border-radius-small);
-  font-weight: 400;
-  transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-  
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
   &--primary {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
-    
+    box-shadow: 0 2px 6px rgba(33, 150, 243, 0.2);
+
     &:hover {
       background-color: var(--primary-color-hover);
       border-color: var(--primary-color-hover);
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.28);
+      transform: translateY(-1px);
     }
-    
+
     &:active {
       background-color: var(--primary-color-active);
       border-color: var(--primary-color-active);
+      transform: translateY(0);
     }
   }
-  
+
   &--default {
     &:hover {
       color: var(--primary-color-hover);
@@ -51,46 +58,49 @@
   }
 }
 
-/* 表格样式 - Vben 简洁明了 */
+/* 表格 - 通透圆角 */
 .el-table {
-  border-radius: var(--border-radius-base);
-  border: 1px solid var(--border-color);
-  
+  border-radius: var(--border-radius-small);
+  border: none;
+  background-color: transparent;
+
   th.el-table__cell {
-    background-color: #fafafa;
+    background-color: #fafbfc;
     color: var(--text-color-primary);
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 13px;
     border-bottom: 1px solid var(--border-color);
   }
-  
+
   .el-table__body tr:hover > td {
-    background-color: #fafafa;
+    background-color: #f5f9ff !important;
   }
-  
-  .el-table__row {
-    &:hover {
-      background-color: #fafafa;
-    }
-  }
-  
+
   td.el-table__cell {
     border-bottom: 1px solid var(--border-color-light);
+    padding: 10px 0;
+  }
+
+  /* 边框模式收紧 */
+  &--border {
+    border: 1px solid var(--border-color);
   }
 }
 
-/* 输入框 - Vben 简洁边框 */
+/* 输入框 - 圆角细边 */
 .el-input {
   .el-input__wrapper {
     border-radius: var(--border-radius-small);
     box-shadow: 0 0 0 1px var(--border-color) inset;
-    transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-    
+    background-color: #ffffff;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
     &:hover {
-      box-shadow: 0 0 0 1px var(--primary-color) inset;
+      box-shadow: 0 0 0 1px var(--primary-color-hover) inset;
     }
-    
+
     &.is-focus {
-      box-shadow: 0 0 0 1px var(--primary-color) inset;
+      box-shadow: 0 0 0 1px var(--primary-color) inset, 0 0 0 3px rgba(33, 150, 243, 0.12);
     }
   }
 }
@@ -102,169 +112,168 @@
   }
 }
 
-/* 标签页 - Vben 扫平风格 */
+/* 标签页 - 简洁下划线 */
 .el-tabs {
   .el-tabs__item {
     color: var(--text-color-regular);
-    font-weight: 400;
+    font-weight: 500;
     transition: all 0.2s;
-    
+
     &.is-active {
       color: var(--primary-color);
-      font-weight: 500;
+      font-weight: 600;
     }
-    
+
     &:hover {
-      color: var(--primary-color);
+      color: var(--primary-color-hover);
     }
   }
-  
+
   .el-tabs__active-bar {
     background-color: var(--primary-color);
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  .el-tabs__nav-wrap::after {
+    background-color: var(--border-color-light);
+    height: 1px;
   }
 }
 
-/* 菜单项 - 定制风格 */
+/* 菜单项 - 深色侧边栏定制 */
 .el-menu {
   border-right: none;
-  
+
   .el-menu-item,
   .el-sub-menu__title {
     color: var(--left-menu-text-color);
     transition: all 0.2s;
-    
+    border-radius: 8px;
+    margin: 2px 8px;
+
     &:hover {
-      background-color: var(--left-menu-bg-light-color);
-      color: var(--left-menu-text-active-color);
+      background-color: var(--left-menu-bg-light-color) !important;
+      color: var(--left-menu-text-active-color) !important;
     }
   }
-  
+
   .el-menu-item.is-active {
-    background-color: var(--left-menu-bg-active-color) !important;
-    color: var(--left-menu-text-active-color) !important;
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
     position: relative;
-    
+
     &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background-color: #0097BA;
-      border-radius: 0 2px 2px 0;
+      content: none;
+    }
+
+    .el-icon {
+      color: #ffffff !important;
     }
   }
 }
 
-/* 面包屑 - Vben 简洁风 */
+/* 面包屑 */
 .el-breadcrumb {
   .el-breadcrumb__item {
     .el-breadcrumb__inner {
       color: var(--text-color-regular);
       font-weight: 400;
       transition: color 0.2s;
-      
+
       &:hover {
         color: var(--primary-color);
       }
     }
-    
+
     &:last-child .el-breadcrumb__inner {
       color: var(--text-color-primary);
+      font-weight: 500;
     }
   }
 }
 
-/* 对话框 - Vben 简洁风格 */
+/* 对话框 - 大圆角 */
 .el-dialog {
   border-radius: var(--border-radius-base);
   box-shadow: var(--shadow-lg);
-  
+  overflow: hidden;
+
   .el-dialog__header {
-    border-bottom: 1px solid var(--border-color);
-    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color-light);
+    padding: 16px 24px;
     margin: 0;
+    background-color: #fafbfc;
   }
-  
+
   .el-dialog__body {
-    padding: 20px;
+    padding: 24px;
   }
-  
+
   .el-dialog__footer {
-    border-top: 1px solid var(--border-color);
-    padding: 12px 20px;
+    border-top: 1px solid var(--border-color-light);
+    padding: 14px 24px;
   }
 }
 
-/* 消息提示 - Vben 风格 */
+/* 消息提示 */
 .el-message {
   border-radius: var(--border-radius-small);
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color-light);
   padding: 12px 16px;
-  
+
   &.el-message--success {
     background-color: #f6ffed;
     border-color: #b7eb8f;
-    
-    .el-message__icon {
-      color: var(--success-color);
-    }
+    .el-message__icon { color: var(--success-color); }
   }
-  
+
   &.el-message--warning {
     background-color: #fffbe6;
     border-color: #ffe58f;
-    
-    .el-message__icon {
-      color: var(--warning-color);
-    }
+    .el-message__icon { color: var(--warning-color); }
   }
-  
+
   &.el-message--error {
     background-color: #fff2f0;
     border-color: #ffccc7;
-    
-    .el-message__icon {
-      color: var(--danger-color);
-    }
+    .el-message__icon { color: var(--danger-color); }
   }
-  
+
   &.el-message--info {
-    background-color: #f0f2f5;
-    border-color: #d9d9d9;
-    
-    .el-message__icon {
-      color: var(--info-color);
-    }
+    background-color: #e6f4ff;
+    border-color: #91caff;
+    .el-message__icon { color: var(--primary-color); }
   }
 }
 
-/* 下拉菜单 - Vben 简洁风 */
+/* 下拉菜单 */
 .el-dropdown-menu {
-  border-radius: var(--border-radius-base);
+  border-radius: var(--border-radius-small);
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--border-color);
-  padding: 4px 0;
-  
+  border: 1px solid var(--border-color-light);
+  padding: 4px;
+
   .el-dropdown-menu__item {
-    padding: 8px 16px;
+    padding: 8px 12px;
+    border-radius: 4px;
     color: var(--text-color-primary);
-    transition: all 0.2s;
-    
+    transition: all 0.18s;
+
     &:hover {
-      background-color: #f5f5f5;
+      background-color: rgba(33, 150, 243, 0.08);
       color: var(--primary-color);
     }
-    
+
     &:not(:last-child) {
       border-bottom: none;
     }
   }
 }
 
-/* 分页器 - Vben 扫平风 */
+/* 分页器 */
 .el-pagination {
   .el-pager li {
     border-radius: var(--border-radius-small);
@@ -273,75 +282,81 @@
     line-height: 32px;
     color: var(--text-color-primary);
     transition: all 0.2s;
-    
+    margin: 0 2px;
+
     &.is-active {
       background-color: var(--primary-color);
       color: #fff;
+      box-shadow: 0 2px 6px rgba(33, 150, 243, 0.25);
     }
-    
+
     &:hover:not(.is-active) {
       color: var(--primary-color);
+      background-color: rgba(33, 150, 243, 0.08);
     }
   }
-  
+
   .btn-prev,
   .btn-next {
     border-radius: var(--border-radius-small);
     color: var(--text-color-regular);
-    
+    margin: 0 2px;
+
     &:hover:not(:disabled) {
       color: var(--primary-color);
+      background-color: rgba(33, 150, 243, 0.08);
     }
   }
 }
 
 /* 加载动画 */
 .el-loading-mask {
-  background-color: rgba(255, 255, 255, 0.8);
-  
+  background-color: rgba(255, 255, 255, 0.85);
+
   .el-loading-spinner {
     .circular {
       stroke: var(--primary-color);
     }
-    
+
     .el-loading-text {
       color: var(--primary-color);
     }
   }
 }
 
-/* 标签 - Vben 简洁风 */
+/* 标签 - 圆润浅色 */
 .el-tag {
   border-radius: var(--border-radius-small);
   border: 1px solid;
-  padding: 0 8px;
+  padding: 0 10px;
   height: 24px;
   line-height: 22px;
-  
+  font-weight: 500;
+
   &.el-tag--primary {
     background-color: #e6f4ff;
-    border-color: #91caff;
+    border-color: #bae0ff;
     color: var(--primary-color);
   }
-  
+
   &.el-tag--success {
     background-color: #f6ffed;
     border-color: #b7eb8f;
     color: var(--success-color);
   }
-  
+
   &.el-tag--warning {
     background-color: #fffbe6;
     border-color: #ffe58f;
     color: var(--warning-color);
   }
-  
+
   &.el-tag--danger {
     background-color: #fff2f0;
     border-color: #ffccc7;
     color: var(--danger-color);
   }
-  
+
   &.el-tag--info {
     background-color: #f5f5f5;
     border-color: #d9d9d9;
@@ -355,19 +370,19 @@
     color: var(--primary-color);
     border-color: var(--primary-color);
   }
-  
+
   .el-step__title.is-finish {
     color: var(--primary-color);
   }
-  
+
   .el-step__head.is-process {
     color: var(--primary-color);
     border-color: var(--primary-color);
   }
-  
+
   .el-step__title.is-process {
     color: var(--text-color-primary);
-    font-weight: 500;
+    font-weight: 600;
   }
 }
 
@@ -384,7 +399,6 @@
   .el-slider__button {
     border-color: var(--primary-color);
   }
-  
   .el-slider__bar {
     background-color: var(--primary-color);
   }
@@ -395,7 +409,6 @@
   .el-progress__text {
     color: var(--text-color-primary);
   }
-  
   .el-progress-bar__inner {
     background-color: var(--primary-color);
   }
@@ -405,23 +418,23 @@
 .el-timeline-item {
   .el-timeline-item__node {
     background-color: var(--border-color);
-    
     &--primary {
       background-color: var(--primary-color);
     }
   }
 }
 
-/* 树形控件 */
+/* 树形 */
 .el-tree {
   .el-tree-node__content {
-    transition: all 0.2s;
-    
+    transition: all 0.18s;
+    border-radius: 4px;
+
     &:hover {
-      background-color: #f5f5f5;
+      background-color: #f5f9ff;
     }
   }
-  
+
   .el-tree-node.is-current > .el-tree-node__content {
     background-color: #e6f4ff;
     color: var(--primary-color);
@@ -431,13 +444,13 @@
 /* 抽屉 */
 .el-drawer {
   .el-drawer__header {
-    border-bottom: 1px solid var(--border-color);
-    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color-light);
+    padding: 16px 24px;
     margin-bottom: 0;
+    background-color: #fafbfc;
   }
-  
   .el-drawer__body {
-    padding: 20px;
+    padding: 24px;
   }
 }
 
@@ -445,14 +458,14 @@
 .el-notification {
   border-radius: var(--border-radius-base);
   box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color-light);
   padding: 16px 20px;
 }
 
 /* Popover */
 .el-popover {
-  border-radius: var(--border-radius-base);
-  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color-light);
   box-shadow: var(--shadow-md);
 }
 
@@ -461,52 +474,61 @@
   border-radius: var(--border-radius-small);
 }
 
+/* ContentWrap 容器（业务页面通用包装器） */
+.content-wrap,
+.contentWrap {
+  background-color: #ffffff;
+  border-radius: var(--border-radius-base);
+  box-shadow: var(--shadow-sm);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+
 /* 暗黑模式适配 */
 .dark {
   .el-card {
     background-color: #1f1f1f;
     border-color: var(--border-color);
-    
+
     .el-card__header {
       background-color: #141414;
       border-bottom-color: var(--border-color);
     }
   }
-  
+
   .el-table {
     th.el-table__cell {
       background-color: #1f1f1f;
       color: var(--text-color-primary);
     }
-    
     .el-table__body tr:hover > td {
-      background-color: #262626;
+      background-color: #262626 !important;
     }
   }
-  
+
   .el-input .el-input__wrapper {
     background-color: #141414;
-    
+
     &:hover,
     &.is-focus {
       box-shadow: 0 0 0 1px var(--primary-color) inset;
     }
   }
-  
+
   .el-button--default {
     background-color: transparent;
     border-color: var(--border-color);
     color: var(--text-color-primary);
-    
+
     &:hover {
       border-color: var(--primary-color);
       color: var(--primary-color);
     }
   }
-  
+
   .el-dropdown-menu {
     background-color: #1f1f1f;
-    
+
     .el-dropdown-menu__item:hover {
       background-color: #262626;
     }

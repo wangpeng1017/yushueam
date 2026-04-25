@@ -391,31 +391,45 @@ onMounted(() => {
   }
 }
 
-// 登录按钮样式
+// 登录按钮 - 蓝色渐变（按钮自身就是 .login-btn-primary）
+.login-btn-primary,
 :deep(.login-btn-primary) {
-  .el-button {
-    background-color: #0097ba !important;
-    border-color: #0097ba !important;
-    color: white !important;
+  height: 44px !important;
+  border-radius: 8px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 16px rgba(33, 150, 243, 0.32) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 
-    &:hover {
-      background-color: #007a99 !important;
-      border-color: #007a99 !important;
-    }
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(33, 150, 243, 0.4) !important;
+    filter: brightness(1.05);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 
-// 文本按钮样式
+// 文本按钮（手机/单点/注册） - 浅色描边
+.login-btn-text,
 :deep(.login-btn-text) {
-  .el-button {
-    background-color: transparent !important;
-    border: 1px solid white !important;
-    color: white !important;
+  height: 38px !important;
+  border-radius: 8px !important;
+  background-color: #ffffff !important;
+  border: 1px solid #d9dce3 !important;
+  color: #5a6677 !important;
+  font-weight: 500 !important;
+  transition: all 0.2s !important;
 
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.1) !important;
-      border-color: white !important;
-    }
+  &:hover {
+    background-color: #f5f9ff !important;
+    border-color: #2196f3 !important;
+    color: #2196f3 !important;
   }
 }
 </style>
