@@ -247,6 +247,21 @@ export default <MockMethod[]>[
       return { code: 200, data: item || null }
     }
   },
+  {
+    url: '/admin-api/eam/tool-master/create',
+    method: 'post',
+    response: () => ({ code: 200, data: { id: 'T' + String(Date.now()).slice(-6) } })
+  },
+  {
+    url: '/admin-api/eam/gauge-master/create',
+    method: 'post',
+    response: () => ({ code: 200, data: { id: 'G' + String(Date.now()).slice(-6) } })
+  },
+  {
+    url: '/admin-api/eam/mould-master/create',
+    method: 'post',
+    response: () => ({ code: 200, data: { id: 'M' + String(Date.now()).slice(-6) } })
+  },
 
   // 量具档案
   {

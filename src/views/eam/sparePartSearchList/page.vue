@@ -76,6 +76,17 @@
 
         <!-- 列表 -->
         <el-card shadow="never">
+          <!-- 双库切换（仅 C 端 + admin 可见，与端别配置 multiWarehouse 联动） -->
+          <div v-if="showMultiWarehouse" class="mb-10px">
+            <el-radio-group v-model="warehouseType" size="default" @change="loadByWarehouse">
+              <el-radio-button label="ALL">全部仓库</el-radio-button>
+              <el-radio-button label="AUTO">自动化备件库</el-radio-button>
+              <el-radio-button label="REPAIR">设备维修备件库</el-radio-button>
+            </el-radio-group>
+            <el-tag v-if="showToolboxIntegration && warehouseType === 'REPAIR'" type="warning" class="ml-15px">
+              <Icon icon="ep:connection" class="mr-3px" />工装柜对接已启用：低于安全库存自动触发采购
+            </el-tag>
+          </div>
           <div class="mb-10px">
             <el-button
               v-hasPermi="[PERMI.CREATE]"
@@ -163,8 +174,18 @@ import * as SparePartSearchApi from '@/api/eam/sparePartSearch'
 import SparePartSearchDetail from './detail.vue'
 import SparePartSearchForm from './form.vue'
 import { listToTree } from '@/utils/tree'
+import { usePlant } from '@/hooks/web/usePlant'
 
 defineOptions({ name: 'EamSparePartSearch' })
+
+// 端别个性化：双库切换 + 工装柜对接（与端别配置联动）
+const { showMultiWarehouse, showToolboxIntegration } = usePlant()
+const warehouseType = ref<'ALL' | 'AUTO' | 'REPAIR'>('ALL')
+function loadByWarehouse() {
+  // mock 模式下仅切换显示标签；真实环境会带 warehouseType 参数请求
+  // queryParams.warehouseType = warehouseType.value
+  // handleQuery()
+}
 
 const message = useMessage()
 const { t } = useI18n()

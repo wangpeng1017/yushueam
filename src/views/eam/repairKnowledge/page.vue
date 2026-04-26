@@ -1,4 +1,14 @@
 <template>
+  <!-- 三端共享提示 -->
+  <el-alert
+    title="维修知识库三端共享"
+    description="本知识库为全平台共用，C 端 / B 端 / 数控机加三端的故障案例互通，便于跨端经验积累与智能推荐。"
+    type="success"
+    show-icon
+    :closable="false"
+    class="mb-10px"
+  />
+
   <!-- 搜索区域 -->
   <ContentWrap>
     <el-form
@@ -43,6 +53,19 @@
           <el-option label="其他" value="4" />
         </el-select>
       </el-form-item>
+      <el-form-item label="来源车间" prop="workshopCode">
+        <el-select
+          v-model="queryParams.workshopCode"
+          placeholder="全部车间"
+          clearable
+          class="!w-140px"
+        >
+          <el-option label="全部" value="ALL" />
+          <el-option label="C 端" value="C" />
+          <el-option label="B 端" value="B" />
+          <el-option label="数控机加" value="CNC" />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery">
           <Icon icon="ep:search" class="mr-5px" />&nbsp;搜索
@@ -66,6 +89,13 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column type="index" label="序号" width="60" align="center" />
       <el-table-column label="知识编号" align="center" prop="knowledgeCode" width="120" />
+      <el-table-column label="来源车间" align="center" prop="workshopCode" width="100">
+        <template #default="{ row }">
+          <el-tag size="small" :type="row.workshopCode === 'C' ? 'success' : (row.workshopCode === 'B' ? 'warning' : 'primary')">
+            {{ row.workshopCode === 'C' ? 'C 端' : (row.workshopCode === 'B' ? 'B 端' : '数控机加') }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="设备类型" align="center" prop="equipmentTypeName" width="100" />
       <el-table-column label="设备型号" align="center" prop="equipmentMode" width="100" />
       <el-table-column label="故障现象" align="center" prop="faultPhenomenon" min-width="180" />

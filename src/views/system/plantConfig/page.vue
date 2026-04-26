@@ -97,7 +97,9 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import request from '@/config/axios'
+import { usePlantConfigStore } from '@/store/modules/plantConfig'
 
+const plantConfigStore = usePlantConfigStore()
 const activeTab = ref('visibility')
 const loadingVis = ref(false)
 const loadingCfg = ref(false)
@@ -117,8 +119,8 @@ async function loadVisibility() {
 async function loadConfig() {
   loadingCfg.value = true
   try {
-    const res: any = await request.get({ url: '/admin-api/system/plant-config/list' })
-    configList.value = res || []
+    await plantConfigStore.loadConfigs(true)
+    configList.value = JSON.parse(JSON.stringify(plantConfigStore.configList))
   } finally {
     loadingCfg.value = false
   }
@@ -126,7 +128,9 @@ async function loadConfig() {
 
 async function handleUpdate(row: any) {
   await request.post({ url: '/admin-api/system/plant-config/update', data: row })
-  ElMessage.success(`已更新 [${row.configName}]`)
+  // 立即写入 store，让其他页面监听到生效
+  plantConfigStore.updateConfig(row)
+  ElMessage.success(`已更新 [${row.configName}]，全平台生效`)
 }
 
 onMounted(() => {

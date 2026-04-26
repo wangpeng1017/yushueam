@@ -2,7 +2,7 @@
  * Mock: 维修知识库
  * 维修记录自动沉淀，按车间隔离，支持关键词搜索和故障类别筛选
  */
-
+import type { MockMethod } from 'vite-plugin-mock'
 import { getWorkshopByToken } from './auth'
 
 function paginate(list: any[], pageNo = 1, pageSize = 10) {
@@ -171,13 +171,18 @@ export default [
   {
     url: '/admin-api/workOrder/eamRepairKnowledge/list',
     method: 'get',
-    response: ({ query, headers }: { query: any; headers: any }) => {
-      const ws = getWorkshopByToken(headers['authorization'])
-      const { pageNo = 1, pageSize = 10, keyword, equipmentTypeName, breakdownType } = query
+    response: ({ query }: { query: any; headers: any }) => {
+      const { pageNo = 1, pageSize = 10, keyword, equipmentTypeName, breakdownType, workshopCode } = query
 
-      let data = filterByWorkshop(allKnowledge, ws)
+      // 知识库三端共享 (附录 A.6) - 不按 plantCode 过滤，所有端均可读
+      let data = [...allKnowledge]
 
-      // 关键词模糊搜索
+      // 仅当用户主动指定 workshopCode 才过滤（用于按端筛选）
+      if (workshopCode && workshopCode !== 'ALL') {
+        data = data.filter((item) => item.workshopCode === workshopCode)
+      }
+
+      // 关键词模糊搜索（全平台）
       if (keyword) {
         const kw = keyword.toLowerCase()
         data = data.filter(
@@ -220,4 +225,4 @@ export default [
       }
     }
   }
-]
+] as MockMethod[]
