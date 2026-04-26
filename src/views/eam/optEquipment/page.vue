@@ -1,4 +1,6 @@
 <template>
+  <TreeListLayout :tree-data="treeData" @select="handleTreeSelect">
+    <template #default>
   <!-- 搜索工作栏 -->
   <ContentWrap>
     <el-form
@@ -255,6 +257,8 @@
   <EquipmentForm ref="formRef" @success="getList" />
   <!-- 详情弹窗 -->
   <EquipmentDetail ref="detailRef" />
+    </template>
+  </TreeListLayout>
 </template>
 
 <script lang="ts" setup>
@@ -263,8 +267,45 @@ import * as EquipmentApi from '@/api/eam/optEquipment'
 import { useEamEnumStore } from '@/store/modules/enums'
 import EquipmentForm from './form.vue'
 import EquipmentDetail from './detail.vue'
+import TreeListLayout from '../_tooling-shared/TreeListLayout.vue'
 
 defineOptions({ name: 'EamOptEquipment' })
+
+// ==================== 左侧树（设备类型）====================
+const treeData = ref<any[]>([])
+
+function buildTree() {
+  // 基于 equipmentTypeOptions 构建树（设备类型）+ 全部根节点
+  const allCount = total.value
+  const groupedByType: Record<string, number> = {}
+  list.value.forEach(item => {
+    const t = (item as any).equipmentType
+    if (t) groupedByType[t] = (groupedByType[t] || 0) + 1
+  })
+  const typeNodes = (equipmentTypeOptions.value || []).map((t: any) => ({
+    key: t.code || t.value,
+    label: t.name || t.label,
+    count: undefined as number | undefined
+  }))
+  treeData.value = [
+    {
+      key: 'ALL',
+      label: '全部设备',
+      count: allCount,
+      children: typeNodes
+    }
+  ]
+}
+
+function handleTreeSelect(key: string) {
+  if (key === 'ALL') {
+    queryParams.equipmentType = undefined
+  } else {
+    queryParams.equipmentType = key
+  }
+  queryParams.pageNo = 1
+  getList()
+}
 
 const message = useMessage()
 const { t } = useI18n()
@@ -420,6 +461,8 @@ onMounted(async () => {
   ])
   // 加载列表数据
   await getList()
+  // 构建左侧树
+  buildTree()
 })
 </script>
 

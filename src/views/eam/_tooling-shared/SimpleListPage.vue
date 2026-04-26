@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed, watch } from 'vue'
 import request from '@/config/axios'
 
 const props = defineProps<{
@@ -80,6 +80,8 @@ const props = defineProps<{
   detailTitleProp?: string
   /** 详情对话框额外字段定义；不传则使用 columns */
   detailExtraColumns?: Array<{ prop: string; label: string; span?: number; tag?: (row: any) => string }>
+  /** 外部传入的额外查询参数（如树过滤）；变化时自动重新加载 */
+  extraQuery?: Record<string, any>
 }>()
 
 defineEmits<{
@@ -106,7 +108,8 @@ const detailColumns = computed(() => {
 async function loadList() {
   loading.value = true
   try {
-    const res: any = await request.get({ url: props.apiPath, params: queryParams })
+    const params = { ...queryParams, ...(props.extraQuery || {}) }
+    const res: any = await request.get({ url: props.apiPath, params })
     list.value = res?.records || res?.list || []
     total.value = res?.total || 0
   } catch (e) {
@@ -117,6 +120,12 @@ async function loadList() {
     loading.value = false
   }
 }
+
+// 监听外部 query 变化（如树节点切换），自动重新加载
+watch(() => props.extraQuery, () => {
+  queryParams.pageNo = 1
+  loadList()
+}, { deep: true })
 
 function handleQuery() {
   queryParams.pageNo = 1

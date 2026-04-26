@@ -236,6 +236,10 @@ export default <MockMethod[]>[
       let list = toolMasterList
       if (query.toolName) list = list.filter(t => t.toolName.includes(query.toolName))
       if (query.toolCode) list = list.filter(t => t.toolCode.includes(query.toolCode))
+      // 树节点过滤：categoryFilter 是分类路径中的某个段（如 "车削"、"车外圆"）
+      if (query.categoryFilter && query.categoryFilter !== 'ALL') {
+        list = list.filter(t => (t.categoryPath || '').includes(query.categoryFilter))
+      }
       return { code: 200, data: paginate(list, query.pageNo, query.pageSize) }
     }
   },
@@ -297,6 +301,9 @@ export default <MockMethod[]>[
       if (ws !== 'CNC' && ws !== 'ALL') return { code: 200, data: { records: [], total: 0 } }
       let list = gaugeMasterList
       if (query.gaugeName) list = list.filter(t => t.gaugeName.includes(query.gaugeName))
+      if (query.categoryFilter && query.categoryFilter !== 'ALL') {
+        list = list.filter(t => (t.categoryPath || '').includes(query.categoryFilter))
+      }
       return { code: 200, data: paginate(list, query.pageNo, query.pageSize) }
     }
   },
@@ -319,6 +326,9 @@ export default <MockMethod[]>[
       let list = mouldMasterList
       if (query.mouldName) list = list.filter(t => t.mouldName.includes(query.mouldName))
       if (query.barcode) list = list.filter(t => t.barcode.includes(query.barcode))
+      if (query.categoryFilter && query.categoryFilter !== 'ALL') {
+        list = list.filter(t => (t.categoryPath || '').includes(query.categoryFilter))
+      }
       return { code: 200, data: paginate(list, query.pageNo, query.pageSize) }
     }
   },

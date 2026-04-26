@@ -1,17 +1,22 @@
 <template>
-  <SimpleListPage
-    ref="listRef"
-    apiPath="/admin-api/eam/mould-master/page"
-    :columns="columns"
-    :searchFields="[
-      { prop: 'mouldName', label: '模具名称' },
-      { prop: 'barcode', label: '模架条码' },
-    ]"
-    :enableCreate="true"
-    :enableDetail="true"
-    detailTitleProp="mouldName"
-    @create="handleCreate"
-  />
+  <TreeListLayout :tree-data="treeData" @select="handleTreeSelect">
+    <template #default>
+      <SimpleListPage
+        ref="listRef"
+        apiPath="/admin-api/eam/mould-master/page"
+        :columns="columns"
+        :searchFields="[
+          { prop: 'mouldName', label: '模具名称' },
+          { prop: 'barcode', label: '模架条码' },
+        ]"
+        :enableCreate="true"
+        :enableDetail="true"
+        detailTitleProp="mouldName"
+        :extraQuery="{ categoryFilter: selectedCategory }"
+        @create="handleCreate"
+      />
+    </template>
+  </TreeListLayout>
   <SimpleFormDialog
     ref="formRef"
     title="新增模具档案"
@@ -22,9 +27,11 @@
 </template>
 
 <script setup lang="ts" name="EamMouldMaster">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import request from '@/config/axios'
 import SimpleListPage from '../_tooling-shared/SimpleListPage.vue'
 import SimpleFormDialog from '../_tooling-shared/SimpleFormDialog.vue'
+import TreeListLayout from '../_tooling-shared/TreeListLayout.vue'
 
 const columns = [
   { prop: 'mouldCode', label: '模具编号', width: 220 },
@@ -62,6 +69,9 @@ const formFields = [
 
 const listRef = ref()
 const formRef = ref()
+const selectedCategory = ref<string>('ALL')
+const treeData = ref<any[]>([])
+const allMoulds = ref<any[]>([])
 
 function handleCreate() {
   formRef.value?.open()
@@ -70,4 +80,41 @@ function handleCreate() {
 function reloadList() {
   listRef.value?.loadList()
 }
+
+function handleTreeSelect(key: string) {
+  selectedCategory.value = key
+}
+
+async function buildTree() {
+  const listRes: any = await request.get({
+    url: '/admin-api/eam/mould-master/page', params: { pageNo: 1, pageSize: 1000 }
+  })
+  allMoulds.value = listRes?.records || []
+
+  const treeRes: any = await request.get({
+    url: '/admin-api/eam/tool-category/tree', params: { toolType: '模具' }
+  })
+  const flatCats: any[] = treeRes || []
+
+  function countItems(catName: string): number {
+    return allMoulds.value.filter(t => (t.categoryPath || '').includes(catName)).length
+  }
+
+  const l1Nodes = flatCats.filter(c => c.parentId === 0)
+  const tree: any[] = []
+  l1Nodes.forEach(l1 => {
+    const node = { key: l1.name, label: l1.name, count: countItems(l1.name), children: [] as any[] }
+    const l2Children = flatCats.filter(c => c.parentId === l1.id)
+    l2Children.forEach(l2 => {
+      node.children.push({ key: l2.name, label: l2.name, count: countItems(l2.name) })
+    })
+    tree.push(node)
+  })
+
+  treeData.value = [
+    { key: 'ALL', label: '全部', count: allMoulds.value.length, children: tree }
+  ]
+}
+
+onMounted(() => buildTree())
 </script>
