@@ -8,8 +8,11 @@ import workorderMock from './eam-workorder'
 import extraMock from './eam-extra'
 import routeMock from './eam-inspection-route'
 import knowledgeMock from './eam-knowledge'
+import projectMock from './eam-project'
+import iotOeeMock from './eam-iot-oee'
+import toolingMock from './eam-tooling'
 
-const allMocks = [...authMock, ...equipmentMock, ...workorderMock, ...extraMock, ...routeMock, ...knowledgeMock]
+const allMocks = [...authMock, ...equipmentMock, ...workorderMock, ...extraMock, ...routeMock, ...knowledgeMock, ...projectMock, ...iotOeeMock, ...toolingMock]
 
 function parseQS(url: string): Record<string, string> {
   const q: Record<string, string> = {}

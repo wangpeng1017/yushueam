@@ -2,6 +2,8 @@
  * Mock: 登录认证 + 用户权限 + 字典
  * 支持4个预设账号，通过 token 区分车间数据权限
  */
+
+
 import type { MockMethod } from 'vite-plugin-mock'
 
 // ── 用户-车间映射（通过token识别） ──
@@ -80,23 +82,52 @@ const eamMenus = [
     ]
   },
   {
-    path: '/eam/project',
-    name: '非标研制', icon: 'ep:cpu', component: '#',
-    visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
-    children: [
-      { path: 'customEquipmentProject', name: '研制项目', component: 'eam/customEquipmentProject/page', componentName: 'EamCustomEquipmentProject', visible: true, keepAlive: true, parentId: 60 },
-    ]
-  },
-  {
     path: '/eam/iot',
     name: 'IoT/OEE', icon: 'ep:data-line', component: '#',
     visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
+    plantScope: ['C', 'CNC', 'ALL'],
     children: [
       { path: 'deviceMonitor', name: '设备运行监控', component: 'eam/deviceMonitor/page', componentName: 'EamDeviceMonitor', visible: true, keepAlive: true, parentId: 70 },
       { path: 'oeeAnalysis', name: 'OEE分析看板', component: 'eam/oeeAnalysis/page', componentName: 'EamOeeAnalysis', visible: true, keepAlive: true, parentId: 70 },
     ]
+  },
+  {
+    path: '/eam/tooling',
+    name: '生产工器具', icon: 'ep:scissor', component: '#',
+    visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
+    plantScope: ['CNC', 'ALL'],
+    children: [
+      { path: 'toolCategory', name: '工器具分类', component: 'eam/toolCategory/page', componentName: 'EamToolCategory', visible: true, keepAlive: true, parentId: 80 },
+      { path: 'toolMaster', name: '刀具档案', component: 'eam/toolMaster/page', componentName: 'EamToolMaster', visible: true, keepAlive: true, parentId: 80 },
+      { path: 'gaugeMaster', name: '量具档案', component: 'eam/gaugeMaster/page', componentName: 'EamGaugeMaster', visible: true, keepAlive: true, parentId: 80 },
+      { path: 'mouldMaster', name: '模具档案', component: 'eam/mouldMaster/page', componentName: 'EamMouldMaster', visible: true, keepAlive: true, parentId: 80 },
+      { path: 'toolPurchaseDemand', name: '采购需求', component: 'eam/toolPurchaseDemand/page', componentName: 'EamToolPurchaseDemand', visible: true, keepAlive: true, parentId: 80 },
+      { path: 'toolingInbound', name: '入库管理', component: 'eam/toolingInbound/page', componentName: 'EamToolingInbound', visible: true, keepAlive: true, parentId: 80 },
+      { path: 'toolingOutbound', name: '出库管理', component: 'eam/toolingOutbound/page', componentName: 'EamToolingOutbound', visible: true, keepAlive: true, parentId: 80 },
+      { path: 'gaugeBorrowReturn', name: '借用归还', component: 'eam/gaugeBorrowReturn/page', componentName: 'EamGaugeBorrowReturn', visible: true, keepAlive: true, parentId: 80 },
+      { path: 'toolingScrap', name: '报废登记', component: 'eam/toolingScrap/page', componentName: 'EamToolingScrap', visible: true, keepAlive: true, parentId: 80 },
+    ]
+  },
+  {
+    path: '/eam/project',
+    name: '非标研制', icon: 'ep:cpu', component: '#',
+    visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
+    plantScope: ['C', 'ALL'],
+    children: [
+      { path: 'customEquipmentProject', name: '研制项目', component: 'eam/customEquipmentProject/page', componentName: 'EamCustomEquipmentProject', visible: true, keepAlive: true, parentId: 90 },
+    ]
   }
 ]
+
+// 根据车间过滤菜单
+function filterMenusByPlant(menus: any[], plantCode: string) {
+  return menus
+    .filter(m => !m.plantScope || m.plantScope.includes(plantCode))
+    .map(m => ({
+      ...m,
+      children: m.children ? filterMenusByPlant(m.children, plantCode) : undefined
+    }))
+}
 
 export default [
   // ── 登录（根据用户名返回不同token） ──
@@ -152,7 +183,7 @@ export default [
             nickname: user.nickname + '（' + user.workshopName + '）',
             deptId: 100
           },
-          menus: eamMenus
+          menus: filterMenusByPlant(eamMenus, ws)
         }
       }
     }
