@@ -6,6 +6,8 @@
       { prop: 'mouldName', label: '模具名称' },
       { prop: 'barcode', label: '模架条码' },
     ]"
+    :enableDetail="true"
+    detailTitleProp="mouldName"
   />
 </template>
 

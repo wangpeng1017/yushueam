@@ -3,6 +3,8 @@
     apiPath="/admin-api/eam/gauge-master/page"
     :columns="columns"
     :searchFields="[{ prop: 'gaugeName', label: '量具名称' }]"
+    :enableDetail="true"
+    detailTitleProp="gaugeName"
   />
 </template>
 

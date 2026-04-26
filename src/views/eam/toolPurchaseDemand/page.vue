@@ -7,6 +7,8 @@
       { prop: 'itemName', label: '品名' },
     ]"
     :enableCreate="true"
+    :enableDetail="true"
+    detailTitleProp="demandCode"
     @create="handleCreate"
   />
 </template>

@@ -6,6 +6,8 @@
       { prop: 'toolName', label: '刀具名称' },
       { prop: 'toolCode', label: '刀具编号' },
     ]"
+    :enableDetail="true"
+    detailTitleProp="toolName"
   />
 </template>
 

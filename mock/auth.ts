@@ -116,6 +116,15 @@ const eamMenus = [
     children: [
       { path: 'customEquipmentProject', name: '研制项目', component: 'eam/customEquipmentProject/page', componentName: 'EamCustomEquipmentProject', visible: true, keepAlive: true, parentId: 90 },
     ]
+  },
+  {
+    path: '/system',
+    name: '系统管理', icon: 'ep:setting', component: '#',
+    visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
+    plantScope: ['ALL'],
+    children: [
+      { path: 'plantConfig', name: '端别配置', component: 'system/plantConfig/page', componentName: 'SystemPlantConfig', visible: true, keepAlive: true, parentId: 100 },
+    ]
   }
 ]
 
@@ -181,7 +190,9 @@ export default [
             id: 1,
             avatar: '',
             nickname: user.nickname + '（' + user.workshopName + '）',
-            deptId: 100
+            deptId: 100,
+            plantCode: ws,
+            workshopName: user.workshopName
           },
           menus: filterMenusByPlant(eamMenus, ws)
         }

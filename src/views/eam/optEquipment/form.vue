@@ -260,66 +260,72 @@
         </el-col>
       </el-row>
 
-      <el-divider content-position="left">数控机加专属（IoT）</el-divider>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="设备厂家" prop="manufacturer">
-            <el-select v-model="formData.manufacturer" placeholder="请选择设备厂家" clearable filterable allow-create class="!w-full">
-              <el-option label="台群" value="台群" />
-              <el-option label="乔峰" value="乔峰" />
-              <el-option label="哈斯" value="哈斯" />
-              <el-option label="华中" value="华中" />
-              <el-option label="广数" value="广数" />
-              <el-option label="锐锋" value="锐锋" />
-              <el-option label="新代" value="新代" />
-              <el-option label="汇川" value="汇川" />
-              <el-option label="三菱" value="三菱" />
-              <el-option label="西门子" value="西门子" />
-              <el-option label="海天国际" value="海天国际" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="系统及版本" prop="systemVersion">
-            <el-input v-model="formData.systemVersion" placeholder="如：三菱系统M80、FANUC系统0i-MF" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="通讯协议" prop="commProtocol">
-            <el-select v-model="formData.commProtocol" placeholder="请选择通讯协议" clearable class="!w-full">
-              <el-option label="Modbus-TCP" value="Modbus-TCP" />
-              <el-option label="Modbus-RTU" value="Modbus-RTU" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="通讯接口" prop="commInterface">
-            <el-select v-model="formData.commInterface" placeholder="请选择通讯接口" clearable class="!w-full">
-              <el-option label="以太网接口" value="以太网接口" />
-              <el-option label="9针串口(RS485,RS232)" value="9针串口(RS485,RS232)" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <!-- IoT 通讯参数字段段：仅 C 端 + 数控机加 + admin 可见（与 EM-08 联动） -->
+      <template v-if="showIotFields">
+        <el-divider content-position="left">IoT 通讯参数（C 端 / 数控机加专属）</el-divider>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="设备厂家" prop="manufacturer">
+              <el-select v-model="formData.manufacturer" placeholder="请选择设备厂家" clearable filterable allow-create class="!w-full">
+                <el-option label="台群" value="台群" />
+                <el-option label="乔峰" value="乔峰" />
+                <el-option label="哈斯" value="哈斯" />
+                <el-option label="华中" value="华中" />
+                <el-option label="广数" value="广数" />
+                <el-option label="锐锋" value="锐锋" />
+                <el-option label="新代" value="新代" />
+                <el-option label="汇川" value="汇川" />
+                <el-option label="三菱" value="三菱" />
+                <el-option label="西门子" value="西门子" />
+                <el-option label="海天国际" value="海天国际" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="系统及版本" prop="systemVersion">
+              <el-input v-model="formData.systemVersion" placeholder="如：三菱系统M80、FANUC系统0i-MF" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="通讯协议" prop="commProtocol">
+              <el-select v-model="formData.commProtocol" placeholder="请选择通讯协议" clearable class="!w-full">
+                <el-option label="Modbus-TCP" value="Modbus-TCP" />
+                <el-option label="Modbus-RTU" value="Modbus-RTU" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="通讯接口" prop="commInterface">
+              <el-select v-model="formData.commInterface" placeholder="请选择通讯接口" clearable class="!w-full">
+                <el-option label="以太网接口" value="以太网接口" />
+                <el-option label="9针串口(RS485,RS232)" value="9针串口(RS485,RS232)" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </template>
 
-      <el-divider content-position="left">C端非标专属</el-divider>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="设备来源" prop="equipmentSource">
-            <el-select v-model="formData.equipmentSource" placeholder="请选择设备来源" clearable class="!w-full">
-              <el-option label="自研" value="自研" />
-              <el-option label="外购" value="外购" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="关联研制项目" prop="projectId">
-            <el-input v-model="formData.projectId" placeholder="关联EM-07研制项目编号" />
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <!-- 非标研制字段段：仅 C 端 + admin 可见（与 EM-07 联动） -->
+      <template v-if="showProjectFields">
+        <el-divider content-position="left">非标研制（C 端专属）</el-divider>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="设备来源" prop="equipmentSource">
+              <el-select v-model="formData.equipmentSource" placeholder="请选择设备来源" clearable class="!w-full">
+                <el-option label="自研" value="自研" />
+                <el-option label="外购" value="外购" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="关联研制项目" prop="projectId">
+              <el-input v-model="formData.projectId" placeholder="关联EM-07研制项目编号" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </template>
     </el-form>
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
@@ -369,8 +375,11 @@ import * as EquipmentApi from '@/api/eam/optEquipment'
 import { useEamEnumStore } from '@/store/modules/enums'
 import TableSelectDialog from '@/components/TableSelectDialog/index.vue'
 import type { TableColumn, FieldMapping } from '@/components/TableSelectDialog/index.vue'
+import { usePlant } from '@/hooks/web/usePlant'
 
 defineOptions({ name: 'EamOptEquipmentForm' })
+
+const { showIotFields, showProjectFields } = usePlant()
 
 const message = useMessage()
 const { t } = useI18n()
