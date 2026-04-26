@@ -262,6 +262,31 @@ export default <MockMethod[]>[
     method: 'post',
     response: () => ({ code: 200, data: { id: 'M' + String(Date.now()).slice(-6) } })
   },
+  {
+    url: '/admin-api/eam/tooling-inbound/create',
+    method: 'post',
+    response: () => ({ code: 200, data: { id: 'IN' + String(Date.now()).slice(-6), inboundCode: 'IN-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(Date.now()).slice(-4) } })
+  },
+  {
+    url: '/admin-api/eam/tooling-outbound/create',
+    method: 'post',
+    response: () => ({ code: 200, data: { id: 'OUT' + String(Date.now()).slice(-6), outboundCode: 'OUT-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(Date.now()).slice(-4) } })
+  },
+  {
+    url: '/admin-api/eam/gauge-borrow-return/create',
+    method: 'post',
+    response: () => ({ code: 200, data: { id: 'BR' + String(Date.now()).slice(-6), borrowCode: 'BR-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(Date.now()).slice(-4) } })
+  },
+  {
+    url: '/admin-api/eam/gauge-borrow-return/return',
+    method: 'post',
+    response: () => ({ code: 200, data: true })
+  },
+  {
+    url: '/admin-api/eam/tooling-scrap/create',
+    method: 'post',
+    response: () => ({ code: 200, data: { id: 'SC' + String(Date.now()).slice(-6), scrapCode: 'SC-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(Date.now()).slice(-4) } })
+  },
 
   // 量具档案
   {
