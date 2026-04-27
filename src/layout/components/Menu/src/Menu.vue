@@ -207,6 +207,25 @@ $prefix-cls: #{$namespace}-menu;
         background-color: transparent !important;
       }
     }
+
+    // 二级菜单缩进（一级 16px + 缩进 24px = 40px）
+    .#{$elNamespace}-sub-menu .#{$elNamespace}-menu-item {
+      padding-left: 40px !important;
+      background-color: rgba(0, 0, 0, 0.18) !important;
+
+      &.is-active {
+        padding-left: 37px !important; // 40 - 3 (border-left)
+      }
+    }
+
+    // 三级菜单（如果有）缩进（40 + 20 = 60px）
+    .#{$elNamespace}-sub-menu .#{$elNamespace}-sub-menu .#{$elNamespace}-menu-item {
+      padding-left: 60px !important;
+
+      &.is-active {
+        padding-left: 57px !important;
+      }
+    }
   }
 
   // 折叠时的最小宽度
