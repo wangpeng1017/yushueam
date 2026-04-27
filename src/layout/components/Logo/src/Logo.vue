@@ -72,10 +72,8 @@ watch(
       }"
       to="/"
     >
-      <img
-        :style="{ width: '28px', height: '28px' }"
-        src="@/assets/imgs/logoW.svg"
-      />
+      <!-- 已隐藏图片 logo -->
+      <!-- <img :style="{ width: '28px', height: '28px' }" src="@/assets/imgs/logoW.svg" /> -->
       <div
         v-if="show"
         :class="[

@@ -83,45 +83,46 @@ function handleTreeSelect(key: string) {
   selectedCategory.value = key
 }
 
-// 构建树数据：从 mock 拿分类树 + 列表，统计每节点数量
+// 从所有刀具档案的 categoryPath 自动构建 5 级分类树
 async function buildTree() {
-  // 拉所有刀具用于统计
   const listRes: any = await request.get({
     url: '/admin-api/eam/tool-master/page', params: { pageNo: 1, pageSize: 1000 }
   })
   allTools.value = listRes?.records || []
+  treeData.value = buildTreeFromPaths(allTools.value, '全部')
+}
 
-  // 拉分类树
-  const treeRes: any = await request.get({
-    url: '/admin-api/eam/tool-category/tree', params: { toolType: '刀具' }
+function buildTreeFromPaths(items: any[], rootLabel: string): any[] {
+  // 用 Map 嵌套结构组装多级树
+  const root: any = { children: new Map<string, any>() }
+  items.forEach((item: any) => {
+    const segs = (item.categoryPath || '').split('/').filter(Boolean)
+    let cur = root
+    for (const seg of segs) {
+      if (!cur.children.has(seg)) {
+        cur.children.set(seg, { name: seg, count: 0, children: new Map() })
+      }
+      cur = cur.children.get(seg)
+      cur.count++
+    }
   })
-  const flatCats: any[] = treeRes || []
 
-  // 按 parentId 组装
-  const map: Record<string, any> = {}
-  flatCats.forEach(c => {
-    map[c.id] = { key: c.name, label: c.name, count: 0, children: [] }
-  })
-
-  // 统计每个分类的工具数（包括其子分类）
-  function countTools(catName: string): number {
-    return allTools.value.filter(t => (t.categoryPath || '').includes(catName)).length
+  function toArray(map: Map<string, any>): any[] {
+    return Array.from(map.values()).map(node => ({
+      key: node.name,
+      label: node.name,
+      count: node.count,
+      children: node.children.size > 0 ? toArray(node.children) : undefined
+    }))
   }
 
-  // 构建树（仅取 L1 + L2 两层，避免太深）
-  const l1Nodes = flatCats.filter(c => c.parentId === 0)
-  const tree: any[] = []
-  l1Nodes.forEach(l1 => {
-    const node = { key: l1.name, label: l1.name, count: countTools(l1.name), children: [] as any[] }
-    const l2Children = flatCats.filter(c => c.parentId === l1.id)
-    l2Children.forEach(l2 => {
-      node.children.push({ key: l2.name, label: l2.name, count: countTools(l2.name) })
-    })
-    tree.push(node)
-  })
-
-  treeData.value = [
-    { key: 'ALL', label: '全部', count: allTools.value.length, children: tree }
+  return [
+    {
+      key: 'ALL',
+      label: rootLabel,
+      count: items.length,
+      children: toArray(root.children)
+    }
   ]
 }
 

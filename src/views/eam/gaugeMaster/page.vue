@@ -1,14 +1,19 @@
 <template>
-  <SimpleListPage
-    ref="listRef"
-    apiPath="/admin-api/eam/gauge-master/page"
-    :columns="columns"
-    :searchFields="[{ prop: 'gaugeName', label: '量具名称' }]"
-    :enableCreate="true"
-    :enableDetail="true"
-    detailTitleProp="gaugeName"
-    @create="handleCreate"
-  />
+  <TreeListLayout :tree-data="treeData" @select="handleTreeSelect">
+    <template #default>
+      <SimpleListPage
+        ref="listRef"
+        apiPath="/admin-api/eam/gauge-master/page"
+        :columns="columns"
+        :searchFields="[{ prop: 'gaugeName', label: '量具名称' }]"
+        :enableCreate="true"
+        :enableDetail="true"
+        detailTitleProp="gaugeName"
+        :extraQuery="{ categoryFilter: selectedCategory }"
+        @create="handleCreate"
+      />
+    </template>
+  </TreeListLayout>
   <SimpleFormDialog
     ref="formRef"
     title="新增量具档案"
@@ -19,9 +24,11 @@
 </template>
 
 <script setup lang="ts" name="EamGaugeMaster">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import request from '@/config/axios'
 import SimpleListPage from '../_tooling-shared/SimpleListPage.vue'
 import SimpleFormDialog from '../_tooling-shared/SimpleFormDialog.vue'
+import TreeListLayout from '../_tooling-shared/TreeListLayout.vue'
 
 const columns = [
   { prop: 'gaugeCode', label: '量具编号', width: 200 },
@@ -52,6 +59,9 @@ const formFields = [
 
 const listRef = ref()
 const formRef = ref()
+const selectedCategory = ref<string>('ALL')
+const treeData = ref<any[]>([])
+const allGauges = ref<any[]>([])
 
 function handleCreate() {
   formRef.value?.open()
@@ -60,4 +70,44 @@ function handleCreate() {
 function reloadList() {
   listRef.value?.loadList()
 }
+
+function handleTreeSelect(key: string) {
+  selectedCategory.value = key
+}
+
+async function buildTree() {
+  const listRes: any = await request.get({
+    url: '/admin-api/eam/gauge-master/page', params: { pageNo: 1, pageSize: 1000 }
+  })
+  allGauges.value = listRes?.records || []
+
+  // 从 categoryPath 自动构建多级树（最深 5 级）
+  const root: any = { children: new Map<string, any>() }
+  allGauges.value.forEach((item: any) => {
+    const segs = (item.categoryPath || '').split('/').filter(Boolean)
+    let cur = root
+    for (const seg of segs) {
+      if (!cur.children.has(seg)) {
+        cur.children.set(seg, { name: seg, count: 0, children: new Map() })
+      }
+      cur = cur.children.get(seg)
+      cur.count++
+    }
+  })
+
+  function toArray(map: Map<string, any>): any[] {
+    return Array.from(map.values()).map(node => ({
+      key: node.name,
+      label: node.name,
+      count: node.count,
+      children: node.children.size > 0 ? toArray(node.children) : undefined
+    }))
+  }
+
+  treeData.value = [
+    { key: 'ALL', label: '全部', count: allGauges.value.length, children: toArray(root.children) }
+  ]
+}
+
+onMounted(() => buildTree())
 </script>

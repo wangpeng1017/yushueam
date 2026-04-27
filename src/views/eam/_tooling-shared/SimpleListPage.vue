@@ -122,10 +122,11 @@ async function loadList() {
 }
 
 // 监听外部 query 变化（如树节点切换），自动重新加载
-watch(() => props.extraQuery, () => {
+// 用 JSON.stringify 兜底，避免对象引用比较失效
+watch(() => JSON.stringify(props.extraQuery || {}), () => {
   queryParams.pageNo = 1
   loadList()
-}, { deep: true })
+})
 
 function handleQuery() {
   queryParams.pageNo = 1

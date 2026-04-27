@@ -91,28 +91,31 @@ async function buildTree() {
   })
   allMoulds.value = listRes?.records || []
 
-  const treeRes: any = await request.get({
-    url: '/admin-api/eam/tool-category/tree', params: { toolType: '模具' }
+  // 从 categoryPath 自动构建多级树（最深 5 级）
+  const root: any = { children: new Map<string, any>() }
+  allMoulds.value.forEach((item: any) => {
+    const segs = (item.categoryPath || '').split('/').filter(Boolean)
+    let cur = root
+    for (const seg of segs) {
+      if (!cur.children.has(seg)) {
+        cur.children.set(seg, { name: seg, count: 0, children: new Map() })
+      }
+      cur = cur.children.get(seg)
+      cur.count++
+    }
   })
-  const flatCats: any[] = treeRes || []
 
-  function countItems(catName: string): number {
-    return allMoulds.value.filter(t => (t.categoryPath || '').includes(catName)).length
+  function toArray(map: Map<string, any>): any[] {
+    return Array.from(map.values()).map(node => ({
+      key: node.name,
+      label: node.name,
+      count: node.count,
+      children: node.children.size > 0 ? toArray(node.children) : undefined
+    }))
   }
 
-  const l1Nodes = flatCats.filter(c => c.parentId === 0)
-  const tree: any[] = []
-  l1Nodes.forEach(l1 => {
-    const node = { key: l1.name, label: l1.name, count: countItems(l1.name), children: [] as any[] }
-    const l2Children = flatCats.filter(c => c.parentId === l1.id)
-    l2Children.forEach(l2 => {
-      node.children.push({ key: l2.name, label: l2.name, count: countItems(l2.name) })
-    })
-    tree.push(node)
-  })
-
   treeData.value = [
-    { key: 'ALL', label: '全部', count: allMoulds.value.length, children: tree }
+    { key: 'ALL', label: '全部', count: allMoulds.value.length, children: toArray(root.children) }
   ]
 }
 
