@@ -2,6 +2,7 @@
   <TreeListLayout :tree-data="treeData" @select="handleTreeSelect">
     <template #default>
       <SimpleListPage
+        :key="`gauge-${selectedCategory}`"
         ref="listRef"
         apiPath="/admin-api/eam/gauge-master/page"
         :columns="columns"

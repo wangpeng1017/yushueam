@@ -2,6 +2,7 @@
   <TreeListLayout :tree-data="treeData" @select="handleTreeSelect">
     <template #default>
       <SimpleListPage
+        :key="`tool-${selectedCategory}`"
         ref="listRef"
         apiPath="/admin-api/eam/tool-master/page"
         :columns="columns"

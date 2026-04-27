@@ -2,6 +2,7 @@
   <TreeListLayout :tree-data="treeData" @select="handleTreeSelect">
     <template #default>
       <SimpleListPage
+        :key="`mould-${selectedCategory}`"
         ref="listRef"
         apiPath="/admin-api/eam/mould-master/page"
         :columns="columns"
