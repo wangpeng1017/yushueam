@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts" name="EamToolMaster">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import request from '@/config/axios'
 import SimpleListPage from '../_tooling-shared/SimpleListPage.vue'
 import SimpleFormDialog from '../_tooling-shared/SimpleFormDialog.vue'
@@ -79,8 +79,10 @@ function reloadList() {
   listRef.value?.loadList()
 }
 
-function handleTreeSelect(key: string) {
+async function handleTreeSelect(key: string) {
   selectedCategory.value = key
+  await nextTick()
+  listRef.value?.loadList()
 }
 
 // 从所有刀具档案的 categoryPath 自动构建 5 级分类树
@@ -93,14 +95,16 @@ async function buildTree() {
 }
 
 function buildTreeFromPaths(items: any[], rootLabel: string): any[] {
-  // 用 Map 嵌套结构组装多级树
+  // 用 Map 嵌套结构组装多级树（key=完整路径，label=节点名）
   const root: any = { children: new Map<string, any>() }
   items.forEach((item: any) => {
     const segs = (item.categoryPath || '').split('/').filter(Boolean)
     let cur = root
+    let path = ''
     for (const seg of segs) {
+      path = path ? `${path}/${seg}` : seg
       if (!cur.children.has(seg)) {
-        cur.children.set(seg, { name: seg, count: 0, children: new Map() })
+        cur.children.set(seg, { name: seg, fullPath: path, count: 0, children: new Map() })
       }
       cur = cur.children.get(seg)
       cur.count++
@@ -109,7 +113,7 @@ function buildTreeFromPaths(items: any[], rootLabel: string): any[] {
 
   function toArray(map: Map<string, any>): any[] {
     return Array.from(map.values()).map(node => ({
-      key: node.name,
+      key: node.fullPath,
       label: node.name,
       count: node.count,
       children: node.children.size > 0 ? toArray(node.children) : undefined
