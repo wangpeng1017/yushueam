@@ -273,25 +273,40 @@ defineOptions({ name: 'EamOptEquipment' })
 
 // ==================== 左侧树（设备类型）====================
 const treeData = ref<any[]>([])
+const allEquipments = ref<any[]>([])
 
-function buildTree() {
-  // 基于 equipmentTypeOptions 构建树（设备类型）+ 全部根节点
-  const allCount = total.value
+async function buildTree() {
+  // 拉所有设备用于统计每节点数量
+  try {
+    const res: any = await EquipmentApi.getEquipmentPage({ pageNo: 1, pageSize: 1000 })
+    allEquipments.value = res?.records || []
+  } catch (e) {
+    allEquipments.value = []
+  }
+
+  // 按 equipmentType 分组统计
   const groupedByType: Record<string, number> = {}
-  list.value.forEach(item => {
-    const t = (item as any).equipmentType
+  allEquipments.value.forEach((item: any) => {
+    const t = item.equipmentType
     if (t) groupedByType[t] = (groupedByType[t] || 0) + 1
   })
-  const typeNodes = (equipmentTypeOptions.value || []).map((t: any) => ({
-    key: t.code || t.value,
-    label: t.name || t.label,
-    count: undefined as number | undefined
-  }))
+
+  // 构建子节点：用 typeCode + typeName（mock 接口返回字段）
+  const typeNodes = (equipmentTypeOptions.value || []).map((t: any) => {
+    const code = t.typeCode || t.code || t.value
+    const name = t.typeName || t.name || t.label
+    return {
+      key: code,
+      label: name,
+      count: groupedByType[code] || 0
+    }
+  })
+
   treeData.value = [
     {
       key: 'ALL',
       label: '全部设备',
-      count: allCount,
+      count: allEquipments.value.length,
       children: typeNodes
     }
   ]
