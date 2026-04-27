@@ -53,13 +53,23 @@ import { tryMatchMock } from '@/mock-bridge'
 console.log('[MOCK_BRIDGE_LOADED]', typeof tryMatchMock)
 
 service.interceptors.request.use((config) => {
-  const url = config.url || ''
+  let url = config.url || ''
   const method = config.method || 'get'
   const headers: Record<string, string> = {}
   if (config.headers) {
     Object.keys(config.headers).forEach(k => {
       headers[k.toLowerCase()] = String(config.headers[k])
     })
+  }
+  // 把 axios 的 params 拼接到 url（mock-bridge 通过 url query 解析参数）
+  if (config.params && Object.keys(config.params).length > 0) {
+    const qs = Object.entries(config.params)
+      .filter(([, v]) => v !== undefined && v !== null && v !== '')
+      .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+      .join('&')
+    if (qs) {
+      url = url + (url.includes('?') ? '&' : '?') + qs
+    }
   }
   const mockData = tryMatchMock(url, method, config.data, headers)
   if (mockData) {
