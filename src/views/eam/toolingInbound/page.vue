@@ -6,14 +6,19 @@
     :searchFields="[{ prop: 'inboundCode', label: '入库单号' }, { prop: 'purchaseOrderNo', label: 'PO 单号' }]"
     :enableCreate="true"
     :enableDetail="true"
+    :enableEdit="true"
+    :enableDelete="true"
+    deleteNameProp="inboundCode"
     detailTitleProp="inboundCode"
     @create="handleCreate"
+    @edit="handleEdit"
   />
   <SimpleFormDialog
     ref="formRef"
-    title="新增入库单"
+    :title="formTitle"
     :fields="formFields"
     apiCreate="/admin-api/eam/tooling-inbound/create"
+    apiUpdate="/admin-api/eam/tooling-inbound/update"
     @success="reloadList"
   />
 </template>
@@ -58,9 +63,16 @@ const formFields = [
 
 const listRef = ref()
 const formRef = ref()
+const formTitle = ref('新增入库单')
 
 function handleCreate() {
+  formTitle.value = '新增入库单'
   formRef.value?.open()
+}
+
+function handleEdit(row: any) {
+  formTitle.value = '编辑入库单'
+  formRef.value?.open(row.id, row)
 }
 
 function reloadList() {

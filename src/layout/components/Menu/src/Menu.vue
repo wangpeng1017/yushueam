@@ -136,6 +136,7 @@ $prefix-cls: #{$namespace}-menu;
   :deep(.#{$elNamespace}-menu) {
     width: 100% !important;
     border-right: none;
+    background-color: var(--left-menu-bg-color) !important;
 
     // 设置选中时子标题的颜色
     .is-active {
@@ -144,25 +145,43 @@ $prefix-cls: #{$namespace}-menu;
       }
     }
 
-    // 菜单项基础样式 - 圆角外间距
+    // 菜单项基础样式 - 规范无圆角无外间距
     .#{$elNamespace}-sub-menu__title,
     .#{$elNamespace}-menu-item {
-      border-radius: 8px;
-      margin: 2px 8px;
-      height: 42px;
-      line-height: 42px;
+      border-radius: 0;
+      margin: 0;
+      height: 48px;
+      line-height: 24px;
+      font-size: 14px;
+      padding: 12px 16px !important;
+      color: var(--left-menu-text-color);
+
+      .el-icon,
+      svg {
+        color: var(--left-menu-text-color);
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+      }
 
       &:hover {
-        color: var(--left-menu-text-active-color) !important;
-        background-color: var(--left-menu-bg-light-color) !important;
+        color: #E0E0E0 !important;
+        background-color: transparent !important;
+
+        .el-icon,
+        svg {
+          color: #E0E0E0;
+        }
       }
     }
 
-    // 选中态 - 蓝色实心 + 阴影
+    // 选中态 - 规范白色文字 + 左侧 3px 白条
     .#{$elNamespace}-menu-item.is-active {
-      color: #ffffff !important;
-      background-color: var(--primary-color) !important;
-      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.32);
+      color: #FFFFFF !important;
+      background-color: var(--left-menu-bg-active-color) !important;
+      border-left: 3px solid #FFFFFF;
+      padding-left: 13px !important;
+      box-shadow: none;
       position: relative;
 
       &::before {
@@ -170,16 +189,19 @@ $prefix-cls: #{$namespace}-menu;
       }
 
       &:hover {
-        background-color: var(--primary-color) !important;
+        background-color: var(--left-menu-bg-active-color) !important;
       }
 
-      .el-icon {
-        color: #ffffff !important;
+      .el-icon,
+      svg {
+        color: #FFFFFF !important;
       }
     }
 
-    // 子菜单背景色（深一档）
+    // 子菜单背景色（与父级一致）
     .#{$elNamespace}-menu {
+      background-color: var(--left-menu-bg-color) !important;
+
       .#{$elNamespace}-sub-menu__title,
       .#{$elNamespace}-menu-item:not(.is-active) {
         background-color: transparent !important;
@@ -194,10 +216,11 @@ $prefix-cls: #{$namespace}-menu;
     & > .is-active,
     & > .is-active > .#{$elNamespace}-sub-menu__title {
       position: relative;
-      background-color: var(--primary-color) !important;
-      color: #ffffff !important;
-      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.32);
-      border-radius: 8px;
+      background-color: var(--left-menu-bg-active-color) !important;
+      color: #FFFFFF !important;
+      border-left: 3px solid #FFFFFF;
+      box-shadow: none;
+      border-radius: 0;
 
       &::before {
         content: none;
@@ -271,26 +294,31 @@ $prefix-cls: #{$namespace}-menu-popper;
   // 弹出菜单悬停（折叠状态）
   .el-sub-menu__title,
   .el-menu-item {
-    border-radius: 6px;
-    margin: 2px 4px;
+    border-radius: 0;
+    margin: 0;
+    font-size: 14px;
+    line-height: 24px;
+    padding: 12px 16px !important;
 
     &:hover {
-      color: var(--left-menu-text-active-color) !important;
-      background-color: var(--left-menu-bg-light-color) !important;
+      color: #E0E0E0 !important;
+      background-color: transparent !important;
     }
   }
 
   .el-menu-item.is-active {
     position: relative;
-    background-color: var(--primary-color) !important;
-    color: #ffffff !important;
+    background-color: var(--left-menu-bg-active-color) !important;
+    color: #FFFFFF !important;
+    border-left: 3px solid #FFFFFF;
+    padding-left: 13px !important;
 
     &::before {
       content: none;
     }
 
     &:hover {
-      background-color: var(--primary-color) !important;
+      background-color: var(--left-menu-bg-active-color) !important;
     }
   }
 }

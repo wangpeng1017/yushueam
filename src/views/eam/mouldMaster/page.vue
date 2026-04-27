@@ -12,17 +12,22 @@
         ]"
         :enableCreate="true"
         :enableDetail="true"
+        :enableEdit="true"
+        :enableDelete="true"
+        deleteNameProp="mouldName"
         detailTitleProp="mouldName"
         :extraQuery="{ categoryFilter: selectedCategory }"
         @create="handleCreate"
+        @edit="handleEdit"
       />
     </template>
   </TreeListLayout>
   <SimpleFormDialog
     ref="formRef"
-    title="新增模具档案"
+    :title="formTitle"
     :fields="formFields"
     apiCreate="/admin-api/eam/mould-master/create"
+    apiUpdate="/admin-api/eam/mould-master/update"
     @success="reloadList"
   />
 </template>
@@ -73,9 +78,16 @@ const formRef = ref()
 const selectedCategory = ref<string>('ALL')
 const treeData = ref<any[]>([])
 const allMoulds = ref<any[]>([])
+const formTitle = ref('新增模具档案')
 
 function handleCreate() {
+  formTitle.value = '新增模具档案'
   formRef.value?.open()
+}
+
+function handleEdit(row: any) {
+  formTitle.value = '编辑模具档案'
+  formRef.value?.open(row.id, row)
 }
 
 function reloadList() {

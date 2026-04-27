@@ -12,17 +12,22 @@
         ]"
         :enableCreate="true"
         :enableDetail="true"
+        :enableEdit="true"
+        :enableDelete="true"
+        deleteNameProp="toolName"
         detailTitleProp="toolName"
         :extraQuery="{ categoryFilter: selectedCategory }"
         @create="handleCreate"
+        @edit="handleEdit"
       />
     </template>
   </TreeListLayout>
   <SimpleFormDialog
     ref="formRef"
-    title="新增刀具档案"
+    :title="formTitle"
     :fields="formFields"
     apiCreate="/admin-api/eam/tool-master/create"
+    apiUpdate="/admin-api/eam/tool-master/update"
     @success="reloadList"
   />
 </template>
@@ -71,9 +76,16 @@ const formRef = ref()
 const selectedCategory = ref<string>('ALL')
 const treeData = ref<any[]>([])
 const allTools = ref<any[]>([])
+const formTitle = ref('新增刀具档案')
 
 function handleCreate() {
+  formTitle.value = '新增刀具档案'
   formRef.value?.open()
+}
+
+function handleEdit(row: any) {
+  formTitle.value = '编辑刀具档案'
+  formRef.value?.open(row.id, row)
 }
 
 function reloadList() {

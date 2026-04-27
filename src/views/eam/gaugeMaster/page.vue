@@ -9,17 +9,22 @@
         :searchFields="[{ prop: 'gaugeName', label: '量具名称' }]"
         :enableCreate="true"
         :enableDetail="true"
+        :enableEdit="true"
+        :enableDelete="true"
+        deleteNameProp="gaugeName"
         detailTitleProp="gaugeName"
         :extraQuery="{ categoryFilter: selectedCategory }"
         @create="handleCreate"
+        @edit="handleEdit"
       />
     </template>
   </TreeListLayout>
   <SimpleFormDialog
     ref="formRef"
-    title="新增量具档案"
+    :title="formTitle"
     :fields="formFields"
     apiCreate="/admin-api/eam/gauge-master/create"
+    apiUpdate="/admin-api/eam/gauge-master/update"
     @success="reloadList"
   />
 </template>
@@ -63,9 +68,16 @@ const formRef = ref()
 const selectedCategory = ref<string>('ALL')
 const treeData = ref<any[]>([])
 const allGauges = ref<any[]>([])
+const formTitle = ref('新增量具档案')
 
 function handleCreate() {
+  formTitle.value = '新增量具档案'
   formRef.value?.open()
+}
+
+function handleEdit(row: any) {
+  formTitle.value = '编辑量具档案'
+  formRef.value?.open(row.id, row)
 }
 
 function reloadList() {

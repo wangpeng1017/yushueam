@@ -1,5 +1,5 @@
 :root {
-    /* ========== 参考宇树科技 UI - 高级灰白质感 ========== */
+    /* ========== 系统后台 UI 规范 - 三栏布局 ========== */
 
     /* 登录页背景渐变 */
     --login-bg-color: #f5f7fa;
@@ -8,36 +8,37 @@
 
     --left-menu-min-width: 64px;
 
-    /* 侧边栏 - 深灰高级感 (#2c2e3a 系) */
-    --left-menu-bg-color: #2c2e3a;
+    /* 侧边栏 - 规范 #3B3F48 纯色 */
+    --left-menu-bg-color: #3B3F48;
 
-    --left-menu-bg-light-color: #34374a;
+    /* hover 时略亮（与未选中文本提亮一致） */
+    --left-menu-bg-light-color: #4A4E58;
 
-    /* 菜单选中背景色 - 略亮深灰 */
-    --left-menu-bg-active-color: #383b4f;
+    /* 菜单选中背景色 - 与背景一致（靠左侧白条 + 白色文字标识） */
+    --left-menu-bg-active-color: #3B3F48;
 
-    --left-menu-text-color: rgba(255, 255, 255, 0.72);
+    --left-menu-text-color: #C5C7C9;
 
-    --left-menu-text-active-color: #ffffff;
+    --left-menu-text-active-color: #FFFFFF;
 
     /* 折叠菜单背景色 */
-    --left-menu-collapse-bg-active-color: #34374a;
+    --left-menu-collapse-bg-active-color: #3B3F48;
     /* left menu end */
 
     /* logo start */
     --logo-height: 56px;
 
-    --logo-title-text-color: #ffffff;
+    --logo-title-text-color: #FFFFFF;
     /* logo end */
 
     /* header start */
-    /* 顶部导航 - 纯白通透 */
-    --top-header-bg-color: #ffffff;
+    /* 顶部导航 - 规范 #E9EBEF */
+    --top-header-bg-color: #E9EBEF;
 
-    --top-header-text-color: rgba(0, 0, 0, 0.85);
+    --top-header-text-color: #3B3F48;
 
-    /* hover 颜色 - 浅灰 */
-    --top-header-hover-color: #f5f7fa;
+    /* hover 颜色 - 极浅灰 */
+    --top-header-hover-color: #DCDFE6;
 
     --top-tool-height: var(--logo-height);
 
@@ -54,10 +55,13 @@
     --tab-menu-collapse-height: 36px;
     /* tab menu end */
 
-    --app-content-padding: 12px;
+    --app-content-padding: 16px;
 
-    /* 内容区背景 - 高级浅灰 */
-    --app-content-bg-color: #f4f6fa;
+    /* 内容区背景 - 规范 #E6E9F0 */
+    --app-content-bg-color: #E6E9F0;
+
+    /* 卡片背景 - 规范 #F6F7F9 */
+    --card-bg-color: #F6F7F9;
 
     --app-footer-height: 48px;
 
@@ -83,7 +87,7 @@
     --el-color-error: #ff4d4f;
     --el-color-info: #909399;
 
-    --el-border-radius-base: 6px;
+    --el-border-radius-base: 4px;
     --el-border-radius-small: 4px;
 
     --success-color: #52c41a;
@@ -95,22 +99,22 @@
     --border-color: #ebeef5;
     --border-color-light: #f2f3f5;
 
-    /* 文本色 */
-    --text-color-primary: rgba(0, 0, 0, 0.88);
-    --text-color-regular: rgba(0, 0, 0, 0.65);
-    --text-color-secondary: rgba(0, 0, 0, 0.45);
-    --text-color-placeholder: rgba(0, 0, 0, 0.25);
+    /* 文本色 - 规范 #3B3F48 */
+    --text-color-primary: #3B3F48;
+    --text-color-regular: #5A5E66;
+    --text-color-secondary: #8A8E96;
+    --text-color-placeholder: #B0B4BC;
 
-    /* 阴影 - 柔和 */
-    --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.04), 0 1px 3px 0 rgba(15, 23, 42, 0.03);
-    --shadow-base: 0 2px 8px 0 rgba(15, 23, 42, 0.04), 0 1px 4px 0 rgba(15, 23, 42, 0.03);
-    --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.05);
-    --shadow-lg: 0 12px 28px -8px rgba(15, 23, 42, 0.12), 0 6px 12px -4px rgba(15, 23, 42, 0.06);
+    /* 阴影 - 卡片规范 0 2px 4px rgba(0,0,0,0.05) */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-base: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 12px 28px -8px rgba(0, 0, 0, 0.12), 0 6px 12px -4px rgba(0, 0, 0, 0.06);
 
-    /* 圆角 - 大圆角 iOS 风 */
-    --border-radius-small: 6px;
-    --border-radius-base: 10px;
-    --border-radius-large: 16px;
+    /* 圆角 - 规范 4px 小圆角 */
+    --border-radius-small: 4px;
+    --border-radius-base: 4px;
+    --border-radius-large: 8px;
 
     /* 应用图标背景渐变 - 用于首页"我的应用" */
     --app-icon-bg-blue: linear-gradient(135deg, #5b9cff 0%, #3b82f6 100%);
@@ -137,7 +141,11 @@ html,
 body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+    font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--app-content-bg-color);
+    color: var(--text-color-primary);
+    font-size: 14px;
+    line-height: 24px;
 }
 
 *,

@@ -34,14 +34,20 @@
         :width="col.width" :min-width="col.minWidth"
         :show-overflow-tooltip="true">
         <template v-if="col.formatter || col.tag" #default="{ row }">
-          <el-tag v-if="col.tag" :type="col.tag(row)" size="small">{{ row[col.prop] }}</el-tag>
+          <el-tag v-if="col.tag" :type="col.tag(row)" size="small">{{ col.formatter ? col.formatter(row) : row[col.prop] }}</el-tag>
           <span v-else-if="col.formatter">{{ col.formatter(row) }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="enableDetail || $slots.action" label="操作" align="center" width="160" fixed="right">
+      <el-table-column v-if="enableDetail || enableEdit || enableDelete || $slots.action" label="操作" align="center" :width="actionWidth || 220" fixed="right">
         <template #default="scope">
           <el-button v-if="enableDetail" link type="primary" @click="openDetail(scope.row)">
             <Icon icon="ep:view" class="mr-3px" />详情
+          </el-button>
+          <el-button v-if="enableEdit" link type="warning" @click="$emit('edit', scope.row)">
+            <Icon icon="ep:edit" class="mr-3px" />编辑
+          </el-button>
+          <el-button v-if="enableDelete" link type="danger" @click="handleDelete(scope.row)">
+            <Icon icon="ep:delete" class="mr-3px" />删除
           </el-button>
           <slot name="action" :row="scope.row"></slot>
         </template>
@@ -57,8 +63,8 @@
   <el-dialog v-model="detailVisible" :title="detailTitle" width="900px">
     <el-descriptions :column="2" border>
       <el-descriptions-item v-for="col in detailColumns" :key="col.prop" :label="col.label" :span="col.span || 1">
-        <el-tag v-if="col.tag" :type="col.tag(detailData)" size="small">{{ detailData[col.prop] }}</el-tag>
-        <span v-else>{{ detailData[col.prop] || '--' }}</span>
+        <el-tag v-if="col.tag" :type="col.tag(detailData)" size="small">{{ (col as any).formatter ? (col as any).formatter(detailData) : (detailData[col.prop] || '--') }}</el-tag>
+        <span v-else>{{ (col as any).formatter ? (col as any).formatter(detailData) : (detailData[col.prop] || '--') }}</span>
       </el-descriptions-item>
     </el-descriptions>
     <template #footer>
@@ -69,6 +75,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed, watch } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '@/config/axios'
 
 const props = defineProps<{
@@ -77,15 +84,25 @@ const props = defineProps<{
   searchFields?: Array<{ prop: string; label: string }>
   enableCreate?: boolean
   enableDetail?: boolean
+  enableEdit?: boolean
+  enableDelete?: boolean
+  /** 删除接口路径，默认从 apiPath 推导（page → delete）*/
+  deleteApi?: string
+  /** 删除时确认提示中显示的字段（如 toolName）*/
+  deleteNameProp?: string
   detailTitleProp?: string
+  /** 操作列宽度 */
+  actionWidth?: number
   /** 详情对话框额外字段定义；不传则使用 columns */
   detailExtraColumns?: Array<{ prop: string; label: string; span?: number; tag?: (row: any) => string }>
   /** 外部传入的额外查询参数（如树过滤）；变化时自动重新加载 */
   extraQuery?: Record<string, any>
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'create'): void
+  (e: 'edit', row: any): void
+  (e: 'deleted', row: any): void
 }>()
 
 const loading = ref(false)
@@ -102,7 +119,7 @@ const detailTitle = computed(() => {
 })
 const detailColumns = computed(() => {
   if (props.detailExtraColumns && props.detailExtraColumns.length) return props.detailExtraColumns
-  return props.columns.map(c => ({ prop: c.prop, label: c.label, tag: c.tag }))
+  return props.columns.map(c => ({ prop: c.prop, label: c.label, tag: c.tag, formatter: (c as any).formatter }))
 })
 
 async function loadList() {
@@ -148,6 +165,29 @@ function openDetail(row: any) {
 
 function handleRowDblClick(row: any) {
   if (props.enableDetail) openDetail(row)
+}
+
+async function handleDelete(row: any) {
+  const name = props.deleteNameProp ? row[props.deleteNameProp] : (row.code || row.id || '')
+  try {
+    await ElMessageBox.confirm(
+      `确认删除 ${name ? `「${name}」` : '该记录'}？此操作不可恢复。`,
+      '删除确认',
+      { type: 'warning', confirmButtonText: '确认删除', cancelButtonText: '取消' }
+    )
+  } catch {
+    return // 用户取消
+  }
+  try {
+    const url = props.deleteApi || props.apiPath.replace('/page', '/delete')
+    await request.delete({ url, params: { id: row.id } })
+    ElMessage.success('删除成功')
+    emit('deleted', row)
+    loadList()
+  } catch (e) {
+    ElMessage.error('删除失败')
+    console.error(e)
+  }
 }
 
 onMounted(() => loadList())

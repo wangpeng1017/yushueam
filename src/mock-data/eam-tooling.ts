@@ -130,18 +130,57 @@ const mouldMasterList = [
 ]
 
 // ══════════════════════════════════════════════
-// 5. 采购需求
+// 5. 采购需求（含飞书审批 + ERP 自动化字段）
+// 状态枚举：DRAFT / SUBMITTED / IN_APPROVAL / APPROVED / REJECTED / CANCELED / PO_GENERATED / ERP_FAILED
 // ══════════════════════════════════════════════
-const purchaseDemandList = [
-  { id: 'PD001', demandCode: 'PD-2026-04-0001', toolType: '刀具', categoryPath: '车削/车外圆/φ50 外圆车刀/硬质合金/山特维克 SDJCR2020K11', itemName: 'φ50 外圆车刀', specification: 'SDJCR2020K11', quantity: 30, unit: '把', expectedDate: '2026-05-15', applicantName: '刚嘉成', department: '数控机加车间', usagePurpose: '常规耗材补充', erpPushStatus: '已生成PO', erpPurchaseOrderNo: 'PO-2026-04-0123', pushFailReason: '', createTime: '2026-04-20 09:30:00', workshopCode: 'CNC' },
-  { id: 'PD002', demandCode: 'PD-2026-04-0002', toolType: '刀具', categoryPath: '铣削/立铣/φ16 球头立铣刀/硬质合金/三菱 IMX16-S22-C04', itemName: 'φ16 球头立铣刀', specification: 'IMX16-S22-C04', quantity: 20, unit: '把', expectedDate: '2026-05-20', applicantName: '王组长', department: '数控机加车间', usagePurpose: '曲面精加工急需', erpPushStatus: '已生成PO', erpPurchaseOrderNo: 'PO-2026-04-0147', pushFailReason: '', createTime: '2026-04-21 10:15:00', workshopCode: 'CNC' },
-  { id: 'PD003', demandCode: 'PD-2026-04-0003', toolType: '量具', categoryPath: '长度/数显卡尺/0-150mm/0.01mm/三丰 500-196-30', itemName: '数显卡尺 0-150mm', specification: '500-196-30', quantity: 10, unit: '把', expectedDate: '2026-05-25', applicantName: '李组长', department: '数控机加车间', usagePurpose: '替换损坏件', erpPushStatus: '已生成PO', erpPurchaseOrderNo: 'PO-2026-04-0205', pushFailReason: '', createTime: '2026-04-22 14:20:00', workshopCode: 'CNC' },
-  { id: 'PD004', demandCode: 'PD-2026-04-0004', toolType: '模具', categoryPath: '注塑/单工位/电机壳系列/1出1/M-MOTOR-003', itemName: 'B5 电机外壳注塑模', specification: '1出1', quantity: 1, unit: '套', expectedDate: '2026-06-30', applicantName: '刚嘉成', department: '数控机加车间', usagePurpose: '新产品开发配套', erpPushStatus: '待推送', erpPurchaseOrderNo: '', pushFailReason: '', createTime: '2026-04-25 16:00:00', workshopCode: 'CNC' },
-  { id: 'PD005', demandCode: 'PD-2026-04-0005', toolType: '刀具', categoryPath: '钻削/麻花钻/φ8 麻花钻/高速钢/OSG EX-GDS 8.0', itemName: 'φ8 麻花钻', specification: 'EX-GDS 8.0', quantity: 100, unit: '把', expectedDate: '2026-05-10', applicantName: '张组长', department: '数控机加车间', usagePurpose: '日常消耗补货', erpPushStatus: '已生成PO', erpPurchaseOrderNo: 'PO-2026-04-0152', pushFailReason: '', createTime: '2026-04-19 11:45:00', workshopCode: 'CNC' },
-  { id: 'PD006', demandCode: 'PD-2026-04-0006', toolType: '量具', categoryPath: '形位/千分表/0-1mm/0.001mm/三丰 2110S-10', itemName: '千分表 0-1mm', specification: '2110S-10', quantity: 8, unit: '把', expectedDate: '2026-05-30', applicantName: '李组长', department: '数控机加车间', usagePurpose: '精密测量需要', erpPushStatus: '已推送', erpPurchaseOrderNo: '', pushFailReason: '', createTime: '2026-04-24 09:00:00', workshopCode: 'CNC' },
-  { id: 'PD007', demandCode: 'PD-2026-04-0007', toolType: '刀具', categoryPath: '磨削/砂轮/φ300 平面砂轮/白刚玉 WA60/白鸽 WA60K6V35', itemName: 'φ300 平面砂轮', specification: 'WA60K6V35', quantity: 12, unit: '片', expectedDate: '2026-05-15', applicantName: '王组长', department: '数控机加车间', usagePurpose: '磨削车间常规备货', erpPushStatus: '已生成PO', erpPurchaseOrderNo: 'PO-2026-04-0163', pushFailReason: '', createTime: '2026-04-20 15:30:00', workshopCode: 'CNC' },
-  { id: 'PD008', demandCode: 'PD-2026-04-0008', toolType: '模具', categoryPath: '工装夹具/检测工装/电机壳系列/气检工装/F-TEST-002', itemName: '电机壳新版气密检测工装', specification: '气检工装-改进型', quantity: 1, unit: '套', expectedDate: '2026-06-15', applicantName: '刚嘉成', department: '数控机加车间', usagePurpose: '检测精度升级', erpPushStatus: '失败', erpPurchaseOrderNo: '', pushFailReason: 'ERP 接口超时，请重试', createTime: '2026-04-25 11:00:00', workshopCode: 'CNC' },
+type PurchaseDemand = {
+  id: string
+  demandCode: string
+  toolType: string
+  categoryPath: string
+  itemName: string
+  specification: string
+  quantity: number
+  unit: string
+  expectedDate: string
+  applicantName: string
+  department: string
+  usagePurpose: string
+  erpPushStatus: string
+  erpPurchaseOrderNo: string
+  pushFailReason: string
+  createTime: string
+  workshopCode: string
+  approvalStatus: string
+  feishuApprovalCode: string
+  feishuApprovalUrl: string
+  approver: string
+  approvedAt: string
+  approvalNodes: any[]
+  erpStatus: string
+  erpFailReason: string
+}
+
+const purchaseDemandList: PurchaseDemand[] = [
+  { id: 'PD001', demandCode: 'PD-2026-04-0001', toolType: '刀具', categoryPath: '车削/车外圆/φ50 外圆车刀/硬质合金/山特维克 SDJCR2020K11', itemName: 'φ50 外圆车刀', specification: 'SDJCR2020K11', quantity: 30, unit: '把', expectedDate: '2026-05-15', applicantName: '刚嘉成', department: '数控机加车间', usagePurpose: '常规耗材补充', erpPushStatus: '已生成PO', erpPurchaseOrderNo: 'PO-2026-04-0123', pushFailReason: '', createTime: '2026-04-20 09:30:00', workshopCode: 'CNC', approvalStatus: 'PO_GENERATED', feishuApprovalCode: 'FS-2026-04-0001', feishuApprovalUrl: 'https://applink.feishu.cn/client/mini_program/open?appId=mock&approval=FS-2026-04-0001', approver: '飞书审批员', approvedAt: '2026-04-20 10:12:00', approvalNodes: [{ nodeName: '发起申请', approver: '刚嘉成', action: '提交', comment: '常规耗材', time: '2026-04-20 09:35:00' }, { nodeName: '审批人', approver: '飞书审批员', action: '通过', comment: '同意', time: '2026-04-20 10:12:00' }], erpStatus: 'SUCCESS', erpFailReason: '' },
+  { id: 'PD002', demandCode: 'PD-2026-04-0002', toolType: '刀具', categoryPath: '铣削/立铣/φ16 球头立铣刀/硬质合金/三菱 IMX16-S22-C04', itemName: 'φ16 球头立铣刀', specification: 'IMX16-S22-C04', quantity: 20, unit: '把', expectedDate: '2026-05-20', applicantName: '王组长', department: '数控机加车间', usagePurpose: '曲面精加工急需', erpPushStatus: '已生成PO', erpPurchaseOrderNo: 'PO-2026-04-0147', pushFailReason: '', createTime: '2026-04-21 10:15:00', workshopCode: 'CNC', approvalStatus: 'PO_GENERATED', feishuApprovalCode: 'FS-2026-04-0010', feishuApprovalUrl: '', approver: '飞书审批员', approvedAt: '2026-04-21 11:00:00', approvalNodes: [{ nodeName: '发起申请', approver: '王组长', action: '提交', comment: '曲面精加工急需', time: '2026-04-21 10:15:00' }, { nodeName: '审批人', approver: '飞书审批员', action: '通过', comment: '同意', time: '2026-04-21 11:00:00' }], erpStatus: 'SUCCESS', erpFailReason: '' },
+  { id: 'PD003', demandCode: 'PD-2026-04-0003', toolType: '量具', categoryPath: '长度/数显卡尺/0-150mm/0.01mm/三丰 500-196-30', itemName: '数显卡尺 0-150mm', specification: '500-196-30', quantity: 10, unit: '把', expectedDate: '2026-05-25', applicantName: '李组长', department: '数控机加车间', usagePurpose: '替换损坏件', erpPushStatus: '已生成PO', erpPurchaseOrderNo: 'PO-2026-04-0205', pushFailReason: '', createTime: '2026-04-22 14:20:00', workshopCode: 'CNC', approvalStatus: 'PO_GENERATED', feishuApprovalCode: 'FS-2026-04-0011', feishuApprovalUrl: '', approver: '飞书审批员', approvedAt: '2026-04-22 15:00:00', approvalNodes: [{ nodeName: '发起申请', approver: '李组长', action: '提交', comment: '', time: '2026-04-22 14:20:00' }, { nodeName: '审批人', approver: '飞书审批员', action: '通过', comment: '同意', time: '2026-04-22 15:00:00' }], erpStatus: 'SUCCESS', erpFailReason: '' },
+  { id: 'PD004', demandCode: 'PD-2026-04-0004', toolType: '模具', categoryPath: '注塑/单工位/电机壳系列/1出1/M-MOTOR-003', itemName: 'B5 电机外壳注塑模', specification: '1出1', quantity: 1, unit: '套', expectedDate: '2026-06-30', applicantName: '刚嘉成', department: '数控机加车间', usagePurpose: '新产品开发配套', erpPushStatus: '待推送', erpPurchaseOrderNo: '', pushFailReason: '', createTime: '2026-04-25 16:00:00', workshopCode: 'CNC', approvalStatus: 'IN_APPROVAL', feishuApprovalCode: 'FS-2026-04-0002', feishuApprovalUrl: 'https://applink.feishu.cn/client/mini_program/open?appId=mock&approval=FS-2026-04-0002', approver: '飞书审批员', approvedAt: '', approvalNodes: [{ nodeName: '发起申请', approver: '刚嘉成', action: '提交', comment: '新产品配套急需', time: '2026-04-25 16:05:00' }], erpStatus: '', erpFailReason: '' },
+  { id: 'PD005', demandCode: 'PD-2026-04-0005', toolType: '刀具', categoryPath: '钻削/麻花钻/φ8 麻花钻/高速钢/OSG EX-GDS 8.0', itemName: 'φ8 麻花钻', specification: 'EX-GDS 8.0', quantity: 100, unit: '把', expectedDate: '2026-05-10', applicantName: '张组长', department: '数控机加车间', usagePurpose: '日常消耗补货', erpPushStatus: '已生成PO', erpPurchaseOrderNo: 'PO-2026-04-0152', pushFailReason: '', createTime: '2026-04-19 11:45:00', workshopCode: 'CNC', approvalStatus: 'PO_GENERATED', feishuApprovalCode: 'FS-2026-04-0012', feishuApprovalUrl: '', approver: '飞书审批员', approvedAt: '2026-04-19 13:00:00', approvalNodes: [{ nodeName: '发起申请', approver: '张组长', action: '提交', comment: '', time: '2026-04-19 11:45:00' }, { nodeName: '审批人', approver: '飞书审批员', action: '通过', comment: '同意', time: '2026-04-19 13:00:00' }], erpStatus: 'SUCCESS', erpFailReason: '' },
+  { id: 'PD006', demandCode: 'PD-2026-04-0006', toolType: '量具', categoryPath: '形位/千分表/0-1mm/0.001mm/三丰 2110S-10', itemName: '千分表 0-1mm', specification: '2110S-10', quantity: 8, unit: '把', expectedDate: '2026-05-30', applicantName: '李组长', department: '数控机加车间', usagePurpose: '精密测量需要', erpPushStatus: '已推送', erpPurchaseOrderNo: '', pushFailReason: '', createTime: '2026-04-24 09:00:00', workshopCode: 'CNC', approvalStatus: 'REJECTED', feishuApprovalCode: 'FS-2026-04-0013', feishuApprovalUrl: '', approver: '飞书审批员', approvedAt: '2026-04-24 14:00:00', approvalNodes: [{ nodeName: '发起申请', approver: '李组长', action: '提交', comment: '精密测量需要', time: '2026-04-24 09:00:00' }, { nodeName: '审批人', approver: '飞书审批员', action: '驳回', comment: '请补充用途详情，单价较高', time: '2026-04-24 14:00:00' }], erpStatus: '', erpFailReason: '' },
+  { id: 'PD007', demandCode: 'PD-2026-04-0007', toolType: '刀具', categoryPath: '磨削/砂轮/φ300 平面砂轮/白刚玉 WA60/白鸽 WA60K6V35', itemName: 'φ300 平面砂轮', specification: 'WA60K6V35', quantity: 12, unit: '片', expectedDate: '2026-05-15', applicantName: '王组长', department: '数控机加车间', usagePurpose: '磨削车间常规备货', erpPushStatus: '已生成PO', erpPurchaseOrderNo: 'PO-2026-04-0163', pushFailReason: '', createTime: '2026-04-20 15:30:00', workshopCode: 'CNC', approvalStatus: 'PO_GENERATED', feishuApprovalCode: 'FS-2026-04-0014', feishuApprovalUrl: '', approver: '飞书审批员', approvedAt: '2026-04-20 16:00:00', approvalNodes: [{ nodeName: '发起申请', approver: '王组长', action: '提交', comment: '', time: '2026-04-20 15:30:00' }, { nodeName: '审批人', approver: '飞书审批员', action: '通过', comment: '同意', time: '2026-04-20 16:00:00' }], erpStatus: 'SUCCESS', erpFailReason: '' },
+  { id: 'PD008', demandCode: 'PD-2026-04-0008', toolType: '模具', categoryPath: '工装夹具/检测工装/电机壳系列/气检工装/F-TEST-002', itemName: '电机壳新版气密检测工装', specification: '气检工装-改进型', quantity: 1, unit: '套', expectedDate: '2026-06-15', applicantName: '刚嘉成', department: '数控机加车间', usagePurpose: '检测精度升级', erpPushStatus: '失败', erpPurchaseOrderNo: '', pushFailReason: 'ERP 接口超时，请重试', createTime: '2026-04-25 11:00:00', workshopCode: 'CNC', approvalStatus: 'ERP_FAILED', feishuApprovalCode: 'FS-2026-04-0015', feishuApprovalUrl: '', approver: '飞书审批员', approvedAt: '2026-04-25 13:00:00', approvalNodes: [{ nodeName: '发起申请', approver: '刚嘉成', action: '提交', comment: '检测精度升级', time: '2026-04-25 11:00:00' }, { nodeName: '审批人', approver: '飞书审批员', action: '通过', comment: '同意', time: '2026-04-25 13:00:00' }], erpStatus: 'FAILED', erpFailReason: 'ERP 接口超时，请重试' },
+  { id: 'PD009', demandCode: 'PD-2026-04-0009', toolType: '刀具', categoryPath: '车削/车外圆/φ32 外圆车刀/硬质合金', itemName: 'φ32 外圆车刀', specification: 'SDJCR1616M11', quantity: 20, unit: '把', expectedDate: '2026-05-28', applicantName: '王组长', department: '数控机加车间', usagePurpose: '日常补货', erpPushStatus: '', erpPurchaseOrderNo: '', pushFailReason: '', createTime: '2026-04-26 09:00:00', workshopCode: 'CNC', approvalStatus: 'DRAFT', feishuApprovalCode: '', feishuApprovalUrl: '', approver: '', approvedAt: '', approvalNodes: [], erpStatus: '', erpFailReason: '' },
 ]
+
+// 暴露给 feishu-approval mock 联动写入
+// @ts-ignore
+;(globalThis as any).__patchPurchaseDemand = (sourceId: string, patch: Record<string, any>) => {
+  const idx = purchaseDemandList.findIndex((p) => p.id === sourceId)
+  if (idx < 0) return false
+  Object.assign(purchaseDemandList[idx], patch)
+  return true
+}
 
 // ══════════════════════════════════════════════
 // 6. 入库记录
@@ -251,45 +290,291 @@ export default <MockMethod[]>[
       return { code: 200, data: item || null }
     }
   },
+  // ── 刀具档案 CRUD ──
   {
     url: '/admin-api/eam/tool-master/create',
     method: 'post',
-    response: () => ({ code: 200, data: { id: 'T' + String(Date.now()).slice(-6) } })
+    response: ({ body }) => {
+      const id = 'T' + String(Date.now()).slice(-6)
+      const now = new Date().toISOString().slice(0,10).replace(/-/g,'')
+      const newItem = {
+        id,
+        toolCode: body.toolCode || `PO-${now}-USER-L1`,
+        categoryPath: body.categoryPath || '',
+        currentStock: body.currentStock ?? body.inboundQty ?? 0,
+        status: '已启用',
+        workshopCode: 'CNC',
+        ...body,
+      }
+      toolMasterList.unshift(newItem)
+      return { code: 200, data: { id } }
+    }
   },
+  {
+    url: '/admin-api/eam/tool-master/update',
+    method: 'post',
+    response: ({ body }) => {
+      const idx = toolMasterList.findIndex(t => t.id === body.id)
+      if (idx >= 0) toolMasterList[idx] = { ...toolMasterList[idx], ...body }
+      return { code: 200, data: true }
+    }
+  },
+  {
+    url: '/admin-api/eam/tool-master/delete',
+    method: 'delete',
+    response: ({ query }) => {
+      const idx = toolMasterList.findIndex(t => t.id === query.id)
+      if (idx >= 0) toolMasterList.splice(idx, 1)
+      return { code: 200, data: true }
+    }
+  },
+  // ── 量具档案 CRUD ──
   {
     url: '/admin-api/eam/gauge-master/create',
     method: 'post',
-    response: () => ({ code: 200, data: { id: 'G' + String(Date.now()).slice(-6) } })
+    response: ({ body }) => {
+      const id = 'G' + String(Date.now()).slice(-6)
+      const now = new Date().toISOString().slice(0,10).replace(/-/g,'')
+      const newItem = {
+        id,
+        gaugeCode: body.gaugeCode || `PO-${now}-USER-L1`,
+        currentStock: body.currentStock ?? body.inboundQty ?? 0,
+        borrowedQty: 0,
+        status: '已启用',
+        workshopCode: 'CNC',
+        ...body,
+      }
+      gaugeMasterList.unshift(newItem)
+      return { code: 200, data: { id } }
+    }
   },
+  {
+    url: '/admin-api/eam/gauge-master/update',
+    method: 'post',
+    response: ({ body }) => {
+      const idx = gaugeMasterList.findIndex(t => t.id === body.id)
+      if (idx >= 0) gaugeMasterList[idx] = { ...gaugeMasterList[idx], ...body }
+      return { code: 200, data: true }
+    }
+  },
+  {
+    url: '/admin-api/eam/gauge-master/delete',
+    method: 'delete',
+    response: ({ query }) => {
+      const idx = gaugeMasterList.findIndex(t => t.id === query.id)
+      if (idx >= 0) gaugeMasterList.splice(idx, 1)
+      return { code: 200, data: true }
+    }
+  },
+  // ── 模具档案 CRUD ──
   {
     url: '/admin-api/eam/mould-master/create',
     method: 'post',
-    response: () => ({ code: 200, data: { id: 'M' + String(Date.now()).slice(-6) } })
+    response: ({ body }) => {
+      const id = 'M' + String(Date.now()).slice(-6)
+      const now = new Date().toISOString().slice(0,10).replace(/-/g,'')
+      const newItem = {
+        id,
+        mouldCode: body.mouldCode || `PO-${now}-USER-L1-01`,
+        barcode: 'BC-MOULD-' + Date.now(),
+        status: '在库',
+        usageCount: 0,
+        workshopCode: 'CNC',
+        ...body,
+      }
+      mouldMasterList.unshift(newItem)
+      return { code: 200, data: { id } }
+    }
   },
+  {
+    url: '/admin-api/eam/mould-master/update',
+    method: 'post',
+    response: ({ body }) => {
+      const idx = mouldMasterList.findIndex(t => t.id === body.id)
+      if (idx >= 0) mouldMasterList[idx] = { ...mouldMasterList[idx], ...body }
+      return { code: 200, data: true }
+    }
+  },
+  {
+    url: '/admin-api/eam/mould-master/delete',
+    method: 'delete',
+    response: ({ query }) => {
+      const idx = mouldMasterList.findIndex(t => t.id === query.id)
+      if (idx >= 0) mouldMasterList.splice(idx, 1)
+      return { code: 200, data: true }
+    }
+  },
+  // ── 工器具分类 CRUD ──
+  {
+    url: '/admin-api/eam/tool-category/create',
+    method: 'post',
+    response: ({ body }) => {
+      const id = 'CAT' + String(Date.now()).slice(-6)
+      toolCategoryTree.push({
+        id, code: id, name: body.name, toolType: body.toolType || '刀具',
+        parentId: body.parentId || 0, level: body.level || 1, sort: body.sort || 99, status: 1
+      })
+      return { code: 200, data: { id } }
+    }
+  },
+  {
+    url: '/admin-api/eam/tool-category/update',
+    method: 'post',
+    response: ({ body }) => {
+      const idx = toolCategoryTree.findIndex(c => c.id === body.id)
+      if (idx >= 0) Object.assign(toolCategoryTree[idx], body)
+      return { code: 200, data: true }
+    }
+  },
+  {
+    url: '/admin-api/eam/tool-category/delete',
+    method: 'delete',
+    response: ({ query }) => {
+      const idx = toolCategoryTree.findIndex(c => c.id === query.id)
+      if (idx >= 0) toolCategoryTree.splice(idx, 1)
+      return { code: 200, data: true }
+    }
+  },
+  // ── 入库管理 CRUD ──
   {
     url: '/admin-api/eam/tooling-inbound/create',
     method: 'post',
-    response: () => ({ code: 200, data: { id: 'IN' + String(Date.now()).slice(-6), inboundCode: 'IN-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(Date.now()).slice(-4) } })
+    response: ({ body }) => {
+      const id = 'IN' + String(Date.now()).slice(-6)
+      const code = 'IN-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(inboundList.length + 1).padStart(4, '0')
+      inboundList.unshift({
+        id, inboundCode: code, inboundTime: new Date().toISOString().slice(0,19).replace('T',' '),
+        operatorName: body.operatorName || '当前用户', barcodes: '', workshopCode: 'CNC',
+        ...body,
+      })
+      return { code: 200, data: { id, inboundCode: code } }
+    }
   },
+  {
+    url: '/admin-api/eam/tooling-inbound/update',
+    method: 'post',
+    response: ({ body }) => {
+      const idx = inboundList.findIndex(p => p.id === body.id)
+      if (idx >= 0) Object.assign(inboundList[idx], body)
+      return { code: 200, data: true }
+    }
+  },
+  {
+    url: '/admin-api/eam/tooling-inbound/delete',
+    method: 'delete',
+    response: ({ query }) => {
+      const idx = inboundList.findIndex(p => p.id === query.id)
+      if (idx >= 0) inboundList.splice(idx, 1)
+      return { code: 200, data: true }
+    }
+  },
+  // ── 出库管理 CRUD ──
   {
     url: '/admin-api/eam/tooling-outbound/create',
     method: 'post',
-    response: () => ({ code: 200, data: { id: 'OUT' + String(Date.now()).slice(-6), outboundCode: 'OUT-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(Date.now()).slice(-4) } })
+    response: ({ body }) => {
+      const id = 'OUT' + String(Date.now()).slice(-6)
+      const code = 'OUT-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(outboundList.length + 1).padStart(4, '0')
+      outboundList.unshift({
+        id, outboundCode: code, outboundTime: new Date().toISOString().slice(0,19).replace('T',' '),
+        operatorName: body.operatorName || '当前用户', workshopCode: 'CNC',
+        ...body,
+      })
+      return { code: 200, data: { id, outboundCode: code } }
+    }
   },
+  {
+    url: '/admin-api/eam/tooling-outbound/update',
+    method: 'post',
+    response: ({ body }) => {
+      const idx = outboundList.findIndex(p => p.id === body.id)
+      if (idx >= 0) Object.assign(outboundList[idx], body)
+      return { code: 200, data: true }
+    }
+  },
+  {
+    url: '/admin-api/eam/tooling-outbound/delete',
+    method: 'delete',
+    response: ({ query }) => {
+      const idx = outboundList.findIndex(p => p.id === query.id)
+      if (idx >= 0) outboundList.splice(idx, 1)
+      return { code: 200, data: true }
+    }
+  },
+  // ── 借用归还 CRUD ──
   {
     url: '/admin-api/eam/gauge-borrow-return/create',
     method: 'post',
-    response: () => ({ code: 200, data: { id: 'BR' + String(Date.now()).slice(-6), borrowCode: 'BR-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(Date.now()).slice(-4) } })
+    response: ({ body }) => {
+      const id = 'BR' + String(Date.now()).slice(-6)
+      const code = 'BR-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(borrowReturnList.length + 1).padStart(4, '0')
+      borrowReturnList.unshift({
+        id, borrowCode: code, returnStatus: '已借用', returnCondition: '', actualReturnDate: '',
+        damageRemark: '', workshopCode: 'CNC',
+        ...body,
+      })
+      return { code: 200, data: { id, borrowCode: code } }
+    }
   },
   {
     url: '/admin-api/eam/gauge-borrow-return/return',
     method: 'post',
-    response: () => ({ code: 200, data: true })
+    response: ({ body }) => {
+      const idx = borrowReturnList.findIndex(p => p.id === body.id)
+      if (idx >= 0) {
+        borrowReturnList[idx] = {
+          ...borrowReturnList[idx],
+          actualReturnDate: body.actualReturnDate,
+          returnCondition: body.returnCondition,
+          damageRemark: body.damageRemark || '',
+          remark: body.remark || '',
+          returnStatus: '已归还',
+        }
+      }
+      return { code: 200, data: true }
+    }
   },
+  {
+    url: '/admin-api/eam/gauge-borrow-return/delete',
+    method: 'delete',
+    response: ({ query }) => {
+      const idx = borrowReturnList.findIndex(p => p.id === query.id)
+      if (idx >= 0) borrowReturnList.splice(idx, 1)
+      return { code: 200, data: true }
+    }
+  },
+  // ── 报废登记 CRUD ──
   {
     url: '/admin-api/eam/tooling-scrap/create',
     method: 'post',
-    response: () => ({ code: 200, data: { id: 'SC' + String(Date.now()).slice(-6), scrapCode: 'SC-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(Date.now()).slice(-4) } })
+    response: ({ body }) => {
+      const id = 'SC' + String(Date.now()).slice(-6)
+      const code = 'SC-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(scrapList.length + 1).padStart(4, '0')
+      scrapList.unshift({
+        id, scrapCode: code, scrapTime: new Date().toISOString().slice(0,19).replace('T',' '),
+        operatorName: body.operatorName || '当前用户', workshopCode: 'CNC', attachments: '',
+        ...body,
+      })
+      return { code: 200, data: { id, scrapCode: code } }
+    }
+  },
+  {
+    url: '/admin-api/eam/tooling-scrap/update',
+    method: 'post',
+    response: ({ body }) => {
+      const idx = scrapList.findIndex(p => p.id === body.id)
+      if (idx >= 0) Object.assign(scrapList[idx], body)
+      return { code: 200, data: true }
+    }
+  },
+  {
+    url: '/admin-api/eam/tooling-scrap/delete',
+    method: 'delete',
+    response: ({ query }) => {
+      const idx = scrapList.findIndex(p => p.id === query.id)
+      if (idx >= 0) scrapList.splice(idx, 1)
+      return { code: 200, data: true }
+    }
   },
 
   // 量具档案
@@ -348,18 +633,93 @@ export default <MockMethod[]>[
     response: ({ query, headers }) => {
       const ws = getWorkshopByToken(headers?.authorization)
       if (ws !== 'CNC' && ws !== 'ALL') return { code: 200, data: { records: [], total: 0 } }
-      return { code: 200, data: paginate(purchaseDemandList, query.pageNo, query.pageSize) }
+      let list = purchaseDemandList.slice()
+      if (query.demandCode) list = list.filter(p => (p.demandCode || '').includes(query.demandCode))
+      if (query.itemName) list = list.filter(p => (p.itemName || '').includes(query.itemName))
+      if (query.approvalStatus) list = list.filter(p => p.approvalStatus === query.approvalStatus)
+      return { code: 200, data: paginate(list, query.pageNo, query.pageSize) }
     }
   },
   {
+    url: '/admin-api/eam/tool-purchase-demand/get',
+    method: 'get',
+    response: ({ query }) => {
+      const item = purchaseDemandList.find(p => p.id === query.id)
+      return { code: 200, data: item || null }
+    }
+  },
+  // ── 采购需求 CRUD + 业务操作 ──
+  {
     url: '/admin-api/eam/tool-purchase-demand/create',
     method: 'post',
-    response: () => ({ code: 200, data: { id: 'PD' + Date.now() } })
+    response: ({ body }) => {
+      const id = 'PD' + String(Date.now()).slice(-6)
+      const now = new Date()
+      const code = `PD-${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(purchaseDemandList.length+1).padStart(4,'0')}`
+      purchaseDemandList.unshift({
+        id, demandCode: code,
+        toolType: body.toolType || '',
+        categoryPath: body.categoryPath || '',
+        itemName: body.itemName || '',
+        specification: body.specification || '',
+        quantity: body.quantity || 1,
+        unit: body.unit || '',
+        expectedDate: body.expectedDate || '',
+        applicantName: body.applicantName || '当前用户',
+        department: body.department || '数控机加车间',
+        usagePurpose: body.usagePurpose || '',
+        erpPushStatus: '',
+        erpPurchaseOrderNo: '',
+        pushFailReason: '',
+        createTime: now.toISOString().slice(0,19).replace('T',' '),
+        workshopCode: 'CNC',
+        approvalStatus: 'DRAFT',
+        feishuApprovalCode: '',
+        feishuApprovalUrl: '',
+        approver: '',
+        approvedAt: '',
+        approvalNodes: [],
+        erpStatus: '',
+        erpFailReason: '',
+      })
+      return { code: 200, data: { id, demandCode: code } }
+    }
   },
   {
+    url: '/admin-api/eam/tool-purchase-demand/update',
+    method: 'post',
+    response: ({ body }) => {
+      const idx = purchaseDemandList.findIndex(p => p.id === body.id)
+      if (idx >= 0) Object.assign(purchaseDemandList[idx], body)
+      return { code: 200, data: true }
+    }
+  },
+  {
+    url: '/admin-api/eam/tool-purchase-demand/delete',
+    method: 'delete',
+    response: ({ query }) => {
+      const idx = purchaseDemandList.findIndex(p => p.id === query.id)
+      if (idx >= 0) purchaseDemandList.splice(idx, 1)
+      return { code: 200, data: true }
+    }
+  },
+  {
+    // 兼容旧路径：直连 ERP（不走审批），新流程请用 /erp/purchase-order/create
     url: '/admin-api/eam/tool-purchase-demand/push-erp',
     method: 'post',
-    response: () => ({ code: 200, data: { erpPurchaseOrderNo: 'PO-2026-04-' + Math.floor(Math.random() * 9000 + 1000) } })
+    response: ({ body }) => {
+      const po = 'PO-2026-04-' + Math.floor(Math.random() * 9000 + 1000)
+      const idx = purchaseDemandList.findIndex(p => p.id === body.id)
+      if (idx >= 0) {
+        purchaseDemandList[idx].erpPushStatus = '已生成PO'
+        purchaseDemandList[idx].erpPurchaseOrderNo = po
+        purchaseDemandList[idx].pushFailReason = ''
+        purchaseDemandList[idx].approvalStatus = 'PO_GENERATED'
+        purchaseDemandList[idx].erpStatus = 'SUCCESS'
+        purchaseDemandList[idx].erpFailReason = ''
+      }
+      return { code: 200, data: { erpPurchaseOrderNo: po } }
+    }
   },
 
   // 入库

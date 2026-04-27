@@ -10,6 +10,7 @@ const USER_MAP: Record<string, any> = {
   'b-admin':   { token: 'mock-token-b',   workshopCode: 'B',   workshopName: 'B端车间',    nickname: 'B端管理员' },
   'cnc-admin': { token: 'mock-token-cnc', workshopCode: 'CNC', workshopName: '数控机加车间', nickname: '数控机加管理员' },
   'admin':     { token: 'mock-token-all', workshopCode: 'ALL', workshopName: '全部车间',    nickname: '超级管理员' },
+  'feishu-approver': { token: 'mock-token-feishu', workshopCode: 'ALL', workshopName: '飞书审批员', nickname: '审批员' },
 }
 
 // 通过token反查车间
@@ -122,6 +123,7 @@ const eamMenus = [
     plantScope: ['ALL'],
     children: [
       { path: 'plantConfig', name: '端别配置', component: 'system/plantConfig/page', componentName: 'SystemPlantConfig', visible: true, keepAlive: true, parentId: 100 },
+      { path: 'feishuApproval', name: '飞书审批模拟', component: 'system/feishuApproval/page', componentName: 'SystemFeishuApproval', visible: true, keepAlive: true, parentId: 100 },
     ]
   }
 ]

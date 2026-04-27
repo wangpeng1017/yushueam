@@ -6,14 +6,19 @@
     :searchFields="[{ prop: 'outboundCode', label: '出库单号' }, { prop: 'receiverName', label: '领用人' }]"
     :enableCreate="true"
     :enableDetail="true"
+    :enableEdit="true"
+    :enableDelete="true"
+    deleteNameProp="outboundCode"
     detailTitleProp="outboundCode"
     @create="handleCreate"
+    @edit="handleEdit"
   />
   <SimpleFormDialog
     ref="formRef"
-    title="新增出库单"
+    :title="formTitle"
     :fields="formFields"
     apiCreate="/admin-api/eam/tooling-outbound/create"
+    apiUpdate="/admin-api/eam/tooling-outbound/update"
     @success="reloadList"
   />
 </template>
@@ -65,9 +70,16 @@ const formFields = [
 
 const listRef = ref()
 const formRef = ref()
+const formTitle = ref('新增出库单')
 
 function handleCreate() {
+  formTitle.value = '新增出库单'
   formRef.value?.open()
+}
+
+function handleEdit(row: any) {
+  formTitle.value = '编辑出库单'
+  formRef.value?.open(row.id, row)
 }
 
 function reloadList() {

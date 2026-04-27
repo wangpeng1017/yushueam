@@ -3,6 +3,15 @@
 @use './theme.scss';
 @use 'element-plus/theme-chalk/dark/css-vars.css';
 
+/* ========== 全局字体 - 微软雅黑（规范） ========== */
+html,
+body,
+#app {
+  font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .reset-margin [class*='el-icon'] + span {
   margin-left: 2px !important;
 }

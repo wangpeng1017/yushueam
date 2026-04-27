@@ -6,14 +6,19 @@
     :searchFields="[{ prop: 'scrapCode', label: '报废单号' }, { prop: 'itemCode', label: '工器具编号' }]"
     :enableCreate="true"
     :enableDetail="true"
+    :enableEdit="true"
+    :enableDelete="true"
+    deleteNameProp="scrapCode"
     detailTitleProp="scrapCode"
     @create="handleCreate"
+    @edit="handleEdit"
   />
   <SimpleFormDialog
     ref="formRef"
-    title="新增报废登记"
+    :title="formTitle"
     :fields="formFields"
     apiCreate="/admin-api/eam/tooling-scrap/create"
+    apiUpdate="/admin-api/eam/tooling-scrap/update"
     @success="reloadList"
   />
 </template>
@@ -68,10 +73,18 @@ const formFields = [
 
 const listRef = ref()
 const formRef = ref()
+const formTitle = ref('新增报废登记')
 
 function handleCreate() {
+  formTitle.value = '新增报废登记'
   formRef.value?.open()
 }
+
+function handleEdit(row: any) {
+  formTitle.value = '编辑报废登记'
+  formRef.value?.open(row.id, row)
+}
+
 function reloadList() {
   listRef.value?.loadList()
 }
