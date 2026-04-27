@@ -203,6 +203,25 @@
       color: #FFFFFF !important;
     }
   }
+
+  /* 子菜单缩进：二级菜单缩进到 36px（一级 16px + 子级 20px） */
+  .el-sub-menu .el-menu-item {
+    padding-left: 36px !important;
+    background-color: rgba(0, 0, 0, 0.15);
+
+    &.is-active {
+      padding-left: 33px !important; // 36 - 3 (border-left)
+    }
+  }
+
+  /* 三级菜单（如果有）缩进到 56px */
+  .el-sub-menu .el-sub-menu .el-menu-item {
+    padding-left: 56px !important;
+
+    &.is-active {
+      padding-left: 53px !important;
+    }
+  }
 }
 
 /* 面包屑 */
