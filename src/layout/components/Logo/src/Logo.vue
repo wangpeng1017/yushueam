@@ -68,7 +68,7 @@ watch(
         height: 'var(--logo-height)',
         padding: '0 16px',
         gap: '10px',
-        justifyContent: show ? 'flex-start' : 'center'
+        justifyContent: 'center'
       }"
       to="/"
     >
