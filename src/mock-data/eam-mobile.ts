@@ -2,6 +2,9 @@
 // src/mock-data/eam-mobile.ts
 /**
  * Mock: 移动 H5（设备扫码落地页 + 4 类工单 + 移动登录）
+ *
+ * ⚠ SYNC NOTICE: 本文件与 mock/eam-mobile.ts 必须保持数据一致。
+ * 修改时请同步更新另一份（差异仅顶部 ts-nocheck/import 和末尾 as 类型断言）。
  */
 
 // ── 设备清单（覆盖各种状态） ──
@@ -32,30 +35,35 @@ const allDevices = [
     equipmentTypeDesc: '检测设备', workshopName: 'C端车间',
     operationStatus: 'STANDBY', equipmentStatus: 'USING',
     equipmentMode: '全自动', equipmentSupplierName: '比亚迪',
+    equipmentOperating: '2024-03-12', equipmentPurchase: '2024-02-20',
   },
   {
     id: 'DEV-005', equipmentSn: 'EQ20240005', equipmentName: '涂覆机',
     equipmentTypeDesc: '涂装设备', workshopName: 'C端车间',
     operationStatus: 'FAILURE', equipmentStatus: 'USING',
     equipmentMode: '全自动', equipmentSupplierName: '广汽',
+    equipmentOperating: '2024-02-08', equipmentPurchase: '2024-01-25',
   },
   {
     id: 'DEV-006', equipmentSn: 'EQ20240006', equipmentName: '压机',
     equipmentTypeDesc: '冲压设备', workshopName: 'C端车间',
     operationStatus: 'CLOSE', equipmentStatus: 'USING',
     equipmentMode: '半自动', equipmentSupplierName: '海尔',
+    equipmentOperating: '2023-09-15', equipmentPurchase: '2023-08-30',
   },
   {
     id: 'DEV-007', equipmentSn: 'EQ20230099', equipmentName: '老式车床（已废弃）',
     equipmentTypeDesc: '老式车床', workshopName: '数控机加车间',
     operationStatus: 'CLOSE', equipmentStatus: 'ABOLISHED',
     equipmentMode: '手动', equipmentSupplierName: '上海机床厂',
+    equipmentOperating: '2018-04-10', equipmentPurchase: '2018-03-01',
   },
   {
     id: 'DEV-008', equipmentSn: 'EQ20240008', equipmentName: '激光切割机',
     equipmentTypeDesc: 'CNC 切割', workshopName: '数控机加车间',
     operationStatus: 'RUN', equipmentStatus: 'USING',
     equipmentMode: '全自动', equipmentSupplierName: '大族激光',
+    equipmentOperating: '2024-01-20', equipmentPurchase: '2023-12-28',
   },
 ]
 
