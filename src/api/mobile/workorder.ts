@@ -24,14 +24,19 @@ export interface MobileWorkOrderQuery {
   pageSize?: number
 }
 
+export interface MobileWorkOrderPage {
+  records: MobileWorkOrderVo[]
+  total: number
+}
+
 export const getMaintenanceListBySn = (params: MobileWorkOrderQuery) =>
-  request.get({ url: '/mobile/workorder/maintenance/list', params })
+  request.get<MobileWorkOrderPage>({ url: '/mobile/workorder/maintenance/list', params })
 
 export const getSpotInspectionListBySn = (params: MobileWorkOrderQuery) =>
-  request.get({ url: '/mobile/workorder/spotInspection/list', params })
+  request.get<MobileWorkOrderPage>({ url: '/mobile/workorder/spotInspection/list', params })
 
 export const getRepairListBySn = (params: MobileWorkOrderQuery) =>
-  request.get({ url: '/mobile/workorder/repair/list', params })
+  request.get<MobileWorkOrderPage>({ url: '/mobile/workorder/repair/list', params })
 
 export const getHistoryListBySn = (params: MobileWorkOrderQuery) =>
-  request.get({ url: '/mobile/workorder/history/list', params })
+  request.get<MobileWorkOrderPage>({ url: '/mobile/workorder/history/list', params })
