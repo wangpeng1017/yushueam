@@ -8,102 +8,111 @@
 
     --left-menu-min-width: 64px;
 
-    /* 侧边栏 - 规范 #3B3F48 纯色 */
-    --left-menu-bg-color: #3B3F48;
-
-    /* hover 时略亮（与未选中文本提亮一致） */
-    --left-menu-bg-light-color: #4A4E58;
-
-    /* 菜单选中背景色 - 与背景一致（靠左侧白条 + 白色文字标识） */
-    --left-menu-bg-active-color: #3B3F48;
-
-    --left-menu-text-color: #C5C7C9;
-
+    /* —— 紫色侧栏渐变 —— */
+    --left-menu-bg-color: #1F2240;
+    --left-menu-bg-light-color: #2A2F5C;
+    --left-menu-bg-active-color: rgba(255, 255, 255, 0.08);
+    --left-menu-text-color: rgba(255, 255, 255, 0.85);
     --left-menu-text-active-color: #FFFFFF;
+    --left-menu-collapse-bg-active-color: rgba(255, 255, 255, 0.08);
 
-    /* 折叠菜单背景色 */
-    --left-menu-collapse-bg-active-color: #3B3F48;
-    /* left menu end */
+    --eam-sider-bg-from: #1F2240;
+    --eam-sider-bg-to:   #2A2F5C;
+    --eam-sider-hover-bg:  rgba(255,255,255,.04);
 
-    /* logo start */
+    /* logo */
     --logo-height: 56px;
-
     --logo-title-text-color: #FFFFFF;
-    /* logo end */
 
-    /* header start */
-    /* 顶部导航 - 规范 #E9EBEF */
-    --top-header-bg-color: #E9EBEF;
-
-    --top-header-text-color: #3B3F48;
-
-    /* hover 颜色 - 极浅灰 */
-    --top-header-hover-color: #DCDFE6;
+    /* header - 白底 */
+    --top-header-bg-color: #FFFFFF;
+    --top-header-text-color: #1F2937;
+    --top-header-hover-color: #F4F6FA;
 
     --top-tool-height: var(--logo-height);
 
     --top-tool-p-x: 8px;
 
     --tags-view-height: 36px;
-    /* header end */
 
-    /* tab menu start */
+    /* tab menu */
     --tab-menu-max-width: 80px;
 
     --tab-menu-min-width: 30px;
 
     --tab-menu-collapse-height: 36px;
-    /* tab menu end */
 
     --app-content-padding: 16px;
 
-    /* 内容区背景 - 规范 #E6E9F0 */
-    --app-content-bg-color: #E6E9F0;
+    /* —— 内容区底色（浅灰蓝） —— */
+    --app-content-bg-color: #F4F6FA;
+    --eam-bg-page: #F4F6FA;
+    --eam-bg-card: #FFFFFF;
+    --eam-radius-card: 12px;
+    --eam-shadow-card: 0 2px 8px rgba(15, 23, 42, .04);
 
-    /* 卡片背景 - 规范 #F6F7F9 */
-    --card-bg-color: #F6F7F9;
+    /* 卡片背景 */
+    --card-bg-color: #FFFFFF;
 
     --app-footer-height: 48px;
 
     --transition-time-02: 0.25s;
 
-    /* ========== 主题色 - 蓝色科技感 ========== */
-    --primary-color: #2196f3;
-    --primary-color-hover: #42a5f5;
-    --primary-color-active: #1976d2;
+    /* ========== 主色：亮蓝 #1677FF ========== */
+    --primary-color: #1677FF;
+    --primary-color-hover: #4596FF;
+    --primary-color-active: #0958D9;
 
     /* ========== 覆写 Element Plus 主题色 ========== */
-    --el-color-primary: #2196f3;
-    --el-color-primary-light-3: #4ba8f5;
-    --el-color-primary-light-5: #7dbef8;
-    --el-color-primary-light-7: #aed5fa;
-    --el-color-primary-light-8: #c6e2fc;
-    --el-color-primary-light-9: #e3f1fd;
-    --el-color-primary-dark-2: #1976d2;
+    --el-color-primary: #1677FF;
+    --el-color-primary-light-3: #4596FF;
+    --el-color-primary-light-5: #7AB3FF;
+    --el-color-primary-light-7: #B0D1FF;
+    --el-color-primary-light-8: #CCDFFF;
+    --el-color-primary-light-9: #EBF3FF;
+    --el-color-primary-dark-2: #0958D9;
 
-    --el-color-success: #52c41a;
-    --el-color-warning: #faad14;
-    --el-color-danger: #ff4d4f;
-    --el-color-error: #ff4d4f;
+    /* —— 语义色 —— */
+    --el-color-success: #16A34A;
+    --el-color-warning: #F97316;
+    --el-color-danger:  #EF4444;
+    --el-color-error: #EF4444;
     --el-color-info: #909399;
 
     --el-border-radius-base: 4px;
     --el-border-radius-small: 4px;
 
-    --success-color: #52c41a;
-    --warning-color: #faad14;
-    --danger-color: #ff4d4f;
+    --success-color: #16A34A;
+    --warning-color: #F97316;
+    --danger-color: #EF4444;
     --info-color: #909399;
+
+    /* —— 表格 token —— */
+    --eam-table-header-bg: #F0F4FA;
+    --eam-table-header-color: #1F2937;
+    --eam-table-stripe-bg: #F7FAFE;
+    --eam-table-row-hover: #EBF3FF;
+    --eam-table-row-height: 52px;
+
+    /* —— 操作列文字按钮色 —— */
+    --eam-action-detail: #0EA5E9;
+    --eam-action-edit: #1677FF;
+    --eam-action-delete: #EF4444;
+    --eam-action-more: #6B7280;
+
+    /* —— 间距 —— */
+    --eam-space-page: 16px;
+    --eam-space-card: 16px;
 
     /* 边框色 - 极浅 */
     --border-color: #ebeef5;
     --border-color-light: #f2f3f5;
 
-    /* 文本色 - 规范 #3B3F48 */
-    --text-color-primary: #3B3F48;
-    --text-color-regular: #5A5E66;
-    --text-color-secondary: #8A8E96;
-    --text-color-placeholder: #B0B4BC;
+    /* 文本色 */
+    --text-color-primary: #1F2937;
+    --text-color-regular: #4B5563;
+    --text-color-secondary: #6B7280;
+    --text-color-placeholder: #9CA3AF;
 
     /* 阴影 - 卡片规范 0 2px 4px rgba(0,0,0,0.05) */
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
