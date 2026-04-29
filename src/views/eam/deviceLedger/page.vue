@@ -150,7 +150,7 @@
               width="120"
             />
             <el-table-column label="购置时间" align="center" prop="equipmentPurchase" width="120" />
-            <el-table-column label="操作" align="center" fixed="right" width="80">
+            <el-table-column label="操作" align="center" fixed="right" width="160">
               <template #default="scope">
                 <el-button
                   link
@@ -159,6 +159,14 @@
                   @click="openDetail(scope.row.id)"
                 >
                   &nbsp;详情
+                </el-button>
+                <el-button
+                  link
+                  class="btn-other"
+                  v-hasPermi="[PERMI.QUERY]"
+                  @click="openQrcode(scope.row)"
+                >
+                  &nbsp;生成二维码
                 </el-button>
               </template>
             </el-table-column>
@@ -177,6 +185,9 @@
 
     <!-- 详情弹窗 -->
     <DeviceLedgerDetail ref="detailRef" />
+
+    <!-- 二维码弹窗 -->
+    <QrcodeDialog ref="qrcodeRef" />
   </div>
 </template>
 
@@ -184,6 +195,7 @@
 import * as DeviceLedgerApi from '@/api/eam/deviceLedger'
 import { useEamEnumStore } from '@/store/modules/enums'
 import DeviceLedgerDetail from './detail.vue'
+import QrcodeDialog from './components/QrcodeDialog.vue'
 
 defineOptions({ name: 'EamDeviceLedger' })
 
@@ -324,6 +336,15 @@ const getOperationStatusClass = (status: string) => {
 const detailRef = ref()
 const openDetail = (id: string) => {
   detailRef.value.open(id)
+}
+
+// ==================== 二维码弹窗 ====================
+const qrcodeRef = ref()
+const openQrcode = (row: DeviceLedgerApi.DeviceLedgerVo) => {
+  qrcodeRef.value.open({
+    equipmentSn: row.equipmentSn,
+    equipmentName: row.equipmentName,
+  })
 }
 
 // ==================== 初始化 ====================
