@@ -18,7 +18,7 @@
             :key="d.equipmentSn"
             class="label-cell"
           >
-            <canvas :data-sn="d.equipmentSn" />
+            <canvas :data-sn="d.equipmentSn"></canvas>
             <div class="label-info">
               <div class="label-name">{{ d.equipmentName }}</div>
               <div class="label-sn">{{ d.equipmentSn }}</div>

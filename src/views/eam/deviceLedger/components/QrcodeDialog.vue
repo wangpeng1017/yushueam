@@ -8,7 +8,7 @@
   >
     <div class="qr-wrap">
       <div ref="canvasWrapRef" :id="printAreaId" class="qr-canvas">
-        <canvas ref="canvasRef" />
+        <canvas ref="canvasRef"></canvas>
         <div class="qr-info">
           <div class="qr-line">设备名称：{{ device?.equipmentName }}</div>
           <div class="qr-line">设备编号：{{ device?.equipmentSn }}</div>
