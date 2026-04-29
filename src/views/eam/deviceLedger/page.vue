@@ -326,6 +326,9 @@ const getList = async () => {
     const res = await DeviceLedgerApi.getDeviceLedgerPage(params)
     list.value = res.records ?? []
     total.value = res.total ?? 0
+    // 翻页/筛选/重置后清空多选，避免与 el-table 内部状态不一致
+    selectedRows.value = []
+    tableRef.value?.clearSelection?.()
   } finally {
     loading.value = false
   }
