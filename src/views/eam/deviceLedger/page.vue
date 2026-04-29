@@ -339,7 +339,7 @@ const openDetail = (id: string) => {
 }
 
 // ==================== 二维码弹窗 ====================
-const qrcodeRef = ref()
+const qrcodeRef = ref<InstanceType<typeof QrcodeDialog>>()
 const openQrcode = (row: DeviceLedgerApi.DeviceLedgerVo) => {
   qrcodeRef.value.open({
     equipmentSn: row.equipmentSn,
