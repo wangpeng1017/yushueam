@@ -107,7 +107,25 @@
 
         <!-- 列表 -->
         <ContentWrap>
-          <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+          <div class="batch-bar">
+            <el-button
+              type="primary"
+              :disabled="selectedRows.length === 0"
+              @click="openBatchPrint"
+            >
+              <Icon icon="ep:printer" class="mr-5px" />
+              批量打印贴纸（已选 {{ selectedRows.length }} 台）
+            </el-button>
+          </div>
+          <el-table
+            ref="tableRef"
+            v-loading="loading"
+            :data="list"
+            :stripe="true"
+            :show-overflow-tooltip="true"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column type="selection" width="50" align="center" />
             <el-table-column label="设备编号" align="center" prop="equipmentSn" width="160" />
             <el-table-column label="设备名称" align="center" prop="equipmentName" min-width="120" />
             <el-table-column label="设备状态" align="center" prop="operationStatus" width="80">
@@ -188,6 +206,9 @@
 
     <!-- 二维码弹窗 -->
     <QrcodeDialog ref="qrcodeRef" />
+
+    <!-- 批量打印贴纸 -->
+    <BatchLabelPrint ref="batchPrintRef" />
   </div>
 </template>
 
@@ -196,6 +217,7 @@ import * as DeviceLedgerApi from '@/api/eam/deviceLedger'
 import { useEamEnumStore } from '@/store/modules/enums'
 import DeviceLedgerDetail from './detail.vue'
 import QrcodeDialog from './components/QrcodeDialog.vue'
+import BatchLabelPrint from './components/BatchLabelPrint.vue'
 
 defineOptions({ name: 'EamDeviceLedger' })
 
@@ -347,6 +369,25 @@ const openQrcode = (row: DeviceLedgerApi.DeviceLedgerVo) => {
   })
 }
 
+// ==================== 多选 + 批量打印 ====================
+const tableRef = ref()
+const selectedRows = ref<DeviceLedgerApi.DeviceLedgerVo[]>([])
+const batchPrintRef = ref<InstanceType<typeof BatchLabelPrint>>()
+
+const handleSelectionChange = (rows: DeviceLedgerApi.DeviceLedgerVo[]) => {
+  selectedRows.value = rows
+}
+
+const openBatchPrint = () => {
+  if (selectedRows.value.length === 0) return
+  batchPrintRef.value?.open(
+    selectedRows.value.map(r => ({
+      equipmentSn: r.equipmentSn,
+      equipmentName: r.equipmentName,
+    }))
+  )
+}
+
 // ==================== 初始化 ====================
 onMounted(async () => {
   await Promise.all([eamEnumStore.loadEquipmentEnums(), loadTreeData(), loadSupplierOptions()])
@@ -417,5 +458,9 @@ onMounted(async () => {
   &:hover {
     color: rgb(165 216 103 / 75%);
   }
+}
+
+.batch-bar {
+  margin-bottom: 12px;
 }
 </style>
