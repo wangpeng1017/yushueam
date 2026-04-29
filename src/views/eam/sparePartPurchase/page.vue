@@ -1,7 +1,8 @@
 <template>
   <div class="spare-part-purchase-page">
     <ContentWrap>
-      <el-alert type="info" :closable="false" show-icon class="mb-15px"
+      <el-alert
+type="info" :closable="false" show-icon class="mb-15px"
         title="备件采购说明：触发来源 = 安全库存预警 / 维修工单缺件 / 计划性补货；流程 = 申请 → 飞书审批 → ERP 生成 PO → 入库扣账" />
       <el-form :inline="true" :model="queryParams" class="-mb-15px">
         <el-form-item label="申请单号">

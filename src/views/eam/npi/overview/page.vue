@@ -1,7 +1,8 @@
 <template>
   <div class="npi-overview">
     <ContentWrap>
-      <el-alert type="info" :closable="false" show-icon class="mb-15px"
+      <el-alert
+type="info" :closable="false" show-icon class="mb-15px"
         title="非标设备研制 14 阶段流程：生产/工艺需求 → 方案设计 → 评审 1 → 方案细化 → 评审 2 → 图纸 → BOM → 采购下单 → 收料 → 物料领用 → 装配 → 预验收 → 试产+内部验收（C 端专属）" />
       <el-form :inline="true" :model="queryParams">
         <el-form-item label="项目编号">

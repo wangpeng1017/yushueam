@@ -1,7 +1,8 @@
 <template>
   <div class="sp-inbound">
     <ContentWrap>
-      <el-alert type="info" :closable="false" show-icon class="mb-15px"
+      <el-alert
+type="info" :closable="false" show-icon class="mb-15px"
         title="备件入库说明：触发来源 = ERP 采购订单到货 / 退库入库 / 调拨入库；操作员扫码登记 → 自动写入备件库存与流水。" />
       <el-form :inline="true" :model="queryParams" class="-mb-15px">
         <el-form-item label="单据号">

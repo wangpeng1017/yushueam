@@ -1,7 +1,8 @@
 <template>
   <div class="npi-acc">
     <ContentWrap>
-      <el-alert type="info" :closable="false" show-icon class="mb-15px"
+      <el-alert
+type="info" :closable="false" show-icon class="mb-15px"
         title="装配与验收：装配车间完成机械装配/接线/电气调试，自动化设备团队通知生产+工艺预验收 → 生产现场调试 → 批量试产 → 内部验收，4 步全部通过即可入档设备台账" />
     </ContentWrap>
 

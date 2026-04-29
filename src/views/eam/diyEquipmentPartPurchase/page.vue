@@ -1,7 +1,8 @@
 <template>
   <div class="diy-purchase-page">
     <ContentWrap>
-      <el-alert type="info" :closable="false" show-icon class="mb-15px"
+      <el-alert
+type="info" :closable="false" show-icon class="mb-15px"
         title="自制设备备件采购说明：用于自制线体（PACK 线/电机线/装配线等）的零部件采购，如电机/PLC/伺服驱动器/传感器；流程 = 申请 → 飞书审批 → ERP 生成 PO → 入库" />
       <el-form :inline="true" :model="queryParams" class="-mb-15px">
         <el-form-item label="申请单号">

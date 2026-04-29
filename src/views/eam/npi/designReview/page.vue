@@ -1,7 +1,8 @@
 <template>
   <div class="npi-review">
     <ContentWrap>
-      <el-alert type="info" :closable="false" show-icon class="mb-15px"
+      <el-alert
+type="info" :closable="false" show-icon class="mb-15px"
         title="非标设备方案评审：3 个评审节点 — 方案评审 1（三维方案，工艺+生产）/ 方案评审 2（细化方案，工艺+生产）/ 预验收（生产+工艺确认达标）" />
       <el-form :inline="true" :model="queryParams">
         <el-form-item label="项目编号">

@@ -1,10 +1,12 @@
 <template>
   <ContentWrap>
     <!-- 搜索栏 -->
-    <el-form v-if="searchFields && searchFields.length"
+    <el-form
+v-if="searchFields && searchFields.length"
       class="-mb-15px" :model="queryParams" :inline="true" label-width="90px">
       <el-form-item v-for="f in searchFields" :key="f.prop" :label="f.label" :prop="f.prop">
-        <el-input v-model="queryParams[f.prop]" class="!w-200px" clearable
+        <el-input
+v-model="queryParams[f.prop]" class="!w-200px" clearable
           :placeholder="`请输入${f.label}`" @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item>
@@ -26,10 +28,12 @@
       </el-button>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" border
+    <el-table
+v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" border
       @row-dblclick="handleRowDblClick">
       <el-table-column type="index" label="序号" width="60" align="center" />
-      <el-table-column v-for="col in columns" :key="col.prop"
+      <el-table-column
+v-for="col in columns" :key="col.prop"
         :label="col.label" :prop="col.prop" align="center"
         :width="col.width" :min-width="col.minWidth"
         :show-overflow-tooltip="true">
@@ -54,7 +58,8 @@
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <Pagination class="mt-15px"
+    <Pagination
+class="mt-15px"
       :total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize"
       @pagination="loadList" />
   </ContentWrap>

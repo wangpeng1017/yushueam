@@ -42,7 +42,8 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item v-if="returnForm.returnCondition && returnForm.returnCondition !== '完好'" label="损坏/丢失说明">
-        <el-input v-model="returnForm.damageRemark" type="textarea" :rows="3"
+        <el-input
+v-model="returnForm.damageRemark" type="textarea" :rows="3"
           placeholder="勾选损坏或丢失时建议填写，将自动联动报废登记" />
       </el-form-item>
       <el-form-item label="备注">

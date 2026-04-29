@@ -1,7 +1,8 @@
 <template>
   <div class="sp-scrap">
     <ContentWrap>
-      <el-alert type="warning" :closable="false" show-icon class="mb-15px"
+      <el-alert
+type="warning" :closable="false" show-icon class="mb-15px"
         title="备件报废说明：损坏 / 超期失效 / 工艺淘汰 / 错件等触发；登记后部门负责人审核 → 资产核销 → 写入流水。" />
       <el-form :inline="true" :model="queryParams" class="-mb-15px">
         <el-form-item label="报废单号">

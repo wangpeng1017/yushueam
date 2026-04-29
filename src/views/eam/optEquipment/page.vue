@@ -31,11 +31,13 @@
       <ContentWrap>
         <el-form class="-mb-15px" :model="queryParams" ref="queryFormRef" :inline="true" label-width="110px">
           <el-form-item label="设备编号" prop="equipmentSn">
-            <el-input v-model="queryParams.equipmentSn" class="!w-200px" clearable
+            <el-input
+v-model="queryParams.equipmentSn" class="!w-200px" clearable
               placeholder="请输入设备编号" @keyup.enter="handleQuery" />
           </el-form-item>
           <el-form-item label="设备名称" prop="equipmentName">
-            <el-input v-model="queryParams.equipmentName" class="!w-200px" clearable
+            <el-input
+v-model="queryParams.equipmentName" class="!w-200px" clearable
               placeholder="请输入设备名称" @keyup.enter="handleQuery" />
           </el-form-item>
           <el-form-item label="数据源" prop="dataSource">
@@ -45,19 +47,22 @@
           </el-form-item>
           <el-form-item label="设备类型" prop="equipmentType">
             <el-select v-model="queryParams.equipmentType" placeholder="请选择设备类型" clearable filterable class="!w-200px">
-              <el-option v-for="item in equipmentTypeOptions" :key="item.typeCode"
+              <el-option
+v-for="item in equipmentTypeOptions" :key="item.typeCode"
                 :label="item.typeName" :value="item.typeCode" />
             </el-select>
           </el-form-item>
           <el-form-item label="资产状态" prop="equipmentStatus">
             <el-select v-model="queryParams.equipmentStatus" placeholder="请选择资产状态" clearable class="!w-200px">
-              <el-option v-for="item in eamEnumStore.getEquipmentStatusList" :key="item.value"
+              <el-option
+v-for="item in eamEnumStore.getEquipmentStatusList" :key="item.value"
                 :label="item.text" :value="item.value" />
             </el-select>
           </el-form-item>
           <el-form-item label="运行状态" prop="operationStatus">
             <el-select v-model="queryParams.operationStatus" placeholder="请选择运行状态" clearable class="!w-200px">
-              <el-option v-for="item in eamEnumStore.getOperationStatusList" :key="item.value"
+              <el-option
+v-for="item in eamEnumStore.getOperationStatusList" :key="item.value"
                 :label="item.text" :value="item.value" />
             </el-select>
           </el-form-item>
@@ -77,7 +82,8 @@
           <el-button plain type="success" @click="openSyncDialog">
             <Icon class="mr-5px" icon="ep:connection" />&nbsp;手动同步 ERP
           </el-button>
-          <el-button v-hasPermi="[PERMI.DELETE]" plain type="danger"
+          <el-button
+v-hasPermi="[PERMI.DELETE]" plain type="danger"
             :disabled="selectedIds.length === 0" @click="handleBatchDelete">
             <Icon class="mr-5px" icon="ep:delete" />&nbsp;批量删除
           </el-button>
@@ -86,11 +92,13 @@
         <!-- 设备分类 Tabs（保留原全部/重点/关键） -->
         <el-tabs v-model="activeTab" @tab-change="handleTabChange" class="mb-10px">
           <el-tab-pane label="全部" name="all" />
-          <el-tab-pane v-for="tab in categoryTabs" :key="tab.categoryCode"
+          <el-tab-pane
+v-for="tab in categoryTabs" :key="tab.categoryCode"
             :label="tab.categoryName" :name="tab.categoryCode" />
         </el-tabs>
 
-        <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
+        <el-table
+v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
           @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="设备编号" align="center" prop="equipmentSn" width="140" />
@@ -132,7 +140,8 @@
           </el-table-column>
         </el-table>
 
-        <Pagination :total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize"
+        <Pagination
+:total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize"
           @pagination="getList" />
       </ContentWrap>
 

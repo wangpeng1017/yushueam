@@ -1,7 +1,8 @@
 <template>
   <div class="sp-outbound">
     <ContentWrap>
-      <el-alert type="info" :closable="false" show-icon class="mb-15px"
+      <el-alert
+type="info" :closable="false" show-icon class="mb-15px"
         title="备件出库说明：触发来源 = 维修工单领用 / 保养工单领用 / 日常班组领用 / 调拨出库；扫码领用后自动扣库存与流水。" />
       <el-form :inline="true" :model="queryParams" class="-mb-15px">
         <el-form-item label="单据号">

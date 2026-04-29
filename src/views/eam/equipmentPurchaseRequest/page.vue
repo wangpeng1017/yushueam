@@ -310,7 +310,8 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="飞书审批" name="feishu">
-            <el-alert type="info" :closable="false" show-icon class="mb-15px"
+            <el-alert
+type="info" :closable="false" show-icon class="mb-15px"
               title="EAM 仅做提单 + 状态展示。审批进度、审批人意见、ERP 对接全部由飞书完成。" />
             <div v-if="hasFeishuTicket(detailData)" class="text-center mt-20px">
               <el-button type="primary" size="large" @click="openFeishu(detailData)">

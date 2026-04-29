@@ -1,7 +1,8 @@
 <template>
   <div class="spare-part-category-tree-page">
     <ContentWrap>
-      <el-alert type="info" :closable="false" show-icon class="mb-15px"
+      <el-alert
+type="info" :closable="false" show-icon class="mb-15px"
         title="备件分类树（5 级）。CNC 端三级以上分类查询需求由此树支撑。" />
       <el-row :gutter="12">
         <el-col :span="9">

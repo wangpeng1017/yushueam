@@ -5,7 +5,7 @@
     </div>
     <div class="m-header-title">{{ title }}</div>
     <div class="m-header-right">
-      <slot name="right" />
+      <slot name="right" ></slot>
     </div>
   </div>
 </template>

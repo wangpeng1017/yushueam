@@ -1,7 +1,8 @@
 <template>
   <div class="npi-bom">
     <ContentWrap>
-      <el-alert type="info" :closable="false" show-icon class="mb-15px"
+      <el-alert
+type="info" :closable="false" show-icon class="mb-15px"
         title="BOM 管理：自动化设备团队按图纸生成，分 3 类 — 机加件 / 钣金件 / 外购标准件；含供应商、单价、货期；可一键生成采购需求推送飞书黑盒架构" />
       <el-form :inline="true" :model="queryParams">
         <el-form-item label="项目">
