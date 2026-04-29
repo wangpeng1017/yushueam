@@ -133,6 +133,54 @@ const remainingRouter: AppRouteRecordRaw[] = [
       noCache: true
     }
   },
+  // === 移动 H5 路由组（PDA 扫码场景） ===
+  {
+    path: '/m',
+    redirect: '/m/login',
+    meta: { hidden: true, noTagsView: true }
+  },
+  {
+    path: '/m/login',
+    component: () => import('@/views/mobile/login.vue'),
+    name: 'MobileLogin',
+    meta: { hidden: true, noTagsView: true, public: true }
+  },
+  {
+    path: '/m/equipment/detail',
+    component: () => import('@/views/mobile/equipment/detail.vue'),
+    name: 'MobileEquipmentDetail',
+    meta: { hidden: true, noTagsView: true, public: true }
+  },
+  {
+    path: '/m/equipment/:sn',
+    component: () => import('@/views/mobile/equipment/landing.vue'),
+    name: 'MobileEquipmentLanding',
+    meta: { hidden: true, noTagsView: true, public: true }
+  },
+  {
+    path: '/m/maintenance/list',
+    component: () => import('@/views/mobile/maintenance/list.vue'),
+    name: 'MobileMaintenanceList',
+    meta: { hidden: true, noTagsView: true }
+  },
+  {
+    path: '/m/spotInspection/list',
+    component: () => import('@/views/mobile/spotInspection/list.vue'),
+    name: 'MobileSpotInspectionList',
+    meta: { hidden: true, noTagsView: true }
+  },
+  {
+    path: '/m/repairOrder/list',
+    component: () => import('@/views/mobile/repairOrder/list.vue'),
+    name: 'MobileRepairOrderList',
+    meta: { hidden: true, noTagsView: true }
+  },
+  {
+    path: '/m/workorder/history',
+    component: () => import('@/views/mobile/workorder/history.vue'),
+    name: 'MobileWorkorderHistory',
+    meta: { hidden: true, noTagsView: true }
+  },
   {
     path: '/login',
     component: () => import('@/views/Login/Login.vue'),

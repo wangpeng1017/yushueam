@@ -8,6 +8,8 @@ import { usePageLoading } from '@/hooks/web/usePageLoading'
 import { useDictStoreWithOut } from '@/store/modules/dict'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
+import { isPublicMobileRoute, buildLoginRedirect } from '@/views/mobile/utils/mobile-route-guard'
+import { isMobileTokenValid } from '@/views/mobile/utils/mobile-token'
 
 const { start, done } = useNProgress()
 
@@ -61,6 +63,16 @@ const whiteList = [
 router.beforeEach(async (to, from, next) => {
   start()
   loadStart()
+  // === 移动 H5 路由独立守卫，不走桌面端 token ===
+  if (to.path.startsWith('/m/')) {
+    if (isPublicMobileRoute(to.path)) {
+      return next()
+    }
+    if (!isMobileTokenValid()) {
+      return next(buildLoginRedirect(to.fullPath))
+    }
+    return next()
+  }
   if (getAccessToken()) {
     if (to.path === '/login') {
       next({ path: '/' })
