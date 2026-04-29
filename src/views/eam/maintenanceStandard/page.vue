@@ -187,6 +187,108 @@
       />
     </ContentWrap>
 
+    <!-- ==================== 下方：标准物料清单（选填，纯检查类标准可不配） ==================== -->
+    <ContentWrap>
+      <div class="item-section-title">
+        标准物料清单
+        <el-tag size="small" type="info" class="ml-8px">选填 · 关联备件主数据</el-tag>
+      </div>
+      <div class="item-section-toolbar">
+        <el-button
+          plain
+          type="primary"
+          :disabled="!currentStandardCode"
+          @click="openSparePartDialog('create')"
+        >
+          <Icon icon="ep:plus" class="mr-5px" />&nbsp;新增物料
+        </el-button>
+        <el-button
+          plain
+          type="danger"
+          :disabled="sparePartSelectedIds.length === 0"
+          @click="handleSparePartBatchDelete"
+        >
+          <Icon icon="ep:delete" class="mr-5px" />&nbsp;批量删除
+        </el-button>
+        <span v-if="!currentStandardCode" class="text-12px text-gray-400 ml-10px">请先点击上方标准行</span>
+      </div>
+
+      <el-table
+        v-loading="sparePartLoading"
+        :data="sparePartList"
+        :stripe="true"
+        :show-overflow-tooltip="true"
+        @selection-change="handleSparePartSelectionChange"
+      >
+        <el-table-column type="selection" width="50" align="center" />
+        <el-table-column type="index" label="序号" width="60" align="center" />
+        <el-table-column label="备件编号" align="center" prop="sparePartNumber" width="130" />
+        <el-table-column label="备件名称" align="center" prop="sparePartName" min-width="180" />
+        <el-table-column label="规格" align="center" prop="specification" width="120" />
+        <el-table-column label="计划用量" align="center" prop="planQty" width="100">
+          <template #default="{ row }">
+            <span class="font-bold text-orange-600">{{ row.planQty }}</span> {{ row.unit }}
+          </template>
+        </el-table-column>
+        <el-table-column label="说明" align="center" prop="remark" min-width="180" />
+        <el-table-column label="排序" align="center" prop="seq" width="70" />
+        <el-table-column label="创建人" align="center" prop="createByPersonName" width="90" />
+        <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
+        <el-table-column label="操作" align="center" fixed="right" width="140">
+          <template #default="scope">
+            <el-button link class="btn-edit" @click="openSparePartDialog('edit', scope.row)">编辑</el-button>
+            <el-button link class="btn-delete" @click="handleSparePartDelete(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <Pagination
+        :total="sparePartTotal"
+        v-model:page="sparePartQueryParams.pageNo"
+        v-model:limit="sparePartQueryParams.pageSize"
+        @pagination="getSparePartList"
+      />
+    </ContentWrap>
+
+    <!-- ==================== 物料新增/编辑对话框 ==================== -->
+    <el-dialog v-model="sparePartDialogVisible" :title="sparePartDialogMode === 'create' ? '新增物料' : '编辑物料'" width="600px">
+      <el-form ref="sparePartFormRef" :model="sparePartForm" :rules="sparePartFormRules" label-width="100px">
+        <el-form-item label="选择备件" prop="sparePartId">
+          <el-select
+            v-model="sparePartForm.sparePartId"
+            filterable
+            placeholder="按备件编号/名称搜索"
+            class="!w-full"
+            @change="onSparePartChange"
+          >
+            <el-option
+              v-for="sp in sparePartOptions"
+              :key="sp.id"
+              :label="`${sp.number} ${sp.name}（库存 ${sp.actualStock}${sp.unitName}）`"
+              :value="sp.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="sparePartForm.specification" label="规格">
+          <span class="text-gray-500">{{ sparePartForm.specification }}</span>
+        </el-form-item>
+        <el-form-item label="计划用量" prop="planQty">
+          <el-input-number v-model="sparePartForm.planQty" :min="1" :step="1" class="!w-full" />
+          <span class="text-gray-500 ml-8px">{{ sparePartForm.unit || '单位' }}</span>
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input-number v-model="sparePartForm.seq" :min="0" />
+        </el-form-item>
+        <el-form-item label="说明">
+          <el-input v-model="sparePartForm.remark" type="textarea" :rows="2" placeholder="使用说明（可选）" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="sparePartDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="sparePartSubmitting" @click="handleSparePartSubmit">确定</el-button>
+      </template>
+    </el-dialog>
+
     <!-- ==================== 弹窗 ==================== -->
     <StandardForm ref="standardFormRef" @success="onStandardFormSuccess" />
     <ItemForm ref="itemFormRef" @success="onItemFormSuccess" />
@@ -197,6 +299,7 @@
 import * as StandardApi from '@/api/eam/maintenanceStandard'
 import StandardForm from './form.vue'
 import ItemForm from './item-form.vue'
+import request from '@/config/axios'
 
 defineOptions({ name: 'EamMaintenanceStandard' })
 
@@ -387,9 +490,140 @@ const onItemFormSuccess = () => {
   getItemList()
 }
 
+// ==================== 子表：标准物料清单 ====================
+const sparePartLoading = ref(false)
+const sparePartTotal = ref(0)
+const sparePartList = ref<any[]>([])
+const sparePartQueryParams = reactive({ pageNo: 1, pageSize: 5 })
+const sparePartSelectedIds = ref<string[]>([])
+const sparePartOptions = ref<any[]>([])
+
+const SPP_API = '/workOrder/eamMaintenanceStandardSparePart'
+
+async function getSparePartList() {
+  if (!currentStandardCode.value) return
+  sparePartLoading.value = true
+  try {
+    const res: any = await request.get({
+      url: SPP_API + '/list',
+      params: { ...sparePartQueryParams, maintenanceStandardCode: currentStandardCode.value }
+    })
+    sparePartList.value = res?.records || []
+    sparePartTotal.value = res?.total || 0
+  } finally {
+    sparePartLoading.value = false
+  }
+}
+
+async function loadSparePartOptions() {
+  try {
+    const res: any = await request.get({
+      url: '/work/eamSparePartSearch/list',
+      params: { pageNo: 1, pageSize: 100 }
+    })
+    sparePartOptions.value = res?.records || []
+  } catch {
+    sparePartOptions.value = []
+  }
+}
+
+function handleSparePartSelectionChange(rows: any[]) {
+  sparePartSelectedIds.value = rows.map(r => r.id)
+}
+
+// 物料对话框
+const sparePartDialogVisible = ref(false)
+const sparePartDialogMode = ref<'create' | 'edit'>('create')
+const sparePartFormRef = ref()
+const sparePartSubmitting = ref(false)
+const sparePartForm = reactive({
+  id: '', maintenanceStandardCode: '', sparePartId: '',
+  sparePartNumber: '', sparePartName: '', specification: '', unit: '',
+  planQty: 1, remark: '', seq: 99,
+})
+const sparePartFormRules = {
+  sparePartId: [{ required: true, message: '请选择备件', trigger: 'change' }],
+  planQty: [{ required: true, message: '请填写计划用量', trigger: 'change' }],
+}
+
+function resetSparePartForm() {
+  Object.assign(sparePartForm, {
+    id: '', maintenanceStandardCode: currentStandardCode.value, sparePartId: '',
+    sparePartNumber: '', sparePartName: '', specification: '', unit: '',
+    planQty: 1, remark: '', seq: 99,
+  })
+}
+
+function openSparePartDialog(mode: 'create' | 'edit', row?: any) {
+  sparePartDialogMode.value = mode
+  if (mode === 'create') {
+    resetSparePartForm()
+  } else if (row) {
+    Object.assign(sparePartForm, JSON.parse(JSON.stringify(row)))
+  }
+  sparePartDialogVisible.value = true
+}
+
+function onSparePartChange(id: string) {
+  const sp = sparePartOptions.value.find(s => s.id === id)
+  if (sp) {
+    sparePartForm.sparePartNumber = sp.number
+    sparePartForm.sparePartName = sp.name
+    sparePartForm.specification = sp.specification
+    sparePartForm.unit = sp.unitName
+  }
+}
+
+async function handleSparePartSubmit() {
+  await sparePartFormRef.value?.validate?.()
+  sparePartSubmitting.value = true
+  try {
+    const url = SPP_API + (sparePartDialogMode.value === 'create' ? '/add' : '/edit')
+    const method = sparePartDialogMode.value === 'create' ? 'post' : 'put'
+    await (request as any)[method]({ url, data: { ...sparePartForm, maintenanceStandardCode: currentStandardCode.value } })
+    message.success(sparePartDialogMode.value === 'create' ? '新增成功' : '更新成功')
+    sparePartDialogVisible.value = false
+    getSparePartList()
+  } finally {
+    sparePartSubmitting.value = false
+  }
+}
+
+async function handleSparePartDelete(row: any) {
+  try {
+    await message.delConfirm()
+    await request.delete({ url: SPP_API + '/delete', params: { id: row.id } })
+    message.success('删除成功')
+    getSparePartList()
+  } catch {}
+}
+
+async function handleSparePartBatchDelete() {
+  try {
+    await message.delConfirm()
+    await request.delete({ url: SPP_API + '/deleteBatch', params: { ids: sparePartSelectedIds.value.join(',') } })
+    message.success('批量删除成功')
+    sparePartSelectedIds.value = []
+    getSparePartList()
+  } catch {}
+}
+
+// 当主表点击行切换 currentStandardCode 时同步刷新物料清单
+watch(currentStandardCode, async (val) => {
+  if (val) {
+    sparePartQueryParams.pageNo = 1
+    await getSparePartList()
+  } else {
+    sparePartList.value = []
+    sparePartTotal.value = 0
+    sparePartSelectedIds.value = []
+  }
+})
+
 // ==================== 初始化 ====================
 onMounted(async () => {
   await getList()
+  await loadSparePartOptions()
 })
 </script>
 

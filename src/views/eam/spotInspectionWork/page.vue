@@ -78,6 +78,9 @@
         <el-button v-hasPermi="[PERMI.DISPATCH]" plain type="primary" @click="handleDispatch">
           <Icon icon="ep:user" class="mr-5px" />&nbsp;派工
         </el-button>
+        <el-button plain type="danger" @click="handleTransferToRepair">
+          <Icon icon="ep:warning" class="mr-5px" />&nbsp;异常转维修
+        </el-button>
       </div>
 
       <el-table
@@ -241,6 +244,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import request from '@/config/axios'
 import * as WorkApi from '@/api/eam/spotInspectionWork'
 import { useEamEnumStore } from '@/store/modules/enums'
 import PersonSelectDialog from '@/components/PersonSelectDialog/index.vue'
@@ -355,6 +359,45 @@ const formatPlanTime = (start: string, end: string) => {
 // ==================== 派工 ====================
 const personSelectRef = ref()
 const pendingDispatchWork = ref<WorkApi.WorkVo | null>(null)
+
+// ==================== 异常转维修 ====================
+const handleTransferToRepair = async () => {
+  if (selectedRows.value.length !== 1) {
+    message.warning('请选择一条工单')
+    return
+  }
+  const row = selectedRows.value[0]
+  if (!['1', '2'].includes(row.status)) {
+    message.warning('已完成的工单不可再转维修')
+    return
+  }
+  try {
+    const { value: remark } = await ElMessageBox.prompt(
+      `确认将「${row.workCode}」转为维修工单？\n${row.inspectionType === '2' ? '巡检' : '点检'}工单将挂起，自动生成对应维修工单。`,
+      '异常转维修',
+      {
+        confirmButtonText: '确认转维修',
+        cancelButtonText: '取消',
+        inputType: 'textarea',
+        inputPlaceholder: '请简述异常情况（可选）',
+        inputValue: '',
+      }
+    )
+    const res: any = await request.post({
+      url: '/workOrder/eamSpotInspectionWork/transferToRepair',
+      data: { workCode: row.workCode, remark }
+    })
+    ElMessageBox.alert(
+      `已生成维修工单：${res?.repairCode || '-'}\n请到"维修管理 → 维修工单"查看处理`,
+      '转维修成功',
+      { confirmButtonText: '知道了' }
+    )
+    selectedRows.value = []
+    getList()
+  } catch {
+    // 用户取消
+  }
+}
 
 const handleDispatch = () => {
   if (selectedRows.value.length === 0) {

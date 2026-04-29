@@ -87,6 +87,14 @@
         >
           <Icon icon="ep:check" class="mr-5px" />&nbsp;完成工单
         </el-button>
+        <el-button
+          plain
+          type="danger"
+          :disabled="selectedIds.length !== 1"
+          @click="handleTransferToRepair"
+        >
+          <Icon icon="ep:warning" class="mr-5px" />&nbsp;异常转维修
+        </el-button>
       </div>
 
       <el-table
@@ -238,6 +246,8 @@ import * as WorkOrderApi from '@/api/eam/maintenanceWorkOrder'
 import { useEamEnumStore } from '@/store/modules/enums'
 import WorkOrderForm from './form.vue'
 import PersonSelectDialog from '@/components/PersonSelectDialog/index.vue'
+import { ElMessageBox } from 'element-plus'
+import request from '@/config/axios'
 
 defineOptions({ name: 'EamMaintenanceWorkOrder' })
 
@@ -474,12 +484,21 @@ const onCompleteConfirm = async () => {
   if (!completeTargetRow.value) return
   completeSubmitLoading.value = true
   try {
-    await WorkOrderApi.completeWorkOrder({
+    const res: any = await WorkOrderApi.completeWorkOrder({
       code: completeTargetRow.value.code,
       startTime: completeFormData.startTime,
       endTime: completeFormData.endTime
     })
-    message.success('完成工单成功')
+    // mock 端会返回 consumedSpareParts（自动扣减的备件清单）
+    const consumed = res?.consumedSpareParts || []
+    if (consumed.length) {
+      const detail = consumed.map((c: any) =>
+        `${c.number} ${c.name} -${c.qty}${c.unit}（库存 ${c.before}→${c.after}）`
+      ).join('\n')
+      ElMessageBox.alert(detail, '完工成功，已扣减备件库存', { confirmButtonText: '知道了' })
+    } else {
+      message.success('完成工单成功（本次保养未消耗备件）')
+    }
     completeDialogVisible.value = false
     completeTargetRow.value = null
     selectedIds.value = []
@@ -489,6 +508,46 @@ const onCompleteConfirm = async () => {
     // API 异常
   } finally {
     completeSubmitLoading.value = false
+  }
+}
+
+// ==================== 异常转维修 ====================
+const handleTransferToRepair = async () => {
+  if (selectedRows.value.length !== 1) {
+    message.warning('请选择一条数据')
+    return
+  }
+  const row = selectedRows.value[0]
+  if (!['1', '2', '3'].includes(row.status)) {
+    message.warning('已完工/已挂起的工单不可再转维修')
+    return
+  }
+  try {
+    const { value: remark } = await ElMessageBox.prompt(
+      `确认将「${row.code} ${row.equipmentName}」转为维修工单？\n保养工单将挂起，自动生成对应的维修工单。`,
+      '异常转维修',
+      {
+        confirmButtonText: '确认转维修',
+        cancelButtonText: '取消',
+        inputType: 'textarea',
+        inputPlaceholder: '请简述异常情况（可选）',
+        inputValue: '',
+      }
+    )
+    const res: any = await request.post({
+      url: '/workOrder/eamMaintenanceWork/transferToRepair',
+      data: { code: row.code, remark }
+    })
+    ElMessageBox.alert(
+      `已生成维修工单：${res?.repairCode || '-'}\n请到"维修管理 → 维修工单"查看处理`,
+      '转维修成功',
+      { confirmButtonText: '知道了' }
+    )
+    selectedIds.value = []
+    selectedRows.value = []
+    getList()
+  } catch {
+    // 用户取消
   }
 }
 

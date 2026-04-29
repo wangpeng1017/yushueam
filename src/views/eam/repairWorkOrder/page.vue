@@ -206,6 +206,20 @@
             >重新派工</el-button
           >
           <el-button
+            v-if="row.status === '3'"
+            link
+            type="success"
+            @click="handleRepairComplete(row)"
+            >完工报工</el-button
+          >
+          <el-button
+            v-if="row.status === '4'"
+            link
+            type="primary"
+            @click="handleConfirmSatisfied(row)"
+            >确认满意</el-button
+          >
+          <el-button
             v-if="row.status === '5'"
             link
             type="success"
@@ -446,6 +460,47 @@ const openForm = (type: string, row?: RepairWorkOrderApi.RepairWorkOrderVo) => {
 const detailRef = ref()
 const openDetail = (row: RepairWorkOrderApi.RepairWorkOrderVo) => {
   detailRef.value.open(row)
+}
+
+// ==================== 完工报工 + 发起人确认满意 ====================
+import request from '@/config/axios'
+
+const handleRepairComplete = async (row: RepairWorkOrderApi.RepairWorkOrderVo) => {
+  try {
+    const { value: record } = await ElMessageBox.prompt(
+      `确认报工完工「${row.repairCode} ${row.equipmentName}」？\n报工后将进入"已完工，待发起人确认"状态。\n关联的物料领用清单将自动扣减备件库存。`,
+      '完工报工',
+      { confirmButtonText: '确认完工', cancelButtonText: '取消', inputType: 'textarea', inputPlaceholder: '请填写维修记录（可选）', inputValue: row.repairRecord || '' }
+    )
+    const res: any = await request.post({
+      url: '/workOrder/eamRepairWorkOrder/complete',
+      data: { repairCode: row.repairCode, id: row.id, repairRecord: record, repairEndTime: new Date().toISOString().replace('T', ' ').slice(0, 19) }
+    })
+    const consumed = res?.consumedSpareParts || []
+    if (consumed.length) {
+      const detail = consumed.map((c: any) => `${c.name} -${c.qty}${c.unit}（库存 ${c.before}→${c.after}）`).join('\n')
+      ElMessageBox.alert(`完工成功！已扣减备件库存：\n${detail}\n\n已通知报修人进行确认。`, '完工成功', { confirmButtonText: '知道了' })
+    } else {
+      message.success('完工成功（本次维修未消耗备件），已通知报修人确认')
+    }
+    await getList()
+  } catch {}
+}
+
+const handleConfirmSatisfied = async (row: RepairWorkOrderApi.RepairWorkOrderVo) => {
+  try {
+    await ElMessageBox.confirm(
+      `作为报修人，确认「${row.repairCode} ${row.equipmentName}」的维修结果满意？\n\n维修人员：${row.repairPersonName}\n维修记录：${row.repairRecord || '-'}`,
+      '发起人确认满意',
+      { confirmButtonText: '确认满意（闭环）', cancelButtonText: '取消', type: 'success' }
+    )
+    await request.post({
+      url: '/workOrder/eamRepairWorkOrder/confirmSatisfied',
+      data: { repairCode: row.repairCode, id: row.id, confirmPersonName: row.presentPersonName }
+    })
+    message.success('已确认满意，工单闭环')
+    await getList()
+  } catch {}
 }
 
 // ==================== 发布工单 ====================

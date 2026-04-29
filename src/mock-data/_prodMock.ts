@@ -12,9 +12,13 @@ import projectMock from './eam-project'
 import iotOeeMock from './eam-iot-oee'
 import toolingMock from './eam-tooling'
 import plantConfigMock from './sys-plant-config'
+import erpSyncMock from './sys-erp-sync'
 import feishuApprovalMock from './feishu-approval'
+import baseDataMock from './eam-base-data'
+import purchaseRequestMock from './eam-purchase-request'
+import equipmentClassTreeMock from './eam-equipment-class-tree'
 
-const allMocks = [...authMock, ...equipmentMock, ...workorderMock, ...extraMock, ...routeMock, ...knowledgeMock, ...projectMock, ...iotOeeMock, ...toolingMock, ...plantConfigMock, ...feishuApprovalMock]
+const allMocks = [...authMock, ...equipmentMock, ...workorderMock, ...extraMock, ...routeMock, ...knowledgeMock, ...projectMock, ...iotOeeMock, ...toolingMock, ...plantConfigMock, ...erpSyncMock, ...feishuApprovalMock, ...baseDataMock, ...purchaseRequestMock, ...equipmentClassTreeMock]
 
 function parseQS(url: string): Record<string, string> {
   const q: Record<string, string> = {}

@@ -165,16 +165,24 @@ import request from '@/config/axios'
 import SimpleListPage from '../_tooling-shared/SimpleListPage.vue'
 import SimpleFormDialog from '../_tooling-shared/SimpleFormDialog.vue'
 
-// 8 状态显示映射
+// 飞书+ERP 黑盒架构状态机（EAM 仅做提单 + 状态展示）
 const STATUS_MAP: Record<string, { label: string; tag: string }> = {
-  DRAFT: { label: '草稿', tag: 'info' },
-  SUBMITTED: { label: '已提交', tag: 'primary' },
-  IN_APPROVAL: { label: '审批中', tag: 'warning' },
-  APPROVED: { label: '已通过', tag: 'success' },
-  REJECTED: { label: '已驳回', tag: 'danger' },
-  CANCELED: { label: '已撤回', tag: 'info' },
-  PO_GENERATED: { label: '已生成PO', tag: 'success' },
-  ERP_FAILED: { label: 'ERP失败', tag: 'danger' },
+  DRAFT:            { label: '草稿', tag: 'info' },
+  PUSHED_TO_FEISHU: { label: '已推送飞书', tag: 'primary' },
+  FEISHU_APPROVING: { label: '飞书审批中', tag: 'warning' },
+  FEISHU_APPROVED:  { label: '飞书已通过', tag: 'success' },
+  FEISHU_REJECTED:  { label: '飞书已驳回', tag: 'danger' },
+  DELIVERED:        { label: 'ERP 已到货', tag: 'success' },
+  PUSH_FAILED:      { label: '推送失败', tag: 'danger' },
+  // 历史 mock 兼容
+  IN_APPROVAL:  { label: '飞书审批中', tag: 'warning' },
+  SUBMITTED:    { label: '飞书审批中', tag: 'warning' },
+  APPROVED:     { label: '飞书已通过', tag: 'success' },
+  PO_GENERATED: { label: 'ERP 已到货', tag: 'success' },
+  ERP_PUSHED:   { label: 'ERP 已到货', tag: 'success' },
+  REJECTED:     { label: '飞书已驳回', tag: 'danger' },
+  CANCELED:     { label: '草稿', tag: 'info' },
+  ERP_FAILED:   { label: '推送失败', tag: 'danger' }
 }
 
 function statusLabel(s: string): string {

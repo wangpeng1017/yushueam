@@ -453,22 +453,32 @@ const handleBatchDelete = async () => {
   }
 }
 
-// ==================== 提交申请 ====================
+// ==================== 提交申请（弹窗选审核人） ====================
 const handleSubmit = async () => {
   const invalid = selectedRows.value.some((r) => r.status !== '0' && r.status !== '3')
   if (invalid) {
     message.warning('仅草稿或驳回状态的工单可提交')
     return
   }
+  if (selectedRows.value.length === 0) {
+    message.warning('请先选择要提交的报修单')
+    return
+  }
   try {
-    await ElMessageBox.confirm('确认提交选中的工单？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
+    const { value: approver } = await ElMessageBox.prompt(
+      `共 ${selectedRows.value.length} 张报修单，请选择审核人：\n陈主管（设备主管）/ 李部长（设备部负责人）/ 高学才（B端主管）/ 刚嘉成（数控组长）`,
+      '提交审核',
+      {
+        confirmButtonText: '确认提交',
+        cancelButtonText: '取消',
+        inputPlaceholder: '请输入审核人姓名',
+        inputValue: '陈主管',
+        inputValidator: (v) => !!v || '请输入审核人',
+      }
+    )
     const ids = selectedRows.value.map((r) => r.id).join(',')
     await FailureWorkOrderApi.submitFailureWorkOrder(ids)
-    message.success('提交成功')
+    message.success(`已提交给「${approver}」审核`)
     selectedRows.value = []
     getList()
   } catch {

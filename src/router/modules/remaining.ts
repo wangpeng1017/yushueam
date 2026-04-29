@@ -123,6 +123,17 @@ const remainingRouter: AppRouteRecordRaw[] = [
     ]
   },
   {
+    path: '/h5/eam',
+    component: () => import('@/views/mobile/dashboard/page.vue'),
+    name: 'H5EamDashboard',
+    meta: {
+      hidden: true,
+      title: '设备管理平台',
+      noTagsView: true,
+      noCache: true
+    }
+  },
+  {
     path: '/login',
     component: () => import('@/views/Login/Login.vue'),
     name: 'Login',
@@ -182,6 +193,18 @@ const remainingRouter: AppRouteRecordRaw[] = [
       noTagsView: true
     }
   },
+  // 兼容旧链接/书签：/eam/<父菜单>/index → 自动跳到第一个真实子菜单
+  { path: '/eam/equipment/index', redirect: '/eam/equipment/optEquipment', meta: { hidden: true } },
+  { path: '/eam/maintenance/index', redirect: '/eam/maintenance/maintenanceStandard', meta: { hidden: true } },
+  { path: '/eam/inspection/index', redirect: '/eam/inspection/inspectionRoute', meta: { hidden: true } },
+  { path: '/eam/repair/index', redirect: '/eam/repair/failureWorkOrder', meta: { hidden: true } },
+  { path: '/eam/sparePart/index', redirect: '/eam/sparePart/sparePartSearchList', meta: { hidden: true } },
+  { path: '/eam/iot/index', redirect: '/eam/iot/deviceMonitor', meta: { hidden: true } },
+  { path: '/eam/tooling/index', redirect: '/eam/tooling/toolingMaster', meta: { hidden: true } },
+  { path: '/eam/project/index', redirect: '/eam/project/customEquipmentProject', meta: { hidden: true } },
+  { path: '/eam/purchase/index', redirect: '/eam/purchase/equipmentPurchaseRequest', meta: { hidden: true } },
+  { path: '/eam/npi/index', redirect: '/eam/npi/npiOverview', meta: { hidden: true } },
+  { path: '/eam/report/index', redirect: '/eam/report/dashboard', meta: { hidden: true } },
   {
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/Error/404.vue'),

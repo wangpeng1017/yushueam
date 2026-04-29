@@ -217,22 +217,22 @@ const filterTreeNode = (value: string, data: TreeNode) => {
 }
 
 const loadTreeData = async () => {
+  // 从设备档案的"按设备类型"5 级分类树同源加载（与 optEquipment byType 一致）
   try {
-    const res = await DeviceLedgerApi.getEquipmentTypeList({ pageNo: 1, pageSize: 1000 })
-    const records: DeviceLedgerApi.EquipmentTypeItem[] = res?.records ?? []
-    const children: TreeNode[] = records.map((item) => ({
-      key: item.typeCode ?? '',
-      title: item.typeName ?? ''
-    }))
+    const mod = await import('../optEquipment/category-trees')
+    const defs = mod.C_TREE_BY_TYPE || []
+    const toNode = (arr: any[]): TreeNode[] =>
+      arr.map((d: any) => ({
+        key: d.label,
+        title: d.label,
+        children: d.children?.length ? toNode(d.children) : undefined,
+      }))
     treeData.value = [
-      {
-        key: 'all',
-        title: '全部',
-        children
-      }
+      { key: 'all', title: '全部', children: toNode(defs) }
     ]
   } catch (error) {
     console.error('加载设备类型树失败:', error)
+    treeData.value = [{ key: 'all', title: '全部' }]
   }
 }
 
