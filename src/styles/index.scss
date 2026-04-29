@@ -1,6 +1,7 @@
 @use './var.css';
 @use './FormCreate/index.scss';
 @use './theme.scss';
+@use './theme/index.scss';
 @use 'element-plus/theme-chalk/dark/css-vars.css';
 
 /* ========== 全局字体 - 微软雅黑（规范） ========== */
@@ -29,19 +30,19 @@ body,
 /* nprogress 适配主题色（蓝） */
 #nprogress {
   & .bar {
-    background-color: #2196f3 !important;
+    background-color: #1677FF !important;
     height: 2px !important;
   }
 
   & .peg {
     box-shadow:
-      0 0 10px #2196f3,
-      0 0 5px #2196f3 !important;
+      0 0 10px #1677FF,
+      0 0 5px #1677FF !important;
   }
 
   & .spinner-icon {
-    border-top-color: #2196f3;
-    border-left-color: #2196f3;
+    border-top-color: #1677FF;
+    border-left-color: #1677FF;
   }
 }
 
@@ -88,28 +89,28 @@ body,
 
   /* 主要按钮 - 蓝色 */
   &--primary {
-    background-color: #2196f3;
-    border: 1px solid #2196f3;
+    background-color: #1677FF;
+    border: 1px solid #1677FF;
     color: #ffffff;
-    box-shadow: 0 2px 6px rgba(33, 150, 243, 0.2);
+    box-shadow: 0 2px 6px rgba(22, 119, 255, 0.2);
 
     &:hover {
-      background-color: #42a5f5;
-      border-color: #42a5f5;
-      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+      background-color: #4596FF;
+      border-color: #4596FF;
+      box-shadow: 0 4px 12px rgba(22, 119, 255, 0.3);
       transform: translateY(-1px);
     }
 
     &:active {
-      background-color: #1976d2;
-      border-color: #1976d2;
-      box-shadow: 0 1px 3px rgba(33, 150, 243, 0.25);
+      background-color: #0958D9;
+      border-color: #0958D9;
+      box-shadow: 0 1px 3px rgba(22, 119, 255, 0.25);
       transform: translateY(0);
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.18);
+      box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.18);
     }
   }
 
@@ -142,21 +143,21 @@ body,
   }
 
   &--danger {
-    background-color: #f56c6c;
-    border-color: #f56c6c;
+    background-color: #EF4444;
+    border-color: #EF4444;
     color: #ffffff;
-    box-shadow: 0 2px 4px rgba(245, 108, 108, 0.18);
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.18);
 
     &:hover {
-      background-color: #f78989;
-      border-color: #f78989;
-      box-shadow: 0 4px 8px rgba(245, 108, 108, 0.28);
+      background-color: #FB6D6D;
+      border-color: #FB6D6D;
+      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.28);
       transform: translateY(-1px);
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(245, 108, 108, 0.15);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
     }
   }
 
@@ -180,14 +181,14 @@ body,
     box-shadow: none;
 
     &:hover {
-      color: #2196f3;
-      border-color: #2196f3;
+      color: #1677FF;
+      border-color: #1677FF;
       background-color: #ffffff;
     }
 
     &:active {
-      color: #1976d2;
-      border-color: #1976d2;
+      color: #0958D9;
+      border-color: #0958D9;
       background-color: #f0f7ff;
     }
   }
@@ -197,13 +198,13 @@ body,
     background-color: #ffffff;
 
     &.el-button--primary {
-      color: #2196f3;
+      color: #1677FF;
       background-color: #ffffff;
-      border-color: #2196f3;
+      border-color: #1677FF;
 
       &:hover {
-        background-color: #2196f3;
-        border-color: #2196f3;
+        background-color: #1677FF;
+        border-color: #1677FF;
         color: #ffffff;
       }
     }
@@ -221,13 +222,13 @@ body,
     }
 
     &.el-button--danger {
-      color: #f56c6c;
+      color: #EF4444;
       background-color: #ffffff;
-      border-color: #f56c6c;
+      border-color: #EF4444;
 
       &:hover {
-        background-color: #f56c6c;
-        border-color: #f56c6c;
+        background-color: #EF4444;
+        border-color: #EF4444;
         color: #ffffff;
       }
     }
@@ -240,15 +241,15 @@ body,
     height: auto;
 
     &.el-button--primary {
-      color: #2196f3;
-      &:hover { color: #42a5f5; }
-      &:active { color: #1976d2; }
+      color: #1677FF;
+      &:hover { color: #4596FF; }
+      &:active { color: #0958D9; }
     }
 
     &.el-button--danger {
-      color: #f56c6c;
-      &:hover { color: #f78989; }
-      &:active { color: #dd6161; }
+      color: #EF4444;
+      &:hover { color: #FB6D6D; }
+      &:active { color: #DC2626; }
     }
   }
 
@@ -323,21 +324,21 @@ body,
 /* ========== 全局新增按钮（plain primary） ========== */
 .el-button.is-plain.el-button--primary {
   background-color: #ffffff !important;
-  border-color: #2196f3 !important;
-  color: #2196f3 !important;
+  border-color: #1677FF !important;
+  color: #1677FF !important;
   box-shadow: none !important;
 
   &:hover:not(.is-disabled) {
-    background-color: #2196f3 !important;
-    border-color: #2196f3 !important;
+    background-color: #1677FF !important;
+    border-color: #1677FF !important;
     color: #ffffff !important;
     transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(33, 150, 243, 0.25) !important;
+    box-shadow: 0 2px 6px rgba(22, 119, 255, 0.25) !important;
   }
 
   &:active:not(.is-disabled) {
-    background-color: #1976d2 !important;
-    border-color: #1976d2 !important;
+    background-color: #0958D9 !important;
+    border-color: #0958D9 !important;
     color: #ffffff !important;
     transform: translateY(0);
   }
@@ -345,9 +346,9 @@ body,
   &:focus:not(.is-disabled) {
     outline: none;
     background-color: #ffffff !important;
-    border-color: #2196f3 !important;
-    color: #2196f3 !important;
-    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.18) !important;
+    border-color: #1677FF !important;
+    color: #1677FF !important;
+    box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.18) !important;
   }
 
   &.is-disabled {
@@ -364,21 +365,21 @@ body,
 /* ========== 全局批量删除按钮（plain danger） ========== */
 .el-button.is-plain.el-button--danger {
   background-color: #ffffff !important;
-  border-color: #f56c6c !important;
-  color: #f56c6c !important;
+  border-color: #EF4444 !important;
+  color: #EF4444 !important;
   box-shadow: none !important;
 
   &:hover:not(.is-disabled) {
-    background-color: #f56c6c !important;
-    border-color: #f56c6c !important;
+    background-color: #EF4444 !important;
+    border-color: #EF4444 !important;
     color: #ffffff !important;
     transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(245, 108, 108, 0.22) !important;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.22) !important;
   }
 
   &:active:not(.is-disabled) {
-    background-color: #dd6161 !important;
-    border-color: #dd6161 !important;
+    background-color: #DC2626 !important;
+    border-color: #DC2626 !important;
     color: #ffffff !important;
     transform: translateY(0);
   }
@@ -386,9 +387,9 @@ body,
   &:focus:not(.is-disabled) {
     outline: none;
     background-color: #ffffff !important;
-    border-color: #f56c6c !important;
-    color: #f56c6c !important;
-    box-shadow: 0 0 0 3px rgba(245, 108, 108, 0.18) !important;
+    border-color: #EF4444 !important;
+    color: #EF4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
   }
 
   &.is-disabled {
@@ -407,21 +408,21 @@ body,
 .el-dialog__footer {
   .el-button {
     background-color: #ffffff !important;
-    border-color: #2196f3 !important;
-    color: #2196f3 !important;
+    border-color: #1677FF !important;
+    color: #1677FF !important;
     box-shadow: none !important;
 
     &:hover:not(.is-disabled) {
-      background-color: #2196f3 !important;
-      border-color: #2196f3 !important;
+      background-color: #1677FF !important;
+      border-color: #1677FF !important;
       color: #ffffff !important;
       transform: translateY(-1px);
-      box-shadow: 0 2px 6px rgba(33, 150, 243, 0.22) !important;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.22) !important;
     }
 
     &:active:not(.is-disabled) {
-      background-color: #1976d2 !important;
-      border-color: #1976d2 !important;
+      background-color: #0958D9 !important;
+      border-color: #0958D9 !important;
       color: #ffffff !important;
       transform: translateY(0);
     }
@@ -429,9 +430,9 @@ body,
     &:focus:not(.is-disabled) {
       outline: none;
       background-color: #ffffff !important;
-      border-color: #2196f3 !important;
-      color: #2196f3 !important;
-      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.18) !important;
+      border-color: #1677FF !important;
+      color: #1677FF !important;
+      box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.18) !important;
     }
 
     &.is-disabled {
