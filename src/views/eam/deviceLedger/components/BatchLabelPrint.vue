@@ -6,24 +6,27 @@
     align-center
     @opened="onOpened"
   >
-    <div :id="printAreaId" class="label-sheet">
-      <div
-        v-for="(group, pageIdx) in pagedDevices"
-        :key="pageIdx"
-        class="label-page"
-      >
+    <div v-loading="rendering" element-loading-text="二维码生成中...">
+      <div :id="printAreaId" class="label-sheet">
         <div
-          v-for="d in group"
-          :key="d.equipmentSn"
-          class="label-cell"
+          v-for="(group, pageIdx) in pagedDevices"
+          :key="pageIdx"
+          class="label-page"
         >
-          <canvas :data-sn="d.equipmentSn" />
-          <div class="label-info">
-            <div class="label-name">{{ d.equipmentName }}</div>
-            <div class="label-sn">{{ d.equipmentSn }}</div>
+          <div
+            v-for="d in group"
+            :key="d.equipmentSn"
+            class="label-cell"
+          >
+            <canvas :data-sn="d.equipmentSn" />
+            <div class="label-info">
+              <div class="label-name">{{ d.equipmentName }}</div>
+              <div class="label-sn">{{ d.equipmentSn }}</div>
+            </div>
           </div>
         </div>
       </div>
+      <p class="print-tip">💡 打印前请在对话框选择"实际大小/无缩放"，否则贴纸尺寸会偏差。</p>
     </div>
 
     <template #footer>
@@ -50,6 +53,7 @@ interface DeviceLite {
 }
 
 const visible = ref(false)
+const rendering = ref(false)
 const devices = ref<DeviceLite[]>([])
 
 // 唯一 ID 避免多实例冲突
@@ -77,21 +81,26 @@ function open(list: DeviceLite[]) {
 
 async function onOpened() {
   await nextTick()
+  rendering.value = true
   const baseUrl = getDeployBaseUrl()
   const allCanvas = document.querySelectorAll<HTMLCanvasElement>(`#${printAreaId} canvas`)
-  for (const canvas of Array.from(allCanvas)) {
-    const sn = canvas.dataset.sn || ''
-    if (!sn) continue
-    try {
-      await QRCode.toCanvas(canvas, buildEquipmentQrUrl(baseUrl, sn), {
-        width: 100,
-        margin: 1,
-        errorCorrectionLevel: 'H',
-      })
-    } catch (e) {
-      console.error('生成失败 sn=', sn, e)
-    }
-  }
+  // 并发渲染所有 canvas，避免大批量串行阻塞
+  await Promise.all(
+    Array.from(allCanvas).map(async (canvas) => {
+      const sn = canvas.dataset.sn || ''
+      if (!sn) return
+      try {
+        await QRCode.toCanvas(canvas, buildEquipmentQrUrl(baseUrl, sn), {
+          width: 100,
+          margin: 1,
+          errorCorrectionLevel: 'H',
+        })
+      } catch (e) {
+        console.error('生成失败 sn=', sn, e)
+      }
+    })
+  )
+  rendering.value = false
 }
 
 defineExpose({ open })
@@ -107,11 +116,14 @@ defineExpose({ open })
 .label-page {
   background: #fff;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 70mm);
   grid-auto-rows: 50mm;
+  justify-content: start;
   gap: 0;
   padding: 8mm;
   margin-bottom: 12px;
+}
+.label-page:not(:last-child) {
   page-break-after: always;
 }
 .label-cell {
@@ -145,7 +157,32 @@ defineExpose({ open })
   color: #606266;
 }
 
+.print-tip {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #fdf6ec;
+  color: #E6A23C;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* 打印优化 */
 @media print {
-  .label-cell { border: none; }
+  @page { size: A4; margin: 0; }
+  body { background: #fff !important; }
+  .label-sheet {
+    max-height: none !important;
+    overflow: visible !important;
+    background: #fff !important;
+    padding: 0 !important;
+  }
+  .label-page {
+    margin: 0 !important;
+    padding: 8mm !important;
+    background: #fff !important;
+  }
+  .label-cell { border: none !important; }
+  .print-tip { display: none !important; }
 }
 </style>
