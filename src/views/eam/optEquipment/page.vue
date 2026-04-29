@@ -87,6 +87,11 @@ v-hasPermi="[PERMI.DELETE]" plain type="danger"
             :disabled="selectedIds.length === 0" @click="handleBatchDelete">
             <Icon class="mr-5px" icon="ep:delete" />&nbsp;批量删除
           </el-button>
+          <el-button
+            plain type="warning"
+            :disabled="selectedRows.length === 0" @click="openBatchPrint">
+            <Icon class="mr-5px" icon="ep:printer" />&nbsp;批量打印贴纸（已选 {{ selectedRows.length }} 台）
+          </el-button>
         </div>
 
         <!-- 设备分类 Tabs（保留原全部/重点/关键） -->
@@ -131,11 +136,12 @@ v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
           <el-table-column label="责任人" align="center" prop="responsiblePersonName" width="100" />
           <el-table-column label="设备厂家" align="center" prop="manufacturer" width="120" />
           <el-table-column label="创建时间" align="center" prop="createTime" width="170" :formatter="dateFormatter" />
-          <el-table-column label="操作" align="center" fixed="right" width="220">
+          <el-table-column label="操作" align="center" fixed="right" width="290">
             <template #default="scope">
               <el-button link class="btn-other" v-hasPermi="[PERMI.QUERY]" @click="openDetail(scope.row.id)">查看</el-button>
               <el-button link class="btn-edit" v-hasPermi="[PERMI.UPDATE]" @click="openForm('update', scope.row.id)">编辑</el-button>
               <el-button link class="btn-delete" v-hasPermi="[PERMI.DELETE]" @click="handleDelete(scope.row.id)">删除</el-button>
+              <el-button link style="color: #E6A23C" v-hasPermi="[PERMI.QUERY]" @click="openQrcode(scope.row)">生成二维码</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -148,6 +154,10 @@ v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
       <!-- 新增/编辑/详情 -->
       <EquipmentForm ref="formRef" @success="getList" />
       <EquipmentDetail ref="detailRef" />
+
+      <!-- 二维码弹窗 + 批量打印贴纸 -->
+      <QrcodeDialog ref="qrcodeRef" />
+      <BatchLabelPrint ref="batchPrintRef" />
 
       <!-- 手动 ERP 同步弹窗 -->
       <el-dialog v-model="syncDialogVisible" title="手动同步 ERP 设备主数据" width="500px">
@@ -194,6 +204,8 @@ import { usePlant } from '@/hooks/web/usePlant'
 import request from '@/config/axios'
 import EquipmentForm from './form.vue'
 import EquipmentDetail from './detail.vue'
+import QrcodeDialog from '../deviceLedger/components/QrcodeDialog.vue'
+import BatchLabelPrint from '../deviceLedger/components/BatchLabelPrint.vue'
 import TreeListLayout from '../_tooling-shared/TreeListLayout.vue'
 import {
   C_TREE_BY_TYPE,
@@ -474,8 +486,29 @@ const resetQuery = () => {
   handleQuery()
 }
 
+const selectedRows = ref<EquipmentApi.OptEquipmentVo[]>([])
 const handleSelectionChange = (rows: EquipmentApi.OptEquipmentVo[]) => {
   selectedIds.value = rows.map(row => row.id!)
+  selectedRows.value = rows
+}
+
+// ==================== 二维码 + 批量打印 ====================
+const qrcodeRef = ref<InstanceType<typeof QrcodeDialog>>()
+const batchPrintRef = ref<InstanceType<typeof BatchLabelPrint>>()
+const openQrcode = (row: EquipmentApi.OptEquipmentVo) => {
+  qrcodeRef.value?.open({
+    equipmentSn: row.equipmentSn!,
+    equipmentName: row.equipmentName!,
+  })
+}
+const openBatchPrint = () => {
+  if (selectedRows.value.length === 0) return
+  batchPrintRef.value?.open(
+    selectedRows.value.map(r => ({
+      equipmentSn: r.equipmentSn!,
+      equipmentName: r.equipmentName!,
+    }))
+  )
 }
 
 const getOperationStatusClass = (status: string) => {

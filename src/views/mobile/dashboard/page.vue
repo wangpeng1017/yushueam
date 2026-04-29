@@ -45,6 +45,18 @@
           </div>
         </div>
 
+        <!-- PDA 扫码 demo 入口 -->
+        <div class="scan-demo-card" @click="goScanDemo">
+          <div class="scan-demo-icon">
+            <Icon icon="ep:full-screen" :size="36" />
+          </div>
+          <div class="scan-demo-text">
+            <div class="scan-demo-title">📱 PDA 扫码体验</div>
+            <div class="scan-demo-sub">点击进入设备扫码落地页（5 工单入口 + 7 天 token）</div>
+          </div>
+          <Icon icon="ep:arrow-right" :size="20" />
+        </div>
+
         <!-- 6 应用 grid -->
         <div class="section-title">常用应用</div>
         <div class="app-grid">
@@ -243,6 +255,8 @@ const completionRate = computed(() => {
 })
 
 const appList = [
+  { code: 'scan', name: '扫码体验', icon: 'ep:full-screen', color: '#fee2e2', iconColor: '#dc2626' },
+  { code: 'scan-stop', name: '停用设备演示', icon: 'ep:circle-close', color: '#fef3c7', iconColor: '#d97706' },
   { code: 'equip', name: '设备档案', icon: 'ep:office-building', color: '#e8f3ff', iconColor: '#2563eb' },
   { code: 'maint', name: '保养工单', icon: 'ep:set-up', color: '#f3e8ff', iconColor: '#9333ea' },
   { code: 'insp', name: '点检工单', icon: 'ep:view', color: '#dcfce7', iconColor: '#16a34a' },
@@ -251,12 +265,18 @@ const appList = [
   { code: 'report', name: '故障报修', icon: 'ep:warning-filled', color: '#fef9c3', iconColor: '#ca8a04' }
 ]
 
+function goScanDemo() {
+  window.location.href = '/m/equipment/EQ20240001'
+}
+
 function handleAppClick(app: any) {
-  if (app.code === 'maint') activeTab.value = 'maintenance'
+  if (app.code === 'scan') window.location.href = '/m/equipment/EQ20240001'
+  else if (app.code === 'scan-stop') window.location.href = '/m/equipment/EQ20230099'
+  else if (app.code === 'equip') window.location.href = '/m/equipment/EQ20240001'
+  else if (app.code === 'maint') activeTab.value = 'maintenance'
   else if (app.code === 'insp') activeTab.value = 'inspection'
   else if (app.code === 'repair') activeTab.value = 'repair'
   else if (app.code === 'report') { activeTab.value = 'report'; openReportForm() }
-  else if (app.code === 'equip') ElMessage.info('请到 PC 端设备档案页查看')
   else if (app.code === 'parts') ElMessage.info('备件领用：扫码识别工单后自动扣库存（演示中已在工单完工时联动）')
 }
 
@@ -435,6 +455,12 @@ onMounted(loadAll)
 
 /* === 节标题 === */
 .section-title { font-size: 14px; font-weight: 700; color: #1a202c; margin: 18px 4px 10px; }
+.scan-demo-card { display: flex; align-items: center; gap: 14px; padding: 14px 16px; margin-top: 14px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #fff; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+.scan-demo-card:active { transform: scale(0.98); }
+.scan-demo-icon { background: rgba(255,255,255,0.2); border-radius: 50%; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.scan-demo-text { flex: 1; }
+.scan-demo-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.scan-demo-sub { font-size: 12px; opacity: 0.85; line-height: 1.4; }
 
 /* === 应用 grid === */
 .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 8px; background: white; padding: 16px 12px; border-radius: 12px; }
