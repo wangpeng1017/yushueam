@@ -1,177 +1,125 @@
 <template>
   <div class="failure-work-order-page">
-    <!-- ==================== 搜索区 ==================== -->
-    <ContentWrap>
-      <el-form
-        class="-mb-15px"
-        :model="queryParams"
-        ref="queryFormRef"
-        :inline="true"
-        label-width="90px"
-      >
-        <el-form-item label="报修单号" prop="failureCode">
-          <el-input
-            v-model="queryParams.failureCode"
-            class="!w-200px"
-            clearable
-            placeholder="请输入报修单号"
-            @keyup.enter="handleQuery"
+    <QueryForm :model="queryParams" :cols="4" @search="handleQuery" @reset="resetQuery">
+      <QueryItem label="报修单号">
+        <el-input v-model="queryParams.failureCode" clearable placeholder="请输入报修单号" />
+      </QueryItem>
+      <QueryItem label="审核状态">
+        <el-select v-model="queryParams.status" placeholder="请选择审核状态" clearable>
+          <el-option
+            v-for="item in eamEnumStore.getFailureWorkOrderStatusList"
+            :key="item.value"
+            :label="item.text"
+            :value="item.value"
           />
-        </el-form-item>
-        <el-form-item label="审核状态" prop="status">
-          <el-select
-            v-model="queryParams.status"
-            placeholder="请选择审核状态"
-            clearable
-            class="!w-200px"
-          >
-            <el-option
-              v-for="item in eamEnumStore.getFailureWorkOrderStatusList"
-              :key="item.value"
-              :label="item.text"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="维修状态" prop="executeStatus">
-          <el-select
-            v-model="queryParams.executeStatus"
-            placeholder="请选择维修状态"
-            clearable
-            class="!w-200px"
-          >
-            <el-option
-              v-for="item in eamEnumStore.getFailureWorkOrderExecuteStatusList"
-              :key="item.value"
-              :label="item.text"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="故障等级" prop="breakdownLevel">
-          <el-select
-            v-model="queryParams.breakdownLevel"
-            placeholder="请选择故障等级"
-            clearable
-            class="!w-200px"
-          >
-            <el-option
-              v-for="item in eamEnumStore.getFailureWorkOrderBreakdownLevelList"
-              :key="item.value"
-              :label="item.text"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="故障类别" prop="breakdownType">
-          <el-select
-            v-model="queryParams.breakdownType"
-            placeholder="请选择故障类别"
-            clearable
-            class="!w-200px"
-          >
-            <el-option
-              v-for="item in eamEnumStore.getFailureWorkOrderBreakdownTypeList"
-              :key="item.value"
-              :label="item.text"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="紧急程度" prop="repairDegree">
-          <el-select
-            v-model="queryParams.repairDegree"
-            placeholder="请选择紧急程度"
-            clearable
-            class="!w-200px"
-          >
-            <el-option
-              v-for="item in eamEnumStore.getRepairDegreeList"
-              :key="item.value"
-              :label="item.text"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="故障时间" prop="breakdownTimeRange">
-          <el-date-picker
-            v-model="breakdownTimeRange"
-            type="daterange"
-            value-format="YYYY-MM-DD"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            class="!w-240px"
+        </el-select>
+      </QueryItem>
+      <QueryItem label="维修状态">
+        <el-select v-model="queryParams.executeStatus" placeholder="请选择维修状态" clearable>
+          <el-option
+            v-for="item in eamEnumStore.getFailureWorkOrderExecuteStatusList"
+            :key="item.value"
+            :label="item.text"
+            :value="item.value"
           />
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="handleQuery">
-            <Icon icon="ep:search" class="mr-5px" />&nbsp;搜索
-          </el-button>
-          <el-button @click="resetQuery">
-            <Icon icon="ep:refresh" class="mr-5px" />&nbsp;重置
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </ContentWrap>
+        </el-select>
+      </QueryItem>
+      <QueryItem label="故障等级">
+        <el-select v-model="queryParams.breakdownLevel" placeholder="请选择故障等级" clearable>
+          <el-option
+            v-for="item in eamEnumStore.getFailureWorkOrderBreakdownLevelList"
+            :key="item.value"
+            :label="item.text"
+            :value="item.value"
+          />
+        </el-select>
+      </QueryItem>
+      <QueryItem label="故障类别">
+        <el-select v-model="queryParams.breakdownType" placeholder="请选择故障类别" clearable>
+          <el-option
+            v-for="item in eamEnumStore.getFailureWorkOrderBreakdownTypeList"
+            :key="item.value"
+            :label="item.text"
+            :value="item.value"
+          />
+        </el-select>
+      </QueryItem>
+      <QueryItem label="紧急程度">
+        <el-select v-model="queryParams.repairDegree" placeholder="请选择紧急程度" clearable>
+          <el-option
+            v-for="item in eamEnumStore.getRepairDegreeList"
+            :key="item.value"
+            :label="item.text"
+            :value="item.value"
+          />
+        </el-select>
+      </QueryItem>
+      <QueryItem label="故障时间" :span="2">
+        <el-date-picker
+          v-model="breakdownTimeRange"
+          type="daterange"
+          value-format="YYYY-MM-DD"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 100%"
+        />
+      </QueryItem>
+    </QueryForm>
 
-    <!-- ==================== 主表列表 ==================== -->
-    <ContentWrap>
-      <div class="table-toolbar">
-        <el-button v-hasPermi="[PERMI.CREATE]" plain type="primary" @click="openForm('create')">
-          <Icon icon="ep:plus" class="mr-5px" />&nbsp;新增
+    <ListPage
+      :loading="loading"
+      :total="total"
+      v-model:page="queryParams.pageNo"
+      v-model:limit="queryParams.pageSize"
+      @pagination="getList"
+    >
+      <template #actions>
+        <el-button v-hasPermi="[PERMI.CREATE]" type="primary" @click="openForm('create')">
+          <Icon icon="ep:plus" class="mr-5px" />新增
         </el-button>
         <el-button
           v-hasPermi="[PERMI.UPDATE]"
-          plain
           type="warning"
           :disabled="selectedRows.length !== 1"
           @click="handleEdit"
         >
-          <Icon icon="ep:edit" class="mr-5px" />&nbsp;编辑
-        </el-button>
-        <el-button plain :disabled="selectedRows.length !== 1" @click="handleView">
-          <Icon icon="ep:view" class="mr-5px" />&nbsp;查看
+          <Icon icon="ep:edit" class="mr-5px" />编辑
         </el-button>
         <el-button
           v-hasPermi="[PERMI.DELETE]"
-          plain
           type="danger"
           :disabled="selectedRows.length === 0"
           @click="handleBatchDelete"
         >
-          <Icon icon="ep:delete" class="mr-5px" />&nbsp;删除
+          <Icon icon="ep:delete" class="mr-5px" />删除
         </el-button>
         <el-button
           v-hasPermi="[PERMI.SUBMIT]"
-          plain
           type="success"
           :disabled="selectedRows.length === 0"
           @click="handleSubmit"
         >
-          <Icon icon="ep:promotion" class="mr-5px" />&nbsp;提交申请
+          <Icon icon="ep:promotion" class="mr-5px" />提交申请
         </el-button>
         <el-button
           v-hasPermi="[PERMI.AUDIT_PASS]"
-          plain
           type="primary"
           :disabled="selectedRows.length !== 1"
           @click="handleAuditPass"
         >
-          <Icon icon="ep:check" class="mr-5px" />&nbsp;审核通过
+          <Icon icon="ep:check" class="mr-5px" />审核通过
         </el-button>
         <el-button
           v-hasPermi="[PERMI.REJECT]"
-          plain
           type="danger"
           :disabled="selectedRows.length !== 1"
           @click="handleReject"
         >
-          <Icon icon="ep:close" class="mr-5px" />&nbsp;驳回
+          <Icon icon="ep:close" class="mr-5px" />驳回
         </el-button>
-      </div>
+      </template>
 
       <el-table
-        v-loading="loading"
         :data="list"
         :stripe="true"
         :show-overflow-tooltip="true"
@@ -223,18 +171,11 @@
         <el-table-column label="创建时间" prop="createTime" width="160" align="center" />
         <el-table-column label="操作" width="80" align="center" fixed="right">
           <template #default="{ row }">
-            <el-button link type="primary" @click="openDetail(row)">查看</el-button>
+            <RowActions :row="row" :on-detail="openDetail" />
           </template>
         </el-table-column>
       </el-table>
-
-      <Pagination
-        v-model:limit="queryParams.pageSize"
-        v-model:page="queryParams.pageNo"
-        :total="total"
-        @pagination="getList"
-      />
-    </ContentWrap>
+    </ListPage>
 
     <!-- ==================== 新增/编辑弹窗 ==================== -->
     <FailureWorkOrderForm ref="formRef" @success="onFormSuccess" />
@@ -345,7 +286,6 @@ const queryParams = reactive({
   breakdownTime_begin: undefined as string | undefined,
   breakdownTime_end: undefined as string | undefined
 })
-const queryFormRef = ref()
 const breakdownTimeRange = ref<string[]>([])
 
 // ==================== 选中行 ====================
@@ -391,7 +331,12 @@ const handleQuery = () => {
 }
 
 const resetQuery = () => {
-  queryFormRef.value?.resetFields()
+  queryParams.failureCode = undefined
+  queryParams.status = undefined
+  queryParams.executeStatus = undefined
+  queryParams.breakdownLevel = undefined
+  queryParams.breakdownType = undefined
+  queryParams.repairDegree = undefined
   breakdownTimeRange.value = []
   queryParams.breakdownTime_begin = undefined
   queryParams.breakdownTime_end = undefined
@@ -421,14 +366,6 @@ const handleEdit = () => {
     return
   }
   openForm('edit', row)
-}
-
-const handleView = () => {
-  if (selectedRows.value.length !== 1) {
-    message.warning('请选择一条数据')
-    return
-  }
-  openDetail(selectedRows.value[0])
 }
 
 const openDetail = (row: FailureWorkOrderApi.FailureWorkOrderVo) => {
