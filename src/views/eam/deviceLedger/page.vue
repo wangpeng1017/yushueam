@@ -27,87 +27,46 @@
 
       <!-- 右侧列表区域 -->
       <div class="right-content">
-        <!-- 搜索工作栏 -->
-        <ContentWrap>
-          <el-form
-            class="-mb-15px"
-            :model="queryParams"
-            ref="queryFormRef"
-            :inline="true"
-            label-width="80px"
-          >
-            <el-form-item label="设备编号" prop="equipmentSn">
-              <el-input
-                v-model="queryParams.equipmentSn"
-                class="!w-200px"
-                clearable
-                placeholder="请输入设备编号"
-                @keyup.enter="handleQuery"
+        <QueryForm :model="queryParams" :cols="4" @search="handleQuery" @reset="resetQuery">
+          <QueryItem label="设备编号">
+            <el-input v-model="queryParams.equipmentSn" clearable placeholder="请输入设备编号" />
+          </QueryItem>
+          <QueryItem label="设备名称">
+            <el-input v-model="queryParams.equipmentName" clearable placeholder="请输入设备名称" />
+          </QueryItem>
+          <QueryItem label="设备状态">
+            <el-select v-model="queryParams.operationStatus" placeholder="请选择设备状态" clearable>
+              <el-option
+                v-for="item in eamEnumStore.getOperationStatusList"
+                :key="item.value"
+                :label="item.text"
+                :value="item.value"
               />
-            </el-form-item>
-            <el-form-item label="设备名称" prop="equipmentName">
-              <el-input
-                v-model="queryParams.equipmentName"
-                class="!w-200px"
-                clearable
-                placeholder="请输入设备名称"
-                @keyup.enter="handleQuery"
+            </el-select>
+          </QueryItem>
+          <QueryItem label="供应商">
+            <el-select v-model="queryParams.equipmentSupplier" placeholder="请选择供应商" clearable filterable>
+              <el-option
+                v-for="item in supplierOptions"
+                :key="item.supplierSn"
+                :label="item.supplierName"
+                :value="item.supplierSn"
               />
-            </el-form-item>
-            <el-form-item label="设备状态" prop="operationStatus">
-              <el-select
-                v-model="queryParams.operationStatus"
-                placeholder="请选择设备状态"
-                clearable
-                class="!w-200px"
-              >
-                <el-option
-                  v-for="item in eamEnumStore.getOperationStatusList"
-                  :key="item.value"
-                  :label="item.text"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="供应商" prop="equipmentSupplier">
-              <el-select
-                v-model="queryParams.equipmentSupplier"
-                placeholder="请选择供应商"
-                clearable
-                filterable
-                class="!w-200px"
-              >
-                <el-option
-                  v-for="item in supplierOptions"
-                  :key="item.supplierSn"
-                  :label="item.supplierName"
-                  :value="item.supplierSn"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="设备型号" prop="equipmentMode">
-              <el-input
-                v-model="queryParams.equipmentMode"
-                class="!w-200px"
-                clearable
-                placeholder="请输入设备型号"
-                @keyup.enter="handleQuery"
-              />
-            </el-form-item>
-            <el-form-item>
-              <el-button @click="handleQuery">
-                <Icon icon="ep:search" class="mr-5px" />&nbsp;搜索
-              </el-button>
-              <el-button @click="resetQuery">
-                <Icon icon="ep:refresh" class="mr-5px" />&nbsp;重置
-              </el-button>
-            </el-form-item>
-          </el-form>
-        </ContentWrap>
+            </el-select>
+          </QueryItem>
+          <QueryItem label="设备型号">
+            <el-input v-model="queryParams.equipmentMode" clearable placeholder="请输入设备型号" />
+          </QueryItem>
+        </QueryForm>
 
-        <!-- 列表 -->
-        <ContentWrap>
-          <div class="batch-bar">
+        <ListPage
+          :loading="loading"
+          :total="total"
+          v-model:page="queryParams.pageNo"
+          v-model:limit="queryParams.pageSize"
+          @pagination="getList"
+        >
+          <template #actions>
             <el-button
               type="primary"
               :disabled="selectedRows.length === 0"
@@ -116,10 +75,9 @@
               <Icon icon="ep:printer" class="mr-5px" />
               批量打印贴纸（已选 {{ selectedRows.length }} 台）
             </el-button>
-          </div>
+          </template>
           <el-table
             ref="tableRef"
-            v-loading="loading"
             :data="list"
             :stripe="true"
             :show-overflow-tooltip="true"
@@ -170,34 +128,20 @@
             <el-table-column label="购置时间" align="center" prop="equipmentPurchase" width="120" />
             <el-table-column label="操作" align="center" fixed="right" width="160">
               <template #default="scope">
-                <el-button
-                  link
-                  class="btn-other"
-                  v-hasPermi="[PERMI.QUERY]"
-                  @click="openDetail(scope.row.id)"
+                <RowActions
+                  :row="scope.row"
+                  :on-detail="checkPermi([PERMI.QUERY]) ? (r: any) => openDetail(r.id) : null"
                 >
-                  &nbsp;详情
-                </el-button>
-                <el-button
-                  link
-                  class="btn-other"
-                  v-hasPermi="[PERMI.QUERY]"
-                  @click="openQrcode(scope.row)"
-                >
-                  &nbsp;生成二维码
-                </el-button>
+                  <template v-if="checkPermi([PERMI.QUERY])" #more>
+                    <el-dropdown-item @click="openQrcode(scope.row)">
+                      生成二维码
+                    </el-dropdown-item>
+                  </template>
+                </RowActions>
               </template>
             </el-table-column>
           </el-table>
-
-          <!-- 分页 -->
-          <Pagination
-            :total="total"
-            v-model:page="queryParams.pageNo"
-            v-model:limit="queryParams.pageSize"
-            @pagination="getList"
-          />
-        </ContentWrap>
+        </ListPage>
       </div>
     </div>
 
@@ -213,6 +157,7 @@
 </template>
 
 <script lang="ts" setup>
+import { checkPermi } from '@/utils/permission'
 import * as DeviceLedgerApi from '@/api/eam/deviceLedger'
 import { useEamEnumStore } from '@/store/modules/enums'
 import DeviceLedgerDetail from './detail.vue'
@@ -304,7 +249,6 @@ const queryParams = reactive({
   equipmentSupplier: undefined as string | undefined,
   equipmentMode: undefined as string | undefined
 })
-const queryFormRef = ref()
 
 /** 查询列表 */
 const getList = async () => {
@@ -342,7 +286,11 @@ const handleQuery = () => {
 
 /** 重置 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
+  queryParams.equipmentSn = undefined
+  queryParams.equipmentName = undefined
+  queryParams.operationStatus = undefined
+  queryParams.equipmentSupplier = undefined
+  queryParams.equipmentMode = undefined
   handleQuery()
 }
 
