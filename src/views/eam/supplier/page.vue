@@ -1,73 +1,31 @@
 <template>
-  <!-- 搜索工作栏 -->
-  <ContentWrap>
-    <el-form
-      class="-mb-15px"
-      :model="queryParams"
-      ref="queryFormRef"
-      :inline="true"
-      label-width="110px"
-    >
-      <el-form-item label="供应商编号" prop="supplierSn">
-        <el-input
-          v-model="queryParams.supplierSn"
-          class="!w-240px"
-          clearable
-          maxlength="15"
-          placeholder="请输入供应商编号"
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="供应商名称" prop="supplierName">
-        <el-input
-          v-model="queryParams.supplierName"
-          class="!w-240px"
-          clearable
-          maxlength="60"
-          placeholder="请输入供应商名称"
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="建档日期" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          type="daterange"
-          value-format="YYYY-MM-DD"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="handleQuery">
-          <Icon icon="ep:search" class="mr-5px" />&nbsp;搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px" />&nbsp;重置
-        </el-button>
-      </el-form-item>
-    </el-form>
-  </ContentWrap>
+  <QueryForm :model="queryParams" :cols="3" @search="handleQuery" @reset="resetQuery">
+    <QueryItem label="供应商编号">
+      <el-input v-model="queryParams.supplierSn" clearable maxlength="15" placeholder="请输入供应商编号" />
+    </QueryItem>
+    <QueryItem label="供应商名称">
+      <el-input v-model="queryParams.supplierName" clearable maxlength="60" placeholder="请输入供应商名称" />
+    </QueryItem>
+    <QueryItem label="建档日期">
+      <el-date-picker
+        v-model="queryParams.createTime"
+        type="daterange"
+        value-format="YYYY-MM-DD"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        style="width: 100%"
+      />
+    </QueryItem>
+  </QueryForm>
 
-  <!-- 列表 -->
-  <ContentWrap>
-    <div class="mb-10px">
-      <el-button v-hasPermi="[PERMI.CREATE]" plain type="primary" @click="openForm('create')">
-        <Icon class="mr-5px" icon="ep:plus" />&nbsp;新增
+  <ListPage :loading="loading" :total="total" v-model:page="queryParams.pageNo" v-model:limit="queryParams.pageSize" @pagination="getList">
+    <template #actions>
+      <el-button v-hasPermi="[PERMI.CREATE]" type="primary" @click="openForm('create')">
+        <Icon class="mr-5px" icon="ep:plus" />新增
       </el-button>
-      <!-- TODO: 后端无导出接口，导出功能暂不可用 -->
-      <!-- <el-button
-        v-hasPermi="[PERMI.EXPORT]"
-        :loading="exportLoading"
-        plain
-        type="success"
-        @click="handleExport"
-      >
-        <Icon class="mr-5px" icon="ep:download" />&nbsp;导出
-      </el-button> -->
-    </div>
+    </template>
 
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="供应商编号" align="center" prop="supplierSn" width="120" />
       <el-table-column label="供应商名称" align="center" prop="supplierName" min-width="200" />
       <el-table-column label="供应商类别" align="center" prop="supplierCategory" width="120">
@@ -105,42 +63,16 @@
       </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="200">
         <template #default="scope">
-          <el-button
-            link
-            class="btn-other"
-            v-hasPermi="[PERMI.QUERY]"
-            @click="openDetail(scope.row.id)"
-          >
-            &nbsp;查看
-          </el-button>
-          <el-button
-            link
-            class="btn-edit"
-            v-hasPermi="[PERMI.UPDATE]"
-            @click="openForm('update', scope.row.id)"
-          >
-            &nbsp;编辑
-          </el-button>
-          <el-button
-            link
-            class="btn-delete"
-            v-hasPermi="[PERMI.DELETE]"
-            @click="handleDelete(scope.row.id)"
-          >
-            &nbsp;删除
-          </el-button>
+          <RowActions
+            :row="scope.row"
+            :on-detail="checkPermi([PERMI.QUERY]) ? (r: any) => openDetail(r.id) : null"
+            :on-edit="checkPermi([PERMI.UPDATE]) ? (r: any) => openForm('update', r.id) : null"
+            :on-delete="checkPermi([PERMI.DELETE]) ? (r: any) => handleDelete(r.id) : null"
+          />
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- 分页 -->
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
-  </ContentWrap>
+  </ListPage>
 
   <!-- 新增/编辑弹窗 -->
   <SupplierForm ref="formRef" @success="getList" />
@@ -150,6 +82,7 @@
 
 <script lang="ts" setup>
 import { dateFormatter } from '@/utils/formatTime'
+import { checkPermi } from '@/utils/permission'
 import * as SupplierApi from '@/api/eam/supplier'
 import { useEamEnumStore } from '@/store/modules/enums'
 import SupplierForm from './form.vue'
@@ -181,7 +114,6 @@ const queryParams = reactive({
   supplierName: undefined as string | undefined,
   createTime: undefined as string[] | undefined
 })
-const queryFormRef = ref()
 
 /** 查询列表 */
 const getList = async () => {
@@ -214,7 +146,9 @@ const handleQuery = () => {
 
 /** 重置 */
 const resetQuery = () => {
-  queryFormRef.value.resetFields()
+  queryParams.supplierSn = undefined
+  queryParams.supplierName = undefined
+  queryParams.createTime = undefined
   handleQuery()
 }
 
@@ -233,7 +167,6 @@ const openDetail = (id: string) => {
 // ==================== 删除 ====================
 const handleDelete = async (id: string) => {
   try {
-    await message.delConfirm()
     await SupplierApi.deleteSupplier(id)
     message.success(t('common.delSuccess'))
     await getList()
@@ -259,29 +192,3 @@ onMounted(async () => {
   await getList()
 })
 </script>
-
-<style lang="scss" scoped>
-:deep(.el-button.btn-edit) {
-  color: #0097ba;
-
-  &:hover {
-    color: rgb(0 151 186 / 75%);
-  }
-}
-
-:deep(.el-button.btn-delete) {
-  color: #d54941;
-
-  &:hover {
-    color: rgb(213 73 65 / 75%);
-  }
-}
-
-:deep(.el-button.btn-other) {
-  color: #a5d867;
-
-  &:hover {
-    color: rgb(165 216 103 / 75%);
-  }
-}
-</style>
