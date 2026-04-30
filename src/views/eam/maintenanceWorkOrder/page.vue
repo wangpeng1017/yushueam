@@ -1,104 +1,76 @@
 <template>
   <div class="maintenance-work-order-page">
-    <!-- ==================== 搜索区 ==================== -->
-    <ContentWrap>
-      <el-form
-        class="-mb-15px"
-        :model="queryParams"
-        ref="queryFormRef"
-        :inline="true"
-        label-width="90px"
-      >
-        <el-form-item label="工单编号" prop="code">
-          <el-input
-            v-model="queryParams.code"
-            class="!w-200px"
-            clearable
-            placeholder="请输入工单编号"
-            @keyup.enter="handleQuery"
+    <QueryForm :model="queryParams" :cols="3" @search="handleQuery" @reset="resetQuery">
+      <QueryItem label="工单编号">
+        <el-input v-model="queryParams.code" clearable placeholder="请输入工单编号" />
+      </QueryItem>
+      <QueryItem label="保养状态">
+        <el-select v-model="queryParams.status" placeholder="请选择保养状态" clearable>
+          <el-option
+            v-for="item in searchStatusOptions"
+            :key="item.value"
+            :label="item.text"
+            :value="item.value"
           />
-        </el-form-item>
-        <el-form-item label="保养状态" prop="status">
-          <el-select
-            v-model="queryParams.status"
-            placeholder="请选择保养状态"
-            clearable
-            class="!w-200px"
-          >
-            <el-option
-              v-for="item in searchStatusOptions"
-              :key="item.value"
-              :label="item.text"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="创建时间" prop="createTimeRange">
-          <el-date-picker
-            v-model="createTimeRange"
-            type="daterange"
-            value-format="YYYY-MM-DD"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="handleQuery">
-            <Icon icon="ep:search" class="mr-5px" />&nbsp;搜索
-          </el-button>
-          <el-button @click="resetQuery">
-            <Icon icon="ep:refresh" class="mr-5px" />&nbsp;重置
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </ContentWrap>
+        </el-select>
+      </QueryItem>
+      <QueryItem label="创建时间">
+        <el-date-picker
+          v-model="createTimeRange"
+          type="daterange"
+          value-format="YYYY-MM-DD"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 100%"
+        />
+      </QueryItem>
+    </QueryForm>
 
-    <!-- ==================== 主表列表 ==================== -->
-    <ContentWrap>
-      <div class="table-toolbar">
-        <el-button v-hasPermi="[PERMI.CREATE]" plain type="primary" @click="openForm('create')">
-          <Icon icon="ep:plus" class="mr-5px" />&nbsp;快速工单
+    <ListPage
+      :loading="loading"
+      :total="total"
+      v-model:page="queryParams.pageNo"
+      v-model:limit="queryParams.pageSize"
+      @pagination="getList"
+    >
+      <template #actions>
+        <el-button v-hasPermi="[PERMI.CREATE]" type="primary" @click="openForm('create')">
+          <Icon icon="ep:plus" class="mr-5px" />快速工单
         </el-button>
         <el-button
           v-hasPermi="[PERMI.DELETE]"
-          plain
           type="danger"
           :disabled="selectedIds.length === 0"
           @click="handleBatchDelete"
         >
-          <Icon icon="ep:delete" class="mr-5px" />&nbsp;批量删除
+          <Icon icon="ep:delete" class="mr-5px" />批量删除
         </el-button>
         <el-button
           v-hasPermi="[PERMI.DISPATCH]"
-          plain
           type="warning"
           :disabled="selectedIds.length !== 1"
           @click="handleDispatch"
         >
-          <Icon icon="ep:user" class="mr-5px" />&nbsp;派工
+          <Icon icon="ep:user" class="mr-5px" />派工
         </el-button>
         <el-button
           v-hasPermi="[PERMI.FINISH]"
-          plain
           type="success"
           :disabled="selectedIds.length !== 1"
           @click="handleComplete"
         >
-          <Icon icon="ep:check" class="mr-5px" />&nbsp;完成工单
+          <Icon icon="ep:check" class="mr-5px" />完成工单
         </el-button>
         <el-button
-          plain
           type="danger"
           :disabled="selectedIds.length !== 1"
           @click="handleTransferToRepair"
         >
-          <Icon icon="ep:warning" class="mr-5px" />&nbsp;异常转维修
+          <Icon icon="ep:warning" class="mr-5px" />异常转维修
         </el-button>
-      </div>
+      </template>
 
       <el-table
-        v-loading="loading"
         :data="list"
         :stripe="true"
         :show-overflow-tooltip="true"
@@ -130,43 +102,24 @@
         <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
         <el-table-column label="操作" align="center" fixed="right" width="200">
           <template #default="scope">
-            <el-button
-              link
-              class="btn-other"
-              v-hasPermi="[PERMI.QUERY]"
-              @click="openForm('view', scope.row)"
-            >
-              &nbsp;查看
-            </el-button>
-            <el-button
-              link
-              class="btn-edit"
-              v-hasPermi="[PERMI.UPDATE]"
-              :disabled="!['1', '2', '3'].includes(scope.row.status)"
-              @click="openForm('edit', scope.row)"
-            >
-              &nbsp;编辑
-            </el-button>
-            <el-button
-              link
-              class="btn-delete"
-              v-hasPermi="[PERMI.DELETE]"
-              :disabled="scope.row.status !== '1'"
-              @click="handleDelete(scope.row)"
-            >
-              &nbsp;删除
-            </el-button>
+            <RowActions
+              :row="scope.row"
+              :on-detail="checkPermi([PERMI.QUERY]) ? (r: any) => openForm('view', r) : null"
+              :on-edit="
+                checkPermi([PERMI.UPDATE]) && ['1','2','3'].includes(scope.row.status)
+                  ? (r: any) => openForm('edit', r)
+                  : null
+              "
+              :on-delete="
+                checkPermi([PERMI.DELETE]) && scope.row.status === '1'
+                  ? handleDelete
+                  : null
+              "
+            />
           </template>
         </el-table-column>
       </el-table>
-
-      <Pagination
-        :total="total"
-        v-model:page="queryParams.pageNo"
-        v-model:limit="queryParams.pageSize"
-        @pagination="getList"
-      />
-    </ContentWrap>
+    </ListPage>
 
     <!-- ==================== 下方：保养项子表（只读） ==================== -->
     <ContentWrap>
@@ -242,6 +195,7 @@
 </template>
 
 <script lang="ts" setup>
+import { checkPermi } from '@/utils/permission'
 import * as WorkOrderApi from '@/api/eam/maintenanceWorkOrder'
 import { useEamEnumStore } from '@/store/modules/enums'
 import WorkOrderForm from './form.vue'
@@ -276,7 +230,6 @@ const queryParams = reactive({
   createTime_begin: undefined as string | undefined,
   createTime_end: undefined as string | undefined
 })
-const queryFormRef = ref()
 const createTimeRange = ref<string[]>([])
 
 /** 搜索状态下拉仅显示 1/2/3（不显示已完成4） */
@@ -336,7 +289,8 @@ const handleQuery = () => {
 }
 
 const resetQuery = () => {
-  queryFormRef.value?.resetFields()
+  queryParams.code = undefined
+  queryParams.status = undefined
   createTimeRange.value = []
   queryParams.createTime_begin = undefined
   queryParams.createTime_end = undefined
