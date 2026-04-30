@@ -1,10 +1,10 @@
 <template>
   <div class="eam-list-page" v-loading="loading">
     <div class="eam-list-page__header">
-      <slot name="actions" />
+      <slot name="actions"></slot>
     </div>
     <div class="eam-list-page__body">
-      <slot />
+      <slot></slot>
     </div>
     <div v-if="total > 0" class="eam-list-page__footer">
       <slot name="footer">

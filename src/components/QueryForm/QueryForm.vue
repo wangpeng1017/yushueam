@@ -1,7 +1,7 @@
 <template>
   <div class="eam-query-form" @keyup.enter="handleSearch">
     <div class="eam-query-form__grid" :style="{ '--eam-form-cols': String(cols) }">
-      <slot />
+      <slot></slot>
       <div class="eam-query-form__actions">
         <el-button type="primary" class="eam-search-btn" @click="handleSearch">
           <Icon icon="ep:search" class="mr-5px" />搜索

@@ -10,7 +10,7 @@
       </el-button>
       <template #dropdown>
         <el-dropdown-menu>
-          <slot name="more" />
+          <slot name="more"></slot>
         </el-dropdown-menu>
       </template>
     </el-dropdown>

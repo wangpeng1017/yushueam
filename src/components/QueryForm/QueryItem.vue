@@ -2,7 +2,7 @@
   <div v-show="visible" class="eam-query-form__item" :style="itemStyle">
     <span class="label">{{ label }}</span>
     <span class="control">
-      <slot />
+      <slot></slot>
     </span>
   </div>
 </template>

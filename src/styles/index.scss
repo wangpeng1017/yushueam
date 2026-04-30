@@ -1,7 +1,7 @@
 @use './var.css';
 @use './FormCreate/index.scss';
 @use './theme.scss';
-@use './theme/index.scss';
+@use './theme/index.scss' as eam_theme;
 @use 'element-plus/theme-chalk/dark/css-vars.css';
 
 /* ========== 全局字体 - 微软雅黑（规范） ========== */
