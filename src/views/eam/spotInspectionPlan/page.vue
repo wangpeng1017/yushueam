@@ -1,101 +1,68 @@
 <template>
   <div class="spot-inspection-plan-page">
-    <!-- ==================== 搜索区 ==================== -->
-    <ContentWrap>
-      <el-form
-        class="-mb-15px"
-        :model="queryParams"
-        ref="queryFormRef"
-        :inline="true"
-        label-width="90px"
-      >
-        <el-form-item label="计划编号" prop="code">
-          <el-input
-            v-model="queryParams.code"
-            class="!w-200px"
-            clearable
-            placeholder="请输入计划编号"
-            @keyup.enter="handleQuery"
+    <QueryForm :model="queryParams" :cols="4" @search="handleQuery" @reset="resetQuery">
+      <QueryItem label="计划编号">
+        <el-input v-model="queryParams.code" clearable placeholder="请输入计划编号" />
+      </QueryItem>
+      <QueryItem label="计划名称">
+        <el-input v-model="queryParams.name" clearable placeholder="请输入计划名称" />
+      </QueryItem>
+      <QueryItem label="启用状态">
+        <el-select v-model="queryParams.status" placeholder="请选择启用状态" clearable>
+          <el-option
+            v-for="item in eamEnumStore.getSupplierStatusList"
+            :key="item.value"
+            :label="item.text"
+            :value="item.value"
           />
-        </el-form-item>
-        <el-form-item label="计划名称" prop="name">
-          <el-input
-            v-model="queryParams.name"
-            class="!w-200px"
-            clearable
-            placeholder="请输入计划名称"
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="启用状态" prop="status">
-          <el-select
-            v-model="queryParams.status"
-            placeholder="请选择启用状态"
-            clearable
-            class="!w-200px"
-          >
-            <el-option
-              v-for="item in eamEnumStore.getSupplierStatusList"
-              :key="item.value"
-              :label="item.text"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="类型" prop="inspectionType">
-          <el-select v-model="queryParams.inspectionType" placeholder="全部" clearable class="!w-120px">
-            <el-option label="点检" value="1" />
-            <el-option label="巡检" value="2" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="handleQuery">
-            <Icon icon="ep:search" class="mr-5px" />&nbsp;搜索
-          </el-button>
-          <el-button @click="resetQuery">
-            <Icon icon="ep:refresh" class="mr-5px" />&nbsp;重置
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </ContentWrap>
+        </el-select>
+      </QueryItem>
+      <QueryItem label="类型">
+        <el-select v-model="queryParams.inspectionType" placeholder="全部" clearable>
+          <el-option label="点检" value="1" />
+          <el-option label="巡检" value="2" />
+        </el-select>
+      </QueryItem>
+    </QueryForm>
 
-    <!-- ==================== 主表列表 ==================== -->
-    <ContentWrap>
-      <div class="table-toolbar">
-        <el-button v-hasPermi="[PERMI.CREATE]" plain type="primary" @click="openForm('create')">
-          <Icon icon="ep:plus" class="mr-5px" />&nbsp;新增
+    <ListPage
+      :loading="loading"
+      :total="total"
+      v-model:page="queryParams.pageNo"
+      v-model:limit="queryParams.pageSize"
+      @pagination="getList"
+    >
+      <template #actions>
+        <el-button v-hasPermi="[PERMI.CREATE]" type="primary" @click="openForm('create')">
+          <Icon icon="ep:plus" class="mr-5px" />新增
         </el-button>
         <el-button
           v-hasPermi="[PERMI.DELETE]"
-          plain
           type="danger"
           :disabled="selectedIds.length === 0"
           @click="handleBatchDelete"
         >
-          <Icon icon="ep:delete" class="mr-5px" />&nbsp;批量删除
+          <Icon icon="ep:delete" class="mr-5px" />批量删除
         </el-button>
         <el-button
           v-hasPermi="[PERMI.UPDATE]"
-          plain
           type="success"
           :disabled="selectedIds.length === 0"
           @click="handleEnable"
         >
-          <Icon icon="ep:check" class="mr-5px" />&nbsp;启用
+          <Icon icon="ep:check" class="mr-5px" />启用
         </el-button>
         <el-button
           v-hasPermi="[PERMI.UPDATE]"
-          plain
           type="warning"
           :disabled="selectedIds.length === 0"
           @click="handleDisable"
         >
-          <Icon icon="ep:close" class="mr-5px" />&nbsp;停用
+          <Icon icon="ep:close" class="mr-5px" />停用
         </el-button>
-      </div>
+      </template>
 
       <el-table
-        v-loading="loading"
         :data="list"
         :stripe="true"
         :show-overflow-tooltip="true"
@@ -147,51 +114,24 @@
         <el-table-column label="结束日期" align="center" prop="endDate" width="120" />
         <el-table-column label="创建人" align="center" prop="createByPersonName" width="100" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
-        <el-table-column label="操作" align="center" fixed="right" width="280">
+        <el-table-column label="操作" align="center" fixed="right" width="220">
           <template #default="scope">
-            <el-button
-              link
-              class="btn-other"
-              v-hasPermi="[PERMI.QUERY]"
-              @click="openForm('view', scope.row)"
+            <RowActions
+              :row="scope.row"
+              :on-detail="checkPermi([PERMI.QUERY]) ? (r: any) => openForm('view', r) : null"
+              :on-edit="checkPermi([PERMI.UPDATE]) ? (r: any) => openForm('edit', r) : null"
+              :on-delete="checkPermi([PERMI.DELETE]) ? handleDelete : null"
             >
-              &nbsp;查看
-            </el-button>
-            <el-button
-              link
-              class="btn-edit"
-              v-hasPermi="[PERMI.UPDATE]"
-              @click="openForm('edit', scope.row)"
-            >
-              &nbsp;编辑
-            </el-button>
-            <el-button
-              link
-              class="btn-other"
-              v-hasPermi="[PERMI.CREATE]"
-              @click="handleCreateWorkOrder(scope.row)"
-            >
-              &nbsp;生成工单
-            </el-button>
-            <el-button
-              link
-              class="btn-delete"
-              v-hasPermi="[PERMI.DELETE]"
-              @click="handleDelete(scope.row)"
-            >
-              &nbsp;删除
-            </el-button>
+              <template v-if="checkPermi([PERMI.CREATE])" #more>
+                <el-dropdown-item @click="handleCreateWorkOrder(scope.row)">
+                  生成工单
+                </el-dropdown-item>
+              </template>
+            </RowActions>
           </template>
         </el-table-column>
       </el-table>
-
-      <Pagination
-        :total="total"
-        v-model:page="queryParams.pageNo"
-        v-model:limit="queryParams.pageSize"
-        @pagination="getList"
-      />
-    </ContentWrap>
+    </ListPage>
 
     <!-- ==================== 设备清单 ==================== -->
     <ContentWrap>
@@ -503,6 +443,7 @@
 import { ElMessageBox } from 'element-plus'
 import * as PlanApi from '@/api/eam/spotInspectionPlan'
 import { useEamEnumStore } from '@/store/modules/enums'
+import { checkPermi } from '@/utils/permission'
 import PlanForm from './form.vue'
 import ItemForm from './item-form.vue'
 import TableSelectDialog from '@/components/TableSelectDialog/index.vue'
@@ -536,7 +477,6 @@ const queryParams = reactive({
   status: undefined as string | undefined,
   inspectionType: undefined as string | undefined
 })
-const queryFormRef = ref()
 const selectedIds = ref<string[]>([])
 const selectedRows = ref<PlanApi.PlanVo[]>([])
 const currentPlan = ref<PlanApi.PlanVo | null>(null)
@@ -577,7 +517,10 @@ const handleQuery = () => {
 }
 
 const resetQuery = () => {
-  queryFormRef.value?.resetFields()
+  queryParams.code = undefined
+  queryParams.name = undefined
+  queryParams.status = undefined
+  queryParams.inspectionType = undefined
   clearSubSections()
   handleQuery()
 }
