@@ -69,23 +69,24 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
-          {hasTenantVisitPermission.value ? <TenantVisit /> : undefined}
+          {/* UniTree 顶栏只保留三件套：通知 / 全屏 / 用户。隐藏租户切换/搜索/尺寸/翻译 */}
+          {/* {hasTenantVisitPermission.value ? <TenantVisit /> : undefined} */}
+          {message.value ? (
+            <Message class="custom-hover" color="#3B3F48"></Message>
+          ) : undefined}
           {screenfull.value ? (
             <Screenfull class="custom-hover" color="#3B3F48"></Screenfull>
           ) : undefined}
-          {search.value ? <RouterSearch isModal={false} color="#3B3F48" /> : undefined}
-          {size.value ? (
+          {/* {search.value ? <RouterSearch isModal={false} color="#3B3F48" /> : undefined} */}
+          {/* {size.value ? (
             <SizeDropdown class="custom-hover" color="#3B3F48"></SizeDropdown>
-          ) : undefined}
-          {locale.value ? (
+          ) : undefined} */}
+          {/* {locale.value ? (
             <LocaleDropdown
               class="custom-hover"
               color="#3B3F48"
             ></LocaleDropdown>
-          ) : undefined}
-          {message.value ? (
-            <Message class="custom-hover" color="#3B3F48"></Message>
-          ) : undefined}
+          ) : undefined} */}
           <UserInfo></UserInfo>
         </div>
       </div>

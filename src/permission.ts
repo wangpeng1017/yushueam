@@ -10,6 +10,7 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { isPublicMobileRoute, buildLoginRedirect } from '@/views/mobile/utils/mobile-route-guard'
 import { isMobileTokenValid } from '@/views/mobile/utils/mobile-token'
+import { tryAutoLogin } from '@/utils/autoLogin'
 
 const { start, done } = useNProgress()
 
@@ -101,10 +102,16 @@ router.beforeEach(async (to, from, next) => {
       }
     }
   } else {
+    // === UniTree autoLogin: 演示/内网环境免登录 ===
+    // 当 .env 中 VITE_AUTO_LOGIN=true 且账密齐全时，自动调用登录接口拿 token，
+    // 然后重新进入守卫命中已登录分支。失败则回退到 /login。
+    if (await tryAutoLogin()) {
+      return next({ ...to, replace: true })
+    }
     if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
-      next(`/login?redirect=${to.fullPath}`) 
+      next(`/login?redirect=${to.fullPath}`)
     }
   }
 })

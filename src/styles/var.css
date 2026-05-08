@@ -8,20 +8,20 @@
 
     --left-menu-min-width: 64px;
 
-    /* —— 紫色侧栏渐变 —— */
-    --left-menu-bg-color: #1F2240;
-    --left-menu-bg-light-color: #2A2F5C;
-    --left-menu-bg-active-color: rgba(255, 255, 255, 0.08);
+    /* —— 侧栏：对齐 UniTree 深灰 —— */
+    --left-menu-bg-color: #3B3F48;
+    --left-menu-bg-light-color: #4A4F58;
+    --left-menu-bg-active-color: #1677FF;
     --left-menu-text-color: rgba(255, 255, 255, 0.85);
     --left-menu-text-active-color: #FFFFFF;
-    --left-menu-collapse-bg-active-color: rgba(255, 255, 255, 0.08);
+    --left-menu-collapse-bg-active-color: #1677FF;
 
-    --eam-sider-bg-from: #1F2240;
-    --eam-sider-bg-to:   #2A2F5C;
-    --eam-sider-hover-bg:  rgba(255,255,255,.04);
+    --eam-sider-bg-from: #3B3F48;
+    --eam-sider-bg-to:   #3B3F48;
+    --eam-sider-hover-bg:  rgba(255,255,255,.06);
 
-    /* logo */
-    --logo-height: 56px;
+    /* logo（对齐 WMS：图 52px + 副标题 12px，logo 区 ≈ 100px） */
+    --logo-height: 100px;
     --logo-title-text-color: #FFFFFF;
 
     /* header - 白底 */
@@ -29,7 +29,8 @@
     --top-header-text-color: #1F2937;
     --top-header-hover-color: #F4F6FA;
 
-    --top-tool-height: var(--logo-height);
+    /* navbar 56px 与 logo-height 解耦（对齐 WMS） */
+    --top-tool-height: 56px;
 
     --top-tool-p-x: 8px;
 
@@ -44,9 +45,9 @@
 
     --app-content-padding: 16px;
 
-    /* —— 内容区底色（浅灰蓝） —— */
-    --app-content-bg-color: #F4F6FA;
-    --eam-bg-page: #F4F6FA;
+    /* —— 内容区底色（对齐 UniTree #E6E9F0） —— */
+    --app-content-bg-color: #E6E9F0;
+    --eam-bg-page: #E6E9F0;
     --eam-bg-card: #FFFFFF;
     --eam-radius-card: 12px;
     --eam-shadow-card: 0 2px 8px rgba(15, 23, 42, .04);
@@ -87,12 +88,12 @@
     --danger-color: #EF4444;
     --info-color: #909399;
 
-    /* —— 表格 token —— */
-    --eam-table-header-bg: #F0F4FA;
+    /* —— 表格 token（对齐 UniTree） —— */
+    --eam-table-header-bg: #FAFBFC;
     --eam-table-header-color: #1F2937;
-    --eam-table-stripe-bg: #F7FAFE;
-    --eam-table-row-hover: #EBF3FF;
-    --eam-table-row-height: 52px;
+    --eam-table-stripe-bg: #FAFBFC;
+    --eam-table-row-hover: #F5F7FA;
+    --eam-table-row-height: 44px;
 
     /* —— 操作列文字按钮色 —— */
     --eam-action-detail: #0EA5E9;

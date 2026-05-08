@@ -27,6 +27,55 @@ body,
   justify-content: flex-start;
 }
 
+/* ========== UniTree 表格统一 ========== */
+.el-table {
+  font-size: 13px;
+  th.el-table__cell {
+    font-size: 13px;
+    font-weight: 500;
+  }
+  td.el-table__cell {
+    font-size: 13px;
+  }
+}
+
+/* ========== UniTree .el-tag 状态色映射 ========== */
+.el-tag {
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  height: 22px;
+  padding: 0 8px;
+  line-height: 1;
+  &.el-tag--success {
+    background-color: #ECFDF5 !important;
+    border-color: #A7F3D0 !important;
+    color: #10B981 !important;
+  }
+  &.el-tag--warning {
+    background-color: #FFFBEB !important;
+    border-color: #FDE68A !important;
+    color: #F59E0B !important;
+  }
+  &.el-tag--danger,
+  &.el-tag--error {
+    background-color: #FEF2F2 !important;
+    border-color: #FECACA !important;
+    color: #EF4444 !important;
+  }
+  &.el-tag--info {
+    background-color: #EEF2FF !important;
+    border-color: #C7D2FE !important;
+    color: #6366F1 !important;
+  }
+  &.el-tag--primary,
+  &:not(.el-tag--success):not(.el-tag--warning):not(.el-tag--danger):not(.el-tag--error):not(.el-tag--info) {
+    background-color: #E6F4FF !important;
+    border-color: #91CAFF !important;
+    color: #1677FF !important;
+  }
+}
+
 /* nprogress 适配主题色（蓝） */
 #nprogress {
   & .bar {

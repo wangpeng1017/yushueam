@@ -72,21 +72,38 @@ watch(
       }"
       to="/"
     >
-      <!-- 已隐藏图片 logo -->
-      <!-- <img :style="{ width: '28px', height: '28px' }" src="@/assets/imgs/logoW.svg" /> -->
+      <!-- UniTree Logo（对齐 WMS：图 52px + 副标题 12px/700/白） -->
       <div
         v-if="show"
-        :class="[
-          'text-[16px] font-700 leading-tight whitespace-nowrap',
-          {
+        class="flex flex-col items-center justify-center leading-tight whitespace-nowrap"
+      >
+        <img
+          src="@/assets/imgs/unitree-logo.png"
+          alt="UNITREE"
+          :style="{
+            height: '52px',
+            width: '112px',
+            objectFit: 'contain',
+            display: 'block',
+            filter: layout === 'classic' ? 'none' : 'invert(1) brightness(0)'
+          }"
+        />
+        <div
+          :class="{
             'text-white': layout === 'classic',
             'text-[var(--top-header-text-color)]':
               layout === 'topLeft' || layout === 'top' || layout === 'cutMenu'
-          }
-        ]"
-        style="letter-spacing: 0.8px;"
-      >
-        {{ title }}
+          }"
+          :style="{
+            marginTop: '8px',
+            fontSize: '16px',
+            fontWeight: 700,
+            letterSpacing: '1px',
+            lineHeight: 1
+          }"
+        >
+          设备管理系统
+        </div>
       </div>
     </router-link>
   </div>
