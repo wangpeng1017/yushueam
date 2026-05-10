@@ -99,9 +99,7 @@
         <el-table-column label="项目名称" align="center" prop="projectName" min-width="180" />
         <el-table-column label="需求来源" align="center" prop="demandSource" width="90">
           <template #default="scope">
-            <el-tag :type="scope.row.demandSource === '生产需求' ? 'primary' : 'warning'">
-              {{ scope.row.demandSource || '--' }}
-            </el-tag>
+            <span style="color:#606266">{{ scope.row.demandSource || '--' }}</span>
           </template>
         </el-table-column>
         <el-table-column label="当前阶段" align="center" prop="currentPhase" width="120">
@@ -130,21 +128,16 @@
         </el-table-column>
         <el-table-column label="交付设备" align="center" prop="deliveryEquipmentSn" width="120" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
-        <el-table-column label="操作" align="center" fixed="right" width="200">
+        <el-table-column label="操作" align="center" fixed="right" width="260">
           <template #default="scope">
+            <el-button link type="primary" @click="openFlowDetail(scope.row)">
+              &nbsp;流程详情
+            </el-button>
             <el-button link class="btn-other" @click="openForm('view', scope.row)">
               &nbsp;查看
             </el-button>
             <el-button link class="btn-edit" @click="openForm('edit', scope.row)">
               &nbsp;编辑
-            </el-button>
-            <el-button
-              link
-              type="warning"
-              :disabled="scope.row.status === '2' || scope.row.status === '3' || scope.row.currentPhase === '14'"
-              @click="handleAdvancePhase(scope.row)"
-            >
-              &nbsp;推进阶段
             </el-button>
             <el-button link class="btn-delete" @click="handleDelete(scope.row)">
               &nbsp;删除
@@ -381,6 +374,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getProjectPage,
@@ -392,6 +386,11 @@ import {
   getReviewPage,
   type ProjectVo
 } from '@/api/eam/customEquipmentProject'
+
+const router = useRouter()
+function openFlowDetail(row: any) {
+  router.push({ path: '/eam/project/customEquipmentProject/flow/' + (row.id || row.projectCode) })
+}
 
 // ── 阶段枚举 ──
 const PHASE_OPTIONS = [

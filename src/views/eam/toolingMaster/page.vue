@@ -2,11 +2,22 @@
   <div class="tooling-master-page">
     <TreeListLayout :tree-data="treeData" @select="handleTreeSelect" :default-key="'TOOL'">
       <template #default>
+        <!-- 易耗品范围说明 -->
+        <el-alert
+          title="易耗品管理范围：当前覆盖「数控机加车间」（刀具 / 量具 / 夹具均按易耗品管理）。其他车间易耗品暂不纳入本模块。"
+          type="info"
+          :closable="false"
+          show-icon
+          class="mb-12px"
+        />
         <!-- 顶部面包屑 -->
         <div class="tooling-breadcrumb">
           <el-tag size="large" :type="typeColor" effect="dark" class="mr-10px">
             <Icon :icon="typeIcon" class="mr-3px" />
             {{ typeLabel }}
+          </el-tag>
+          <el-tag size="small" type="info" class="mr-10px">
+            <Icon icon="ep:cherry" class="mr-3px" />易耗品 · 数控机加车间
           </el-tag>
           <span class="text-13px text-gray-500">
             <span v-for="(seg, i) in pathSegs" :key="i">

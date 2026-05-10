@@ -75,7 +75,7 @@
     <!-- ==================== 主表列表 ==================== -->
     <ContentWrap>
       <div class="table-toolbar">
-        <el-button v-hasPermi="[PERMI.DISPATCH]" plain type="primary" @click="handleDispatch">
+        <el-button v-hasPermi="[PERMI.DISPATCH]" plain @click="handleDispatch">
           <Icon icon="ep:user" class="mr-5px" />&nbsp;派工
         </el-button>
         <el-button plain type="danger" @click="handleTransferToRepair">

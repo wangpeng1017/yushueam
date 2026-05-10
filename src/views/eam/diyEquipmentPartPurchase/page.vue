@@ -64,6 +64,16 @@ type="info" :closable="false" show-icon class="mb-15px"
           </template>
         </el-table-column>
         <el-table-column label="申请日期" prop="applicationDate" width="110" align="center" />
+        <el-table-column label="要求到货日期" width="120" align="center">
+          <template #default="{ row }">
+            <span>{{ getExpectedDate(row) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="距到货" width="110" align="center">
+          <template #default="{ row }">
+            <el-tag size="small" :type="getDueTagType(row)">{{ getDueLabel(row) }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="状态" prop="status" width="110" align="center">
           <template #default="{ row }"><el-tag :type="getStatusColor(row.status)">{{ getStatusName(row.status) }}</el-tag></template>
         </el-table-column>
@@ -204,6 +214,38 @@ function getSourceColor(s: string): any {
   if (s === '损坏更换') return 'danger'
   if (s === '新建立项') return 'success'
   return ''
+}
+
+/** 要求到货日期：从行数据取，如果 mock 没有则按申请日 + 30 天估算 */
+function getExpectedDate(row: any): string {
+  if (row.expectedArrivalDate) return row.expectedArrivalDate
+  if (!row.applicationDate) return '—'
+  const d = new Date(row.applicationDate)
+  d.setDate(d.getDate() + 30)
+  return d.toISOString().slice(0, 10)
+}
+/** 距到货天数（正：还有 N 天 / 负：已逾期 N 天 / 0：今天） */
+function dueDays(row: any): number {
+  const target = getExpectedDate(row)
+  if (target === '—') return 999
+  const diff = new Date(target).getTime() - Date.now()
+  return Math.ceil(diff / (24 * 3600 * 1000))
+}
+/** 红黄绿三档：>15 天绿 / 7-15 天黄 / <7 天红 / 已逾期红 / 已到货灰 */
+function getDueTagType(row: any): any {
+  if (row.status === '已到货' || row.status === 'ARRIVED') return 'info'
+  const d = dueDays(row)
+  if (d < 0) return 'danger'
+  if (d <= 7) return 'danger'
+  if (d <= 15) return 'warning'
+  return 'success'
+}
+function getDueLabel(row: any): string {
+  if (row.status === '已到货' || row.status === 'ARRIVED') return '已到货'
+  const d = dueDays(row)
+  if (d < 0) return `逾期 ${-d} 天`
+  if (d === 0) return '今日到货'
+  return `还有 ${d} 天`
 }
 
 const queryParams = reactive({ code: '', itemName: '', targetLine: '', status: '' })

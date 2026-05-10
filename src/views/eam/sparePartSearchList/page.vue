@@ -105,9 +105,14 @@
             <el-table-column label="规格型号" align="center" prop="specification"  />
             <el-table-column label="基础单位" align="center" prop="unitName"  />
             <el-table-column label="备件类型" align="center" prop="materialGroupName" />
+            <el-table-column label="分类" align="center" width="100">
+              <template #default="scope">
+                <el-tag size="small" type="info">{{ getSparePartClass(scope.row) }}</el-tag>
+              </template>
+            </el-table-column>
             <el-table-column label="实际库存" align="center" prop="actualStock" width="90">
               <template #default="scope">
-                <span :class="{ 'text-red-500 font-bold': scope.row.actualStock <= scope.row.minStock }">
+                <span :style="scope.row.actualStock != null && scope.row.actualStock <= 0 ? 'color:#f56c6c;font-weight:600' : ''">
                   {{ scope.row.actualStock ?? '--' }}
                 </span>
               </template>
@@ -116,9 +121,10 @@
             <el-table-column label="最低储备" align="center" prop="minStock" width="90" />
             <el-table-column label="库存状态" align="center" width="90">
               <template #default="scope">
-                <el-tag v-if="scope.row.actualStock != null && scope.row.minStock != null && scope.row.actualStock <= scope.row.minStock" type="danger" size="small">预警</el-tag>
-                <el-tag v-else-if="scope.row.actualStock != null" type="success" size="small">正常</el-tag>
-                <el-tag v-else type="info" size="small">未设置</el-tag>
+                <el-tag v-if="scope.row.actualStock != null && scope.row.actualStock <= 0" type="danger" size="small">断货</el-tag>
+                <el-tag v-else-if="scope.row.actualStock != null && scope.row.minStock != null && scope.row.actualStock <= scope.row.minStock" type="warning" size="small">低库存</el-tag>
+                <span v-else-if="scope.row.actualStock != null" style="color:#909399;">正常</span>
+                <span v-else style="color:#c0c4cc;">—</span>
               </template>
             </el-table-column>
             <el-table-column label="关联设备" align="center" prop="relatedEquipment" min-width="120" />
@@ -177,6 +183,15 @@ import { listToTree } from '@/utils/tree'
 import { usePlant } from '@/hooks/web/usePlant'
 
 defineOptions({ name: 'EamSparePartSearch' })
+
+/** 备件分类规则（基于备件名称/类型推断） */
+function getSparePartClass(row: any): '易损件' | '消耗品' | '通用备件' {
+  if (row?.categoryClass) return row.categoryClass
+  const name = (row?.name || '') + (row?.materialGroupName || '')
+  if (/(轴承|密封|皮带|刀片|刀具|钻头|滤芯|碳刷|皮带|联轴|齿轮)/.test(name)) return '易损件'
+  if (/(润滑|油|脂|清洁|擦|手套|口罩|耗材|胶|液|粉|布)/.test(name)) return '消耗品'
+  return '通用备件'
+}
 
 // 端别个性化：双库切换 + 工装柜对接（与端别配置联动）
 const { showMultiWarehouse, showToolboxIntegration } = usePlant()

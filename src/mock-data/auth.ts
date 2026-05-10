@@ -45,15 +45,25 @@ const eamMenus = [
     ]
   },
   {
-    path: '/eam/inspection',
-    name: '点巡检管理', icon: 'ep:document-checked', component: '#',
+    path: '/eam/spotInspection',
+    name: '设备点检', icon: 'ep:monitor', component: '#',
     visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
     children: [
-      { path: 'inspectionRoute', name: '巡检路线', icon: 'ep:guide', component: 'eam/inspectionRoute/page', componentName: 'EamInspectionRoute', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionStandard', name: '点检标准', icon: 'ep:document-copy', component: 'eam/spotInspectionStandard/page', componentName: 'EamSpotInspectionStandard', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionPlan', name: '点检计划', icon: 'ep:calendar', component: 'eam/spotInspectionPlan/page', componentName: 'EamSpotInspectionPlan', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionWork', name: '点检工单', icon: 'ep:list', component: 'eam/spotInspectionWork/page', componentName: 'EamSpotInspectionWork', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionRecord', name: '点检记录', icon: 'ep:notebook', component: 'eam/spotInspectionRecord/page', componentName: 'EamSpotInspectionRecord', visible: true, keepAlive: true, parentId: 30 },
+    ]
+  },
+  {
+    path: '/eam/patrol',
+    name: '区域巡检', icon: 'ep:location', component: '#',
+    visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
+    children: [
+      { path: 'route', name: '巡检路线', icon: 'ep:guide', component: 'eam/patrol/route/page', componentName: 'EamPatrolRoute', visible: true, keepAlive: true, parentId: 31 },
+      { path: 'plan', name: '巡检计划', icon: 'ep:calendar', component: 'eam/patrol/plan/page', componentName: 'EamPatrolPlan', visible: true, keepAlive: true, parentId: 31 },
+      { path: 'work', name: '巡检工单', icon: 'ep:list', component: 'eam/patrol/work/page', componentName: 'EamPatrolWork', visible: true, keepAlive: true, parentId: 31 },
+      { path: 'record', name: '巡检记录', icon: 'ep:notebook', component: 'eam/patrol/record/page', componentName: 'EamPatrolRecord', visible: true, keepAlive: true, parentId: 31 },
     ]
   },
   {
@@ -103,15 +113,7 @@ const eamMenus = [
       { path: 'toolingScrap', name: '报废登记', icon: 'ep:delete', component: 'eam/toolingScrap/page', componentName: 'EamToolingScrap', visible: true, keepAlive: true, parentId: 80 },
     ]
   },
-  {
-    path: '/eam/project',
-    name: '非标研制', icon: 'ep:cpu', component: '#',
-    visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
-    plantScope: ['C', 'ALL'],
-    children: [
-      { path: 'customEquipmentProject', name: '研制项目', icon: 'ep:promotion', component: 'eam/customEquipmentProject/page', componentName: 'EamCustomEquipmentProject', visible: true, keepAlive: true, parentId: 90 },
-    ]
-  },
+  // 「非标研制」（customEquipmentProject）菜单已下线，源码保留以备后用
   // 采购管理（独立顶级菜单，全端可见）
   {
     path: '/eam/purchase',
@@ -120,11 +122,12 @@ const eamMenus = [
     children: [
       { path: 'equipmentPurchaseRequest', name: '设备采购', icon: 'ep:shopping-bag', component: 'eam/equipmentPurchaseRequest/page', componentName: 'EamEquipmentPurchaseRequest', visible: true, keepAlive: true, parentId: 95 },
       { path: 'diyEquipmentPartPurchase', name: '自制设备备件采购', icon: 'ep:cpu', component: 'eam/diyEquipmentPartPurchase/page', componentName: 'EamDiyEquipmentPartPurchase', visible: true, keepAlive: true, parentId: 95 },
+      { path: 'diyPurchaseDashboard', name: '采购到货看板', icon: 'ep:data-line', component: 'eam/diyEquipmentPartPurchase/dashboard', componentName: 'EamDiyPurchaseDashboard', visible: true, keepAlive: true, parentId: 95 },
       { path: 'toolPurchaseDemand', name: '工器具采购', icon: 'ep:shopping-cart', component: 'eam/toolPurchaseDemand/page', componentName: 'EamToolPurchaseDemand', visible: true, keepAlive: true, parentId: 95 },
       { path: 'sparePartPurchase', name: '备件采购', icon: 'ep:files', component: 'eam/sparePartPurchase/page', componentName: 'EamSparePartPurchase', visible: true, keepAlive: true, parentId: 95 },
     ]
   },
-  // 非标设备研制（demo 全端可见，业务上以 C 端为主）
+  // 非标设备研制（4 个独立子菜单：项目总览 / 方案评审 / BOM管理 / 装配与验收）
   {
     path: '/eam/npi',
     name: '非标设备研制', icon: 'ep:cpu', component: '#',

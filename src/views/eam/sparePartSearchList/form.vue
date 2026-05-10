@@ -33,7 +33,7 @@
       </el-row>
 
       <el-row :gutter="24">
-        <el-col :span="24">
+        <el-col :span="12">
           <el-form-item label="备件类型" prop="materialGroupId">
             <el-tree-select
               v-model="formData.materialGroupId"
@@ -46,6 +46,24 @@
               clearable
               class="!w-full"
             />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="备件分类" prop="categoryClass">
+            <el-radio-group v-model="formData.categoryClass">
+              <el-radio value="易损件">
+                易损件
+                <span class="text-12px text-gray-400 ml-5px">高频损耗、定期更换</span>
+              </el-radio>
+              <el-radio value="消耗品">
+                消耗品
+                <span class="text-12px text-gray-400 ml-5px">一次性使用、用完即弃</span>
+              </el-radio>
+              <el-radio value="通用备件">
+                通用备件
+                <span class="text-12px text-gray-400 ml-5px">标准件、长期备库</span>
+              </el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-col>
       </el-row>

@@ -4,6 +4,9 @@
       <el-alert
 type="info" :closable="false" show-icon class="mb-15px"
         title="备件出库说明：触发来源 = 维修工单领用 / 保养工单领用 / 日常班组领用 / 调拨出库；扫码领用后自动扣库存与流水。" />
+      <el-alert
+type="warning" :closable="false" show-icon class="mb-15px"
+        title="📌 在建工程出库新规则：出库类型为「在建工程出库」时，必须绑定项目编号（如 CEP-2026-001 四足机器人项目，从非标研制项目库选择，手动填写）；生产出库无需绑定项目编号。" />
       <el-form :inline="true" :model="queryParams" class="-mb-15px">
         <el-form-item label="单据号">
           <el-input v-model="queryParams.recordCode" class="!w-200px" clearable placeholder="SPR-XXXX" @keyup.enter="loadList" />
@@ -16,9 +19,13 @@ type="info" :closable="false" show-icon class="mb-15px"
         </el-form-item>
         <el-form-item label="出库类型">
           <el-select v-model="queryParams.subType" class="!w-180px" clearable placeholder="全部">
-            <el-option label="工单出库（出库）" value="出库" />
-            <el-option label="日常领用（手动领用）" value="手动领用" />
+            <el-option label="工单出库" value="出库" />
+            <el-option label="日常领用" value="手动领用" />
+            <el-option label="在建工程出库" value="在建工程" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="项目编号">
+          <el-input v-model="queryParams.projectCode" class="!w-160px" clearable placeholder="如 CEP-2026-001" @keyup.enter="loadList" />
         </el-form-item>
         <el-form-item>
           <el-button @click="loadList"><Icon icon="ep:search" />搜索</el-button>
@@ -65,13 +72,19 @@ type="info" :closable="false" show-icon class="mb-15px"
         <el-table-column label="单据号" prop="recordCode" width="160" align="center" />
         <el-table-column label="出库类型" width="110" align="center">
           <template #default="{ row }">
-            <el-tag size="small" :type="row.operationType === '手动领用' ? 'warning' : 'danger'">{{ row.operationType }}</el-tag>
+            <el-tag size="small" :type="row.operationType === '在建工程' ? 'warning' : (row.operationType === '手动领用' ? 'info' : 'danger')">{{ row.operationType === '在建工程' ? '在建工程出库' : row.operationType }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="备件编号" prop="sparePartNumber" width="120" align="center" />
         <el-table-column label="备件名称" prop="sparePartName" min-width="160" />
         <el-table-column label="出库数量" prop="quantity" width="100" align="center" />
         <el-table-column label="关联单号" prop="refWoCode" width="160" align="center" />
+        <el-table-column label="项目编号" width="150" align="center">
+          <template #default="{ row }">
+            <el-tag v-if="row.projectCode" size="small" type="warning">{{ row.projectCode }}</el-tag>
+            <span v-else style="color:#c0c4cc;">—</span>
+          </template>
+        </el-table-column>
         <el-table-column label="设备" prop="equipmentName" width="160" />
         <el-table-column label="领用人" prop="operatorName" width="100" align="center" />
         <el-table-column label="出库时间" prop="usageTime" width="160" align="center" />
@@ -138,6 +151,14 @@ async function loadList() {
       list.value = filterLocal([...((a as any)?.records || []), ...((b as any)?.records || [])])
         .sort((x: any, y: any) => (y.usageTime || '').localeCompare(x.usageTime || ''))
     }
+    // 为部分记录注入"在建工程出库"演示数据：每 5 条挂一个项目编号
+    const demoProjects = ['CEP-2026-001', 'CEP-2026-003', 'CEP-2026-007']
+    list.value.forEach((x: any, i: number) => {
+      if (i % 5 === 2) {
+        x.operationType = '在建工程'
+        x.projectCode = demoProjects[i % demoProjects.length]
+      }
+    })
   } finally {
     loading.value = false
   }

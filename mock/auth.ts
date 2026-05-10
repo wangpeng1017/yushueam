@@ -45,15 +45,25 @@ const eamMenus = [
     ]
   },
   {
-    path: '/eam/inspection',
-    name: '点巡检管理', icon: 'ep:document-checked', component: '#',
+    path: '/eam/spotInspection',
+    name: '设备点检', icon: 'ep:monitor', component: '#',
     visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
     children: [
-      { path: 'inspectionRoute', name: '巡检路线', icon: 'ep:guide', component: 'eam/inspectionRoute/page', componentName: 'EamInspectionRoute', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionStandard', name: '点检标准', icon: 'ep:document-copy', component: 'eam/spotInspectionStandard/page', componentName: 'EamSpotInspectionStandard', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionPlan', name: '点检计划', icon: 'ep:calendar', component: 'eam/spotInspectionPlan/page', componentName: 'EamSpotInspectionPlan', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionWork', name: '点检工单', icon: 'ep:list', component: 'eam/spotInspectionWork/page', componentName: 'EamSpotInspectionWork', visible: true, keepAlive: true, parentId: 30 },
       { path: 'spotInspectionRecord', name: '点检记录', icon: 'ep:notebook', component: 'eam/spotInspectionRecord/page', componentName: 'EamSpotInspectionRecord', visible: true, keepAlive: true, parentId: 30 },
+    ]
+  },
+  {
+    path: '/eam/patrol',
+    name: '区域巡检', icon: 'ep:location', component: '#',
+    visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
+    children: [
+      { path: 'route', name: '巡检路线', icon: 'ep:guide', component: 'eam/patrol/route/page', componentName: 'EamPatrolRoute', visible: true, keepAlive: true, parentId: 31 },
+      { path: 'plan', name: '巡检计划', icon: 'ep:calendar', component: 'eam/patrol/plan/page', componentName: 'EamPatrolPlan', visible: true, keepAlive: true, parentId: 31 },
+      { path: 'work', name: '巡检工单', icon: 'ep:list', component: 'eam/patrol/work/page', componentName: 'EamPatrolWork', visible: true, keepAlive: true, parentId: 31 },
+      { path: 'record', name: '巡检记录', icon: 'ep:notebook', component: 'eam/patrol/record/page', componentName: 'EamPatrolRecord', visible: true, keepAlive: true, parentId: 31 },
     ]
   },
   {

@@ -27,7 +27,7 @@
               <el-tag
                 v-if="data.count !== undefined"
                 size="small"
-                effect="plain"
+                type="info"
                 round
                 style="margin-left: 6px; height: 18px; line-height: 16px; padding: 0 6px"
               >

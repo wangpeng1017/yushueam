@@ -220,14 +220,20 @@ onMounted(loadList)
 <style scoped>
 .sp-scrap { padding: 12px; }
 .kpi-row { margin-bottom: 15px; }
-.card-red { background: #fef2f2; }
-.card-orange { background: #fff7ed; }
-.card-green { background: #f0fdf4; }
-.card-blue { background: #eff6ff; }
-.kpi-label { font-size: 13px; color: #606266; }
-.kpi-num { font-size: 28px; font-weight: bold; margin-top: 5px; }
-.kpi-red { color: #ef4444; }
-.kpi-orange { color: #f97316; }
-.kpi-green { color: #16a34a; }
-.kpi-blue { color: #2563eb; }
+/* Notion 风：白底 + 左色条，去掉色块背景 */
+.card-red, .card-orange, .card-green, .card-blue {
+  background: #fff;
+  border: 1px solid #ebeef5;
+  border-left-width: 4px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,21,41,0.04);
+}
+.card-red { border-left-color: #f56c6c; }
+.card-orange { border-left-color: #909399; }
+.card-green { border-left-color: #67c23a; }
+.card-blue { border-left-color: #409eff; }
+.kpi-label { font-size: 13px; color: #909399; }
+.kpi-num { font-size: 26px; font-weight: 600; margin-top: 5px; color: #303133; }
+/* 数字本身不要彩色，统一深字 */
+.kpi-red, .kpi-orange, .kpi-green, .kpi-blue { color: #303133; }
 </style>

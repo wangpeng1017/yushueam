@@ -45,7 +45,7 @@
                     :style="{ color: data.status === 0 ? '#aaa' : '#409eff' }"
                   />
                   <span :class="{ 'is-disabled': data.status === 0 }">{{ data.name }}</span>
-                  <el-tag size="small" effect="plain" round class="lvl-tag">L{{ data.level }}</el-tag>
+                  <el-tag size="small" type="info" round class="lvl-tag">L{{ data.level }}</el-tag>
                 </span>
                 <span class="tree-node-actions">
                   <el-button

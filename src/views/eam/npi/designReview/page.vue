@@ -116,10 +116,10 @@ onMounted(loadList)
 
 <style scoped>
 .npi-review { padding: 12px; }
-.kpi { padding: 18px; border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-.kpi-label { font-size: 13px; opacity: 0.85; }
-.kpi-num { font-size: 28px; font-weight: bold; line-height: 1.2; margin-top: 6px; }
-.card-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
-.card-green { background: linear-gradient(135deg, #16a34a, #15803d); }
-.card-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.kpi { padding: 18px; border-radius: 6px; background: #fff; border: 1px solid #ebeef5; border-left-width: 4px; box-shadow: 0 1px 3px rgba(0,21,41,0.04); }
+.kpi-label { font-size: 13px; color: #909399; }
+.kpi-num { font-size: 26px; font-weight: 600; line-height: 1.2; margin-top: 6px; color: #303133; }
+.card-orange { border-left-color: #909399; }
+.card-green { border-left-color: #67c23a; }
+.card-red { border-left-color: #f56c6c; }
 </style>

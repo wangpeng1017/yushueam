@@ -132,13 +132,13 @@ const topOption = computed<any>(() => {
     grid: { left: '5%', right: '8%', bottom: '5%', top: '5%', containLabel: true },
     xAxis: { type: 'value' },
     yAxis: { type: 'category', data: items.map((x: any) => x.name), axisLabel: { fontSize: 11 } },
-    series: [{ type: 'bar', barWidth: 14, data: items.map((x: any) => x.qty), itemStyle: { color: '#0f4c5c', borderRadius: [0, 4, 4, 0] }, label: { show: true, position: 'right' } }]
+    series: [{ type: 'bar', barWidth: 14, data: items.map((x: any) => x.qty), itemStyle: { color: '#5b8def', borderRadius: [0, 4, 4, 0] }, label: { show: true, position: 'right' } }]
   }
 })
 const capitalOption = computed<any>(() => ({
   tooltip: { trigger: 'item', formatter: '{b}: ¥{c} ({d}%)' },
   legend: { orient: 'vertical', right: 10, top: 'middle', itemWidth: 10, textStyle: { fontSize: 12 } },
-  series: [{ type: 'pie', radius: ['38%', '70%'], center: ['38%', '50%'], data: (data.value.capitalOccupation || []).map((x: any) => ({ name: x.warehouse, value: x.value })), color: ['#0f4c5c', '#2563eb', '#16a34a', '#f97316', '#9333ea'], label: { show: false } }]
+  series: [{ type: 'pie', radius: ['38%', '70%'], center: ['38%', '50%'], data: (data.value.capitalOccupation || []).map((x: any) => ({ name: x.warehouse, value: x.value })), color: ['#5b8def', '#82a6f0', '#a4bdf2', '#c5d4f5', '#94a3b8'], label: { show: false } }]
 }))
 const turnoverOption = computed<any>(() => ({
   tooltip: { trigger: 'axis' },
@@ -146,18 +146,18 @@ const turnoverOption = computed<any>(() => ({
   grid: { left: '5%', right: '8%', bottom: '8%', top: '15%', containLabel: true },
   xAxis: { type: 'category', data: data.value.months || [], axisLabel: { fontSize: 11 } },
   yAxis: [
-    { type: 'value', name: '次/月', position: 'left', axisLine: { lineStyle: { color: '#0f4c5c' } } },
-    { type: 'value', name: '天', position: 'right', axisLine: { lineStyle: { color: '#f97316' } } }
+    { type: 'value', name: '次/月', position: 'left', axisLine: { lineStyle: { color: '#5b8def' } } },
+    { type: 'value', name: '天', position: 'right', axisLine: { lineStyle: { color: '#94a3b8' } } }
   ],
   series: [
-    { name: '周转率（次/月）', type: 'line', smooth: true, data: data.value.turnover?.rate || [], itemStyle: { color: '#0f4c5c' }, lineStyle: { width: 3 } },
-    { name: '周转天数', type: 'line', smooth: true, yAxisIndex: 1, data: data.value.turnover?.days || [], itemStyle: { color: '#f97316' }, lineStyle: { width: 3 } }
+    { name: '周转率（次/月）', type: 'line', smooth: true, data: data.value.turnover?.rate || [], itemStyle: { color: '#5b8def' }, lineStyle: { width: 3 } },
+    { name: '周转天数', type: 'line', smooth: true, yAxisIndex: 1, data: data.value.turnover?.days || [], itemStyle: { color: '#94a3b8' }, lineStyle: { width: 3 } }
   ]
 }))
 const scrapPieOption = computed<any>(() => ({
   tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
   legend: { orient: 'vertical', right: 10, top: 'middle', itemWidth: 10, textStyle: { fontSize: 12 } },
-  series: [{ type: 'pie', radius: ['38%', '70%'], center: ['38%', '50%'], data: data.value.scrapReason || [], color: ['#ef4444', '#f97316', '#9333ea', '#2563eb'], label: { show: false } }]
+  series: [{ type: 'pie', radius: ['38%', '70%'], center: ['38%', '50%'], data: data.value.scrapReason || [], color: ['#f56c6c', '#94a3b8', '#a4bdf2', '#c5d4f5'], label: { show: false } }]
 }))
 
 onMounted(loadAll)
@@ -169,13 +169,13 @@ onMounted(loadAll)
 .header-title { font-size: 18px; font-weight: bold; color: #1a202c; }
 .filter-row { display: flex; align-items: center; gap: 6px; }
 .filter-label { font-size: 13px; color: #606266; }
-.kpi-row { padding: 18px; border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-.kpi-row .kpi-label { font-size: 13px; opacity: 0.85; }
-.kpi-row .kpi-num { font-size: 28px; font-weight: bold; line-height: 1.2; margin-top: 6px; }
-.kpi-row .suffix { font-size: 16px; margin-left: 4px; }
-.kpi-row .kpi-foot { font-size: 12px; opacity: 0.75; margin-top: 4px; }
-.card-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-.card-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
-.card-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
-.chart-title { font-size: 14px; font-weight: 600; color: #303133; margin-bottom: 8px; padding-left: 8px; border-left: 3px solid #0f4c5c; }
+.kpi-row { padding: 18px; border-radius: 6px; background: #fff; border: 1px solid #ebeef5; border-left-width: 4px; box-shadow: 0 1px 3px rgba(0,21,41,0.04); }
+.kpi-row .kpi-label { font-size: 13px; color: #909399; }
+.kpi-row .kpi-num { font-size: 26px; font-weight: 600; line-height: 1.2; margin-top: 6px; color: #303133; }
+.kpi-row .suffix { font-size: 16px; margin-left: 4px; color: #606266; }
+.kpi-row .kpi-foot { font-size: 12px; color: #909399; margin-top: 4px; }
+.card-blue { border-left-color: #409eff; }
+.card-orange { border-left-color: #909399; }
+.card-red { border-left-color: #909399; }
+.chart-title { font-size: 14px; font-weight: 600; color: #303133; margin-bottom: 8px; padding-left: 8px; border-left: 3px solid #409eff; }
 </style>

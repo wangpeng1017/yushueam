@@ -138,15 +138,15 @@ const amountOption = computed<any>(() => ({
   xAxis: { type: 'category', data: data.value.months || [], axisLabel: { fontSize: 11 } },
   yAxis: { type: 'value', axisLabel: { formatter: '¥{value}' } },
   series: [
-    { name: '设备', type: 'bar', stack: 'a', data: data.value.amountTrend?.equipment || [], itemStyle: { color: '#0f4c5c' } },
-    { name: '工器具', type: 'bar', stack: 'a', data: data.value.amountTrend?.tool || [], itemStyle: { color: '#2563eb' } },
-    { name: '备件', type: 'bar', stack: 'a', data: data.value.amountTrend?.part || [], itemStyle: { color: '#f97316' } }
+    { name: '设备', type: 'bar', stack: 'a', data: data.value.amountTrend?.equipment || [], itemStyle: { color: '#5b8def' } },
+    { name: '工器具', type: 'bar', stack: 'a', data: data.value.amountTrend?.tool || [], itemStyle: { color: '#a4bdf2' } },
+    { name: '备件', type: 'bar', stack: 'a', data: data.value.amountTrend?.part || [], itemStyle: { color: '#94a3b8' } }
   ]
 }))
 const typeOption = computed<any>(() => ({
   tooltip: { trigger: 'item', formatter: '{b}: ¥{c} ({d}%)' },
   legend: { orient: 'vertical', right: 10, top: 'middle', itemWidth: 10, textStyle: { fontSize: 12 } },
-  series: [{ type: 'pie', radius: ['38%', '70%'], center: ['38%', '50%'], data: data.value.typeDistribution || [], color: ['#0f4c5c', '#2563eb', '#f97316'], label: { show: false } }]
+  series: [{ type: 'pie', radius: ['38%', '70%'], center: ['38%', '50%'], data: data.value.typeDistribution || [], color: ['#5b8def', '#a4bdf2', '#94a3b8'], label: { show: false } }]
 }))
 const supplierOption = computed<any>(() => {
   const items = (data.value.topSupplier || []).slice().reverse()
@@ -159,7 +159,7 @@ const supplierOption = computed<any>(() => {
     grid: { left: '5%', right: '8%', bottom: '5%', top: '5%', containLabel: true },
     xAxis: { type: 'value', axisLabel: { formatter: '¥{value}' } },
     yAxis: { type: 'category', data: items.map((x: any) => x.name), axisLabel: { fontSize: 11 } },
-    series: [{ type: 'bar', barWidth: 16, data: items.map((x: any) => x.amount), itemStyle: { color: '#16a34a', borderRadius: [0, 4, 4, 0] }, label: { show: true, position: 'right', formatter: (p: any) => '¥' + (p.value as number).toLocaleString() } }]
+    series: [{ type: 'bar', barWidth: 16, data: items.map((x: any) => x.amount), itemStyle: { color: '#5b8def', borderRadius: [0, 4, 4, 0] }, label: { show: true, position: 'right', formatter: (p: any) => '¥' + (p.value as number).toLocaleString() } }]
   }
 })
 const cycleOption = computed<any>(() => ({
@@ -167,7 +167,7 @@ const cycleOption = computed<any>(() => ({
   grid: { left: '5%', right: '5%', bottom: '5%', top: '15%', containLabel: true },
   xAxis: { type: 'value', axisLabel: { formatter: '{value} 天' } },
   yAxis: { type: 'category', data: (data.value.cycleAnalysis || []).map((x: any) => x.stage), axisLabel: { fontSize: 11 } },
-  series: [{ type: 'bar', barWidth: 16, data: (data.value.cycleAnalysis || []).map((x: any) => x.avgDays), itemStyle: { color: '#9333ea', borderRadius: [0, 4, 4, 0] }, label: { show: true, position: 'right', formatter: '{c} 天' } }]
+  series: [{ type: 'bar', barWidth: 16, data: (data.value.cycleAnalysis || []).map((x: any) => x.avgDays), itemStyle: { color: '#94a3b8', borderRadius: [0, 4, 4, 0] }, label: { show: true, position: 'right', formatter: '{c} 天' } }]
 }))
 
 onMounted(loadAll)
@@ -179,14 +179,15 @@ onMounted(loadAll)
 .header-title { font-size: 18px; font-weight: bold; color: #1a202c; }
 .filter-row { display: flex; align-items: center; gap: 6px; }
 .filter-label { font-size: 13px; color: #606266; }
-.kpi-card { padding: 18px; border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-.kpi-card .kpi-label { font-size: 13px; opacity: 0.85; }
-.kpi-card .kpi-num { font-size: 26px; font-weight: bold; line-height: 1.2; margin-top: 6px; }
-.kpi-card .suffix { font-size: 16px; margin-left: 4px; }
-.kpi-card .kpi-foot { font-size: 12px; opacity: 0.75; margin-top: 4px; }
-.kpi-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-.kpi-green { background: linear-gradient(135deg, #16a34a, #0f4c5c); }
-.kpi-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
-.kpi-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
-.chart-title { font-size: 14px; font-weight: 600; color: #303133; margin-bottom: 8px; padding-left: 8px; border-left: 3px solid #0f4c5c; }
+/* Notion 风 KPI 卡：白底 + 左侧 4px 色条 */
+.kpi-card { padding: 18px; border-radius: 6px; background: #fff; border: 1px solid #ebeef5; border-left-width: 4px; box-shadow: 0 1px 3px rgba(0,21,41,0.04); }
+.kpi-card .kpi-label { font-size: 13px; color: #909399; }
+.kpi-card .kpi-num { font-size: 26px; font-weight: 600; line-height: 1.2; margin-top: 6px; color: #303133; }
+.kpi-card .suffix { font-size: 16px; margin-left: 4px; color: #606266; }
+.kpi-card .kpi-foot { font-size: 12px; color: #909399; margin-top: 4px; }
+.kpi-blue { border-left-color: #409eff; }
+.kpi-green { border-left-color: #67c23a; }
+.kpi-orange { border-left-color: #909399; }
+.kpi-red { border-left-color: #909399; }
+.chart-title { font-size: 14px; font-weight: 600; color: #303133; margin-bottom: 8px; padding-left: 8px; border-left: 3px solid #409eff; }
 </style>

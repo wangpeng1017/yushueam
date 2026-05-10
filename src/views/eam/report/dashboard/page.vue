@@ -97,7 +97,7 @@ const oeeOption = computed<any>(() => ({
 const pieOption = computed<any>(() => ({
   tooltip: { trigger: 'item', formatter: '{b}: ¥{c} ({d}%)' },
   legend: { orient: 'vertical', right: 10, top: 'middle', itemWidth: 10, textStyle: { fontSize: 12 } },
-  series: [{ type: 'pie', radius: ['40%', '70%'], center: ['38%', '50%'], avoidLabelOverlap: false, label: { show: false }, data: data.value.partsConsumePie || [], color: ['#0f4c5c', '#2563eb', '#16a34a', '#f97316', '#9333ea', '#94a3b8'] }]
+  series: [{ type: 'pie', radius: ['40%', '70%'], center: ['38%', '50%'], avoidLabelOverlap: false, label: { show: false }, data: data.value.partsConsumePie || [], color: ['#5b8def', '#82a6f0', '#a4bdf2', '#c5d4f5', '#94a3b8', '#cbd5e1'] }]
 }))
 const woOption = computed<any>(() => ({
   tooltip: { trigger: 'axis' },
@@ -106,9 +106,9 @@ const woOption = computed<any>(() => ({
   xAxis: { type: 'category', data: data.value.months || [], axisLabel: { fontSize: 11 } },
   yAxis: { type: 'value' },
   series: [
-    { name: '保养', type: 'bar', stack: 'wo', data: data.value.woTrend?.maint || [], itemStyle: { color: '#16a34a' } },
-    { name: '维修', type: 'bar', stack: 'wo', data: data.value.woTrend?.repair || [], itemStyle: { color: '#ef4444' } },
-    { name: '点检', type: 'bar', stack: 'wo', data: data.value.woTrend?.inspection || [], itemStyle: { color: '#2563eb' } }
+    { name: '保养', type: 'bar', stack: 'wo', data: data.value.woTrend?.maint || [], itemStyle: { color: '#a4bdf2' } },
+    { name: '维修', type: 'bar', stack: 'wo', data: data.value.woTrend?.repair || [], itemStyle: { color: '#f56c6c' } },
+    { name: '点检', type: 'bar', stack: 'wo', data: data.value.woTrend?.inspection || [], itemStyle: { color: '#94a3b8' } }
   ]
 }))
 const faultOption = computed<any>(() => {
@@ -118,7 +118,7 @@ const faultOption = computed<any>(() => {
     grid: { left: '5%', right: '8%', bottom: '5%', top: '5%', containLabel: true },
     xAxis: { type: 'value' },
     yAxis: { type: 'category', data: items.map((x: any) => x.name), axisLabel: { fontSize: 11 } },
-    series: [{ type: 'bar', barWidth: 14, data: items.map((x: any) => x.count), itemStyle: { color: '#f97316', borderRadius: [0, 4, 4, 0] }, label: { show: true, position: 'right' } }]
+    series: [{ type: 'bar', barWidth: 14, data: items.map((x: any) => x.count), itemStyle: { color: '#f56c6c', borderRadius: [0, 4, 4, 0] }, label: { show: true, position: 'right' } }]
   }
 })
 
@@ -131,16 +131,21 @@ onMounted(loadAll)
 .header-title { font-size: 18px; font-weight: bold; color: #1a202c; }
 .filter-row { display: flex; align-items: center; gap: 6px; }
 .filter-label { font-size: 13px; color: #606266; }
-.kpi-card { display: flex; align-items: center; gap: 14px; padding: 18px; border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-.kpi-card .kpi-icon { font-size: 36px; opacity: 0.9; }
-.kpi-card .kpi-icon :deep(svg) { width: 36px; height: 36px; }
-.kpi-card .kpi-label { font-size: 13px; opacity: 0.85; }
-.kpi-card .kpi-num { font-size: 28px; font-weight: bold; line-height: 1.2; }
-.kpi-card .kpi-num .suffix { font-size: 18px; margin-left: 2px; }
-.kpi-card .kpi-foot { font-size: 12px; opacity: 0.75; }
-.kpi-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-.kpi-green { background: linear-gradient(135deg, #16a34a, #0f4c5c); }
-.kpi-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
-.kpi-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+/* 克制风格的 KPI 卡：白底 + 左侧 4px 细色条 + 深色数字 + 灰色标签 */
+.kpi-card { display: flex; align-items: center; gap: 14px; padding: 18px; border-radius: 6px; background: #fff; border: 1px solid #ebeef5; border-left-width: 4px; box-shadow: 0 1px 3px rgba(0,21,41,0.04); }
+.kpi-card .kpi-icon { font-size: 32px; color: #909399; }
+.kpi-card .kpi-icon :deep(svg) { width: 32px; height: 32px; }
+.kpi-card .kpi-label { font-size: 13px; color: #909399; }
+.kpi-card .kpi-num { font-size: 26px; font-weight: 600; line-height: 1.2; color: #303133; }
+.kpi-card .kpi-num .suffix { font-size: 16px; margin-left: 2px; color: #606266; }
+.kpi-card .kpi-foot { font-size: 12px; color: #909399; margin-top: 2px; }
+.kpi-blue { border-left-color: #409eff; }
+.kpi-blue .kpi-icon { color: #409eff; }
+.kpi-green { border-left-color: #67c23a; }
+.kpi-green .kpi-icon { color: #67c23a; }
+.kpi-orange { border-left-color: #909399; }
+.kpi-orange .kpi-icon { color: #909399; }
+.kpi-red { border-left-color: #909399; }
+.kpi-red .kpi-icon { color: #909399; }
 .chart-title { font-size: 14px; font-weight: 600; color: #303133; margin-bottom: 8px; padding-left: 8px; border-left: 3px solid #0f4c5c; }
 </style>

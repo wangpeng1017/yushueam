@@ -54,5 +54,13 @@ export function tryMatchMock(
         : mock.response
     }
   }
+  // ── 兜底：未匹配的 /admin-api/* 请求统一返回空成功响应，避免 404 走到真后端 ──
+  // 档 2 要求：F12 Network 不应有任何外部请求
+  if (url.includes('/admin-api/') || url.startsWith('admin-api')) {
+    if (import.meta.env.VITE_DEV !== 'true') {
+      console.warn('[mock-fallback]', method.toUpperCase(), url)
+    }
+    return { code: 200, data: null, msg: 'mock-fallback' }
+  }
   return null
 }

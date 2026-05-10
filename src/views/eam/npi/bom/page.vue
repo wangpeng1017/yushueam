@@ -141,12 +141,12 @@ onMounted(loadProjects)
 
 <style scoped>
 .npi-bom { padding: 12px; }
-.kpi { padding: 18px; border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-.kpi-label { font-size: 13px; opacity: 0.85; }
-.kpi-num { font-size: 26px; font-weight: bold; line-height: 1.2; margin-top: 6px; }
-.kpi-foot { font-size: 12px; opacity: 0.85; margin-top: 4px; }
-.card-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-.card-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
-.card-purple { background: linear-gradient(135deg, #9333ea, #7e22ce); }
-.card-green { background: linear-gradient(135deg, #16a34a, #15803d); }
+.kpi { padding: 18px; border-radius: 6px; background: #fff; border: 1px solid #ebeef5; border-left-width: 4px; box-shadow: 0 1px 3px rgba(0,21,41,0.04); }
+.kpi-label { font-size: 13px; color: #909399; }
+.kpi-num { font-size: 26px; font-weight: 600; line-height: 1.2; margin-top: 6px; color: #303133; }
+.kpi-foot { font-size: 12px; color: #909399; margin-top: 4px; }
+.card-blue { border-left-color: #409eff; }
+.card-orange { border-left-color: #909399; }
+.card-purple { border-left-color: #909399; }
+.card-green { border-left-color: #67c23a; }
 </style>

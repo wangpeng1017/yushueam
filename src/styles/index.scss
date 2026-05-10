@@ -4,6 +4,105 @@
 @use './theme/index.scss' as eam_theme;
 @use 'element-plus/theme-chalk/dark/css-vars.css';
 
+/* ========== 全局视觉规范：保证文字对比度清晰（王老师 2026-05-10 反馈） ========== */
+/* ElMessage 弹窗：必须用与项目主题同等具体的选择器才能覆盖 */
+.el-message,
+.el-message.el-message--info,
+.el-message.el-message--success,
+.el-message.el-message--warning,
+.el-message.el-message--error,
+.el-message.el-message--primary,
+.el-message.is-center,
+.el-message.is-plain {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border: 1px solid #ebeef5 !important;
+  border-color: #ebeef5 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  padding: 12px 16px !important;
+}
+.el-message .el-message__content,
+.el-message.el-message--warning .el-message__content,
+.el-message.el-message--success .el-message__content,
+.el-message.el-message--error .el-message__content,
+.el-message.el-message--info .el-message__content {
+  color: #303133 !important;
+  font-weight: 500 !important;
+}
+.el-message--success .el-message__icon,
+.el-message.el-message--success .el-message__icon { color: #67c23a !important; }
+.el-message--warning .el-message__icon,
+.el-message.el-message--warning .el-message__icon { color: #e6a23c !important; }
+.el-message--error .el-message__icon,
+.el-message.el-message--error .el-message__icon { color: #f56c6c !important; }
+.el-message--info .el-message__icon,
+.el-message.el-message--info .el-message__icon { color: #909399 !important; }
+
+/* ==========================================================================
+   全局 el-tag 视觉降级：去掉背景色 + 边框 + 内边距，让 tag 看起来像纯文字
+   仅保留 type 的语义文字颜色（success/warning/danger/info）
+   王老师 2026-05-10：「所有的 tag 都要去掉，看起来要像纯文字」
+   ========================================================================== */
+.el-tag,
+.el-tag.is-plain,
+.el-tag.is-hit,
+.el-tag.el-tag--success,
+.el-tag.el-tag--warning,
+.el-tag.el-tag--danger,
+.el-tag.el-tag--info,
+.el-tag.el-tag--primary {
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  border-color: transparent !important;
+  padding: 0 4px !important;
+  height: auto !important;
+  line-height: 1.5 !important;
+  font-weight: 500 !important;
+}
+/* 文字色按 type 语义保留，便于一眼区分状态/警示 */
+.el-tag,
+.el-tag.el-tag--info,
+.el-tag.el-tag--default { color: #606266 !important; }
+.el-tag.el-tag--primary { color: #409eff !important; }
+.el-tag.el-tag--success { color: #67c23a !important; }
+.el-tag.el-tag--warning { color: #e6a23c !important; }
+.el-tag.el-tag--danger  { color: #f56c6c !important; }
+/* 关闭按钮微调 */
+.el-tag .el-tag__close { color: inherit !important; }
+
+/* ==========================================================================
+   全平台 KPI / 统计卡兜底：所有 .card-blue/orange/red/green/purple 改 Notion 风
+   王老师 2026-05-10：全平台都要 Notion 风，去掉鲜艳色块背景
+   ========================================================================== */
+.card-red, .card-orange, .card-green, .card-blue, .card-purple,
+.stat-card.danger, .stat-card.warn, .stat-card.primary, .stat-card.success {
+  background: #fff !important;
+  background-color: #fff !important;
+  border: 1px solid #ebeef5 !important;
+  border-left-width: 4px !important;
+  border-radius: 6px !important;
+}
+.card-red    { border-left-color: #f56c6c !important; }
+.card-orange { border-left-color: #909399 !important; }
+.card-green  { border-left-color: #67c23a !important; }
+.card-blue   { border-left-color: #409eff !important; }
+.card-purple { border-left-color: #909399 !important; }
+.stat-card.danger  { border-left-color: #f56c6c !important; }
+.stat-card.warn    { border-left-color: #909399 !important; }
+.stat-card.primary { border-left-color: #409eff !important; }
+.stat-card.success { border-left-color: #909399 !important; }
+
+/* KPI 数字统一深色，去掉鲜艳着色 */
+.kpi-num.kpi-red,
+.kpi-num.kpi-orange,
+.kpi-num.kpi-green,
+.kpi-num.kpi-blue,
+.kpi-num.kpi-purple,
+.kpi-num.kpi-yellow {
+  color: #303133 !important;
+}
+
 /* ========== 全局字体 - 微软雅黑（规范） ========== */
 html,
 body,

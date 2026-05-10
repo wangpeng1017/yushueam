@@ -5,6 +5,55 @@
       <el-divider content-position="left">基本信息</el-divider>
       <el-row :gutter="20">
         <el-col :span="12">
+          <el-form-item label="维修类型" prop="maintainType" required>
+            <el-radio-group v-model="formData.maintainType">
+              <el-radio value="内部">
+                内部维修
+                <span class="text-12px text-gray-400 ml-5px">默认免审</span>
+              </el-radio>
+              <el-radio value="外部">
+                外部维修
+                <span class="text-12px text-gray-400 ml-5px">需走 BPM 审批流</span>
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item v-if="formData.maintainType === '外部'" label="维修总费用">
+            <el-input v-model="formData.totalFee" placeholder="飞书审批通过 / ERP 回传后自动回填" disabled>
+              <template #prepend>¥</template>
+              <template #append>元（只读）</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row v-if="formData.maintainType === '外部'" :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="飞书需求单号">
+            <el-input v-model="formData.feishuOrderNo" placeholder="飞书提交后自动回填" disabled />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="维修合同/协议附件">
+            <el-upload
+              :file-list="formData.contractFiles || []"
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+              :auto-upload="false"
+              :on-change="(f: any) => handleContractUpload(f)"
+              multiple
+            >
+              <el-button plain>
+                <Icon icon="ep:upload" class="mr-5px" />车间上传（PDF/Word/图片）
+              </el-button>
+              <template #tip>
+                <div class="text-12px text-gray-500">外部维修必须附合同/协议，由车间发起人上传</div>
+              </template>
+            </el-upload>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
           <el-form-item label="维修单号">
             <el-input v-model="formData.repairCode" disabled placeholder="系统自动生成" />
           </el-form-item>
@@ -199,8 +248,19 @@ const formData = reactive({
   breakdownLevel: undefined as string | undefined,
   breakdownLevelText: '',
   remark: '',
-  attachmentUrls: [] as string[]
+  attachmentUrls: [] as string[],
+  // 维修类型 + 外部维修相关字段（演示）
+  maintainType: '内部' as '内部' | '外部',
+  totalFee: '',
+  feishuOrderNo: '',
+  contractFiles: [] as any[]
 })
+
+/** 合同附件上传（mock：仅展示文件名） */
+function handleContractUpload(file: any) {
+  if (!formData.contractFiles) formData.contractFiles = []
+  formData.contractFiles.push({ name: file.name, size: file.size, status: 'success' })
+}
 
 /** hasBreakdown 是否为"是" */
 const isBreakdown = computed(() => {

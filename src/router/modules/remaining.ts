@@ -176,6 +176,12 @@ const remainingRouter: AppRouteRecordRaw[] = [
     meta: { hidden: true, noTagsView: true }
   },
   {
+    path: '/m/repair/quick',
+    component: () => import('@/views/mobile/repairOrder/quick.vue'),
+    name: 'MobileRepairQuick',
+    meta: { hidden: true, noTagsView: true, title: 'PDA 快速报修' }
+  },
+  {
     path: '/m/workorder/history',
     component: () => import('@/views/mobile/workorder/history.vue'),
     name: 'MobileWorkorderHistory',
@@ -250,6 +256,12 @@ const remainingRouter: AppRouteRecordRaw[] = [
   { path: '/eam/iot/index', redirect: '/eam/iot/deviceMonitor', meta: { hidden: true } },
   { path: '/eam/tooling/index', redirect: '/eam/tooling/toolingMaster', meta: { hidden: true } },
   { path: '/eam/project/index', redirect: '/eam/project/customEquipmentProject', meta: { hidden: true } },
+  {
+    path: '/eam/project/customEquipmentProject/flow/:id',
+    component: () => import('@/views/eam/customEquipmentProject/flow-detail.vue'),
+    name: 'EamCustomEquipmentProjectFlow',
+    meta: { hidden: true, title: '项目流程详情', activeMenu: '/eam/project/customEquipmentProject', noCache: false }
+  },
   { path: '/eam/purchase/index', redirect: '/eam/purchase/equipmentPurchaseRequest', meta: { hidden: true } },
   { path: '/eam/npi/index', redirect: '/eam/npi/npiOverview', meta: { hidden: true } },
   { path: '/eam/report/index', redirect: '/eam/report/dashboard', meta: { hidden: true } },

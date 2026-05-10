@@ -2,6 +2,7 @@ const PUBLIC_PATHS = [
   /^\/m\/login/,
   /^\/m\/equipment\/detail/,
   /^\/m\/equipment\/[^/]+$/,
+  /^\/m\/repair\/quick/,
 ]
 
 export function isPublicMobileRoute(path: string): boolean {
