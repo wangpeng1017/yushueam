@@ -88,6 +88,9 @@ export default defineComponent({
             ></LocaleDropdown>
           ) : undefined} */}
           <UserInfo></UserInfo>
+          <a href="http://8.130.182.148:3011/index" class="back-portal-btn" title="返回宇树MOM一体化平台首页">
+            <span class="back-arrow">←</span> 返回门户
+          </a>
         </div>
       </div>
     )
@@ -120,6 +123,34 @@ $prefix-cls: #{$namespace}-tool-header;
 
     &:hover {
       background-color: var(--top-header-hover-color);
+    }
+  }
+
+  :deep(.back-portal-btn) {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 30px;
+    padding: 0 12px;
+    margin-right: 10px;
+    font-size: 13px;
+    color: var(--top-header-text-color, #3B3F48);
+    background: rgba(105, 177, 255, 0.08);
+    border: 1px solid rgba(105, 177, 255, 0.45);
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+
+    &:hover {
+      background: rgba(105, 177, 255, 0.18);
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+
+    .back-arrow {
+      font-weight: 600;
     }
   }
 }
