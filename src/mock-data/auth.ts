@@ -122,9 +122,9 @@ const eamMenus = [
     children: [
       { path: 'equipmentPurchaseRequest', name: '设备采购', icon: 'ep:shopping-bag', component: 'eam/equipmentPurchaseRequest/page', componentName: 'EamEquipmentPurchaseRequest', visible: true, keepAlive: true, parentId: 95 },
       { path: 'diyEquipmentPartPurchase', name: '自制设备备件采购', icon: 'ep:cpu', component: 'eam/diyEquipmentPartPurchase/page', componentName: 'EamDiyEquipmentPartPurchase', visible: true, keepAlive: true, parentId: 95 },
-      { path: 'diyPurchaseDashboard', name: '采购到货看板', icon: 'ep:data-line', component: 'eam/diyEquipmentPartPurchase/dashboard', componentName: 'EamDiyPurchaseDashboard', visible: true, keepAlive: true, parentId: 95 },
       { path: 'toolPurchaseDemand', name: '工器具采购', icon: 'ep:shopping-cart', component: 'eam/toolPurchaseDemand/page', componentName: 'EamToolPurchaseDemand', visible: true, keepAlive: true, parentId: 95 },
       { path: 'sparePartPurchase', name: '备件采购', icon: 'ep:files', component: 'eam/sparePartPurchase/page', componentName: 'EamSparePartPurchase', visible: true, keepAlive: true, parentId: 95 },
+      { path: 'diyPurchaseDashboard', name: '采购到货看板', icon: 'ep:data-line', component: 'eam/diyEquipmentPartPurchase/dashboard', componentName: 'EamDiyPurchaseDashboard', visible: true, keepAlive: true, parentId: 95 },
     ]
   },
   // 非标设备研制（4 个独立子菜单：项目总览 / 方案评审 / BOM管理 / 装配与验收）
@@ -161,10 +161,6 @@ const eamMenus = [
       { path: 'equipmentCategory', name: '设备重要等级', icon: 'ep:medal', component: 'eam/equipmentCategory/page', componentName: 'EamEquipmentCategory', visible: true, keepAlive: true, parentId: 200 },
       { path: 'toolCategory', name: '工器具分类树', icon: 'ep:menu', component: 'eam/toolCategory/page', componentName: 'EamToolCategory', visible: true, keepAlive: true, parentId: 200 },
       { path: 'sparePartCategoryTree', name: '备件分类树', icon: 'ep:files', component: 'eam/baseData/sparePartCategoryTree/page', componentName: 'EamBaseSparePartCategoryTree', visible: true, keepAlive: true, parentId: 200 },
-      { path: 'equipmentStatus', name: '设备状态字典', icon: 'ep:flag', component: 'eam/baseData/equipmentStatus/page', componentName: 'EamBaseEquipmentStatus', visible: true, keepAlive: true, parentId: 200 },
-      { path: 'faultCode', name: '故障代码字典', icon: 'ep:warning-filled', component: 'eam/baseData/faultCode/page', componentName: 'EamBaseFaultCode', visible: true, keepAlive: true, parentId: 200 },
-      { path: 'maintenanceType', name: '维保类型字典', icon: 'ep:tools', component: 'eam/baseData/maintenanceType/page', componentName: 'EamBaseMaintenanceType', visible: true, keepAlive: true, parentId: 200 },
-      { path: 'spotInspectionItem', name: '点检项库', icon: 'ep:document-checked', component: 'eam/baseData/spotInspectionItem/page', componentName: 'EamBaseSpotInspectionItem', visible: true, keepAlive: true, parentId: 200 },
     ]
   },
   {
@@ -174,7 +170,6 @@ const eamMenus = [
     plantScope: ['ALL'],
     children: [
       { path: 'plantConfig', name: '端别配置', icon: 'ep:operation', component: 'system/plantConfig/page', componentName: 'SystemPlantConfig', visible: true, keepAlive: true, parentId: 100 },
-      { path: 'erpSync', name: 'ERP 同步配置', icon: 'ep:connection', component: 'system/erpSync/page', componentName: 'SystemErpSync', visible: true, keepAlive: true, parentId: 100 },
       { path: 'feishuApproval', name: '飞书审批模拟', icon: 'ep:chat-line-square', component: 'system/feishuApproval/page', componentName: 'SystemFeishuApproval', visible: true, keepAlive: true, parentId: 100 },
     ]
   },

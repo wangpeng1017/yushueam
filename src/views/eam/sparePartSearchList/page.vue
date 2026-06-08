@@ -87,17 +87,6 @@
               <Icon icon="ep:connection" class="mr-3px" />工装柜对接已启用：低于安全库存自动触发采购
             </el-tag>
           </div>
-          <div class="mb-10px">
-            <el-button
-              v-hasPermi="[PERMI.CREATE]"
-              plain
-              type="primary"
-              @click="openForm('create')"
-            >
-              <Icon class="mr-5px" icon="ep:plus" />&nbsp;新增
-            </el-button>
-          </div>
-          
           <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
             <el-table-column type="index" label="序号" width="60" align="center" />
             <el-table-column label="备件编号" align="center" prop="number"  />
@@ -146,14 +135,6 @@
                 >
                   &nbsp;查看
                 </el-button> -->
-                <el-button
-                  link
-                  class="btn-delete"
-                  v-hasPermi="[PERMI.DELETE]"
-                  @click="handleDelete(scope.row.id)"
-                >
-                  &nbsp;删除
-                </el-button>
               </template>
             </el-table-column>
           </el-table>

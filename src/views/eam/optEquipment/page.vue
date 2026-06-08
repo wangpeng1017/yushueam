@@ -76,17 +76,6 @@ v-for="item in eamEnumStore.getOperationStatusList" :key="item.value"
       <!-- 列表 -->
       <ContentWrap>
         <div class="mb-10px">
-          <el-button v-hasPermi="[PERMI.CREATE]" plain type="primary" @click="openForm('create')">
-            <Icon class="mr-5px" icon="ep:plus" />&nbsp;新增
-          </el-button>
-          <el-button plain type="success" @click="openSyncDialog">
-            <Icon class="mr-5px" icon="ep:connection" />&nbsp;手动同步 ERP
-          </el-button>
-          <el-button
-v-hasPermi="[PERMI.DELETE]" plain type="danger"
-            :disabled="selectedIds.length === 0" @click="handleBatchDelete">
-            <Icon class="mr-5px" icon="ep:delete" />&nbsp;批量删除
-          </el-button>
           <el-button
             plain type="warning"
             :disabled="selectedRows.length === 0" @click="openBatchPrint">
@@ -140,7 +129,6 @@ v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
             <template #default="scope">
               <el-button link class="btn-other" v-hasPermi="[PERMI.QUERY]" @click="openDetail(scope.row.id)">查看</el-button>
               <el-button link class="btn-edit" v-hasPermi="[PERMI.UPDATE]" @click="openForm('update', scope.row.id)">编辑</el-button>
-              <el-button link class="btn-delete" v-hasPermi="[PERMI.DELETE]" @click="handleDelete(scope.row.id)">删除</el-button>
               <el-button link style="color: #E6A23C" v-hasPermi="[PERMI.QUERY]" @click="openQrcode(scope.row)">生成二维码</el-button>
             </template>
           </el-table-column>
@@ -159,37 +147,6 @@ v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
       <QrcodeDialog ref="qrcodeRef" />
       <BatchLabelPrint ref="batchPrintRef" />
 
-      <!-- 手动 ERP 同步弹窗 -->
-      <el-dialog v-model="syncDialogVisible" title="手动同步 ERP 设备主数据" width="500px">
-        <el-alert
-          title="同步说明"
-          description="可按物料号或时间范围拉取增量数据，留空则按默认策略全量同步。"
-          type="info" :closable="false" class="mb-15px"
-        />
-        <el-form :model="syncForm" label-width="100px">
-          <el-form-item label="物料号">
-            <el-input v-model="syncForm.materialNo" placeholder="可选，例如 PACK-2024" clearable />
-          </el-form-item>
-          <el-form-item label="时间范围">
-            <el-date-picker
-              v-model="syncForm.dateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              style="width: 100%"
-            />
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <el-button @click="syncDialogVisible = false">取消</el-button>
-          <el-button type="primary" :loading="syncLoading" @click="confirmSync">
-            <Icon icon="ep:promotion" class="mr-3px" />确认同步
-          </el-button>
-        </template>
-      </el-dialog>
     </template>
   </TreeListLayout>
 </template>
