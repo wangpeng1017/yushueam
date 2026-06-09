@@ -24,7 +24,7 @@ v-model="queryParams[f.prop]" class="!w-200px" clearable
     <!-- 工具栏 -->
     <div class="mb-10px" v-if="enableCreate">
       <el-button type="primary" plain @click="$emit('create')">
-        <Icon icon="ep:plus" class="mr-5px" />&nbsp;新增
+        <Icon :icon="createIcon || 'ep:plus'" class="mr-5px" />&nbsp;{{ createText || '新增' }}
       </el-button>
     </div>
     <!-- 列表 -->
@@ -88,6 +88,9 @@ const props = defineProps<{
   columns: Array<{ prop: string; label: string; width?: string | number; minWidth?: string | number; formatter?: (row: any) => string; tag?: (row: any) => string }>
   searchFields?: Array<{ prop: string; label: string }>
   enableCreate?: boolean
+  /** 新增按钮文案/图标（默认「新增」+ ep:plus） */
+  createText?: string
+  createIcon?: string
   enableDetail?: boolean
   enableEdit?: boolean
   enableDelete?: boolean

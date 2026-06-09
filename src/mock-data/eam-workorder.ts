@@ -345,6 +345,21 @@ const spareParts = [
   { id: 'SP17', number: 'BJ-017', name: '冷却液 5%', specification: 'BLASOCUT 25L', unitName: '桶', materialGroupName: '耗材', categoryPath: '耗材/油液/冷却液', actualStock: 6, maxStock: 12, minStock: 4, warehouseType: '4', warehouseTypeText: 'CNC设备备件库', relatedEquipment: 'CNC设备', sourceType: '保养耗材', unitPrice: 580 },
 ]
 
+// 金蝶物料主数据增强：备件档案展示层补「金蝶物料编码 + 物料属性 + 产品归属 + 项目编号」
+//（最小迭代，不改原始 number=BJ-XXX，避免破坏入库/出库/预警等按备件号的交叉引用）
+const MAT_GROUP_SEG: Record<string, string> = { 设备配件: '05.01', 耗材: '05.02' }
+function enrichMaterial(sp: any) {
+  const seg = MAT_GROUP_SEG[sp.materialGroupName] || '05.09'
+  const idx = parseInt(String(sp.id).replace(/\D/g, ''), 10) || 1
+  return {
+    ...sp,
+    materialCode: sp.materialCode || `${seg}.01.${String(idx).padStart(5, '0')}`,
+    materialAttr: sp.materialAttr || '外购',
+    productOwner: sp.productOwner || (sp.warehouseType === '1' ? 'C端' : sp.warehouseType === '3' ? 'B端' : '通用'),
+    projectNo: sp.projectNo || '通用'
+  }
+}
+
 const sparePartRecords: any[] = [
   // 字段对齐前端列定义：recordCode/usageTime/equipmentSn/equipmentName/equipmentTypeName/equipmentMode/equipmentSupplierName/refWoType/refWoCode/operationType
   // C 端
@@ -1469,12 +1484,12 @@ export default [
       if (sp.actualStock <= 0) { safetyStatus = 'red'; safetyStatusText = '缺货' }
       else if (sp.actualStock < sp.minStock) { safetyStatus = 'red'; safetyStatusText = '低于安全库存' }
       else if (sp.actualStock < sp.minStock + 2) { safetyStatus = 'yellow'; safetyStatusText = '接近安全库存' }
-      return { ...sp, safetyStatus, safetyStatusText }
+      return { ...enrichMaterial(sp), safetyStatus, safetyStatusText }
     })
     return { code: 200, data: paginate(arr, query?.pageNo, query?.pageSize) }
   } },
   { url: '/admin-api/workOrder/eamBaseMaterial/queryById', method: 'get', response: ({ query }: any) => ({
-    code: 200, data: spareParts.find((sp: any) => sp.id === query?.id) || spareParts[0]
+    code: 200, data: enrichMaterial(spareParts.find((sp: any) => sp.id === query?.id) || spareParts[0])
   }) },
   // ══ 备件使用记录（页面真实 URL：eamSparePartUsageRecord/list） ══
   { url: '/admin-api/workOrder/eamSparePartUsageRecord/list', method: 'get', response: ({ query, headers }: any) => {

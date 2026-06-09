@@ -7,7 +7,12 @@
       label-width="100px"
     >
       <el-row :gutter="24">
-        <el-col :span="24">
+        <el-col :span="12">
+          <el-form-item label="物料编码" prop="materialCode">
+            <el-input v-model="formData.materialCode" placeholder="金蝶 ERP 自动下发" disabled />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="备件编号" prop="number">
             <el-input v-model="formData.number" placeholder="请输入备件编号" maxlength="50" />
           </el-form-item>
@@ -68,6 +73,35 @@
         </el-col>
       </el-row>
 
+      <el-divider content-position="left">金蝶物料属性</el-divider>
+      <el-row :gutter="24">
+        <el-col :span="8">
+          <el-form-item label="物料属性" prop="materialAttr">
+            <el-radio-group v-model="formData.materialAttr">
+              <el-radio-button label="外购">外购</el-radio-button>
+              <el-radio-button label="自制">自制</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="产品归属" prop="productOwner">
+            <el-select v-model="formData.productOwner" placeholder="请选择产品归属" clearable class="!w-full">
+              <el-option label="C端" value="C端" />
+              <el-option label="B端" value="B端" />
+              <el-option label="通用" value="通用" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="项目编号" prop="projectNo">
+            <el-select v-model="formData.projectNo" placeholder="搜索选择项目" filterable clearable class="!w-full">
+              <el-option label="通用" value="通用" />
+              <el-option v-for="p in projectOptions" :key="p.value" :label="p.label" :value="p.value" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-divider content-position="left">库存管理</el-divider>
       <el-row :gutter="20">
         <el-col :span="8">
@@ -105,8 +139,11 @@
 <script lang="ts" setup>
 import * as SparePartSearchApi from '@/api/eam/sparePartSearch'
 import { listToTree } from '@/utils/tree'
+import { PROJECT_OPTIONS } from '../_purchase-shared/configs/project-master'
 
 defineOptions({ name: 'SparePartSearchForm' })
+
+const projectOptions = PROJECT_OPTIONS
 
 const message = useMessage()
 
@@ -134,7 +171,11 @@ const formData = ref<any>({
   actualStock: undefined,
   maxStock: undefined,
   minStock: undefined,
-  relatedEquipment: ''
+  relatedEquipment: '',
+  materialCode: '',
+  materialAttr: '外购',
+  productOwner: '通用',
+  projectNo: '通用'
 })
 
 const formRules = {
@@ -232,7 +273,11 @@ const resetForm = () => {
     actualStock: undefined,
     maxStock: undefined,
     minStock: undefined,
-    relatedEquipment: ''
+    relatedEquipment: '',
+    materialCode: '',
+    materialAttr: '外购',
+    productOwner: '通用',
+    projectNo: '通用'
   }
   formRef.value?.resetFields()
 }

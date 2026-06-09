@@ -5,12 +5,14 @@
     :columns="columns"
     :searchFields="[{ prop: 'inboundCode', label: '入库单号' }, { prop: 'purchaseOrderNo', label: 'PO 单号' }]"
     :enableCreate="true"
+    createText="从 ERP 采购单一键入库"
+    createIcon="ep:link"
     :enableDetail="true"
     :enableEdit="true"
     :enableDelete="true"
     deleteNameProp="inboundCode"
     detailTitleProp="inboundCode"
-    @create="handleCreate"
+    @create="handleErpInbound"
     @edit="handleEdit"
   />
   <SimpleFormDialog
@@ -25,6 +27,7 @@
 
 <script setup lang="ts" name="EamToolingInbound">
 import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
 import SimpleListPage from '../_tooling-shared/SimpleListPage.vue'
 import SimpleFormDialog from '../_tooling-shared/SimpleFormDialog.vue'
 
@@ -63,11 +66,10 @@ const formFields = [
 
 const listRef = ref()
 const formRef = ref()
-const formTitle = ref('新增入库单')
+const formTitle = ref('编辑入库单')
 
-function handleCreate() {
-  formTitle.value = '新增入库单'
-  formRef.value?.open()
+function handleErpInbound() {
+  ElMessage.info('请到「采购管理 → 工器具采购」状态=已生成PO 的单据上一键到货入库')
 }
 
 function handleEdit(row: any) {

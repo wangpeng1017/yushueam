@@ -44,7 +44,6 @@ type="info" :closable="false" show-icon class="mb-15px"
       </el-row>
 
       <div class="mb-10px">
-        <el-button type="primary" plain @click="openManual"><Icon icon="ep:plus" />手动入库</el-button>
         <el-button plain @click="ElMessage.info('请到「采购管理 → 备件采购」状态=已生成PO 的单据上一键到货入库')"><Icon icon="ep:link" />从 ERP 采购单一键入库</el-button>
       </div>
 
@@ -61,37 +60,6 @@ type="info" :closable="false" show-icon class="mb-15px"
         <el-table-column label="备注" prop="remark" min-width="160" />
       </el-table>
     </ContentWrap>
-
-    <el-dialog v-model="manualVisible" title="手动入库登记" width="520px">
-      <el-form :model="manualForm" label-width="100px" label-position="top">
-        <el-form-item label="备件编号" required>
-          <el-input v-model="manualForm.sparePartNumber" placeholder="扫码或输入" />
-        </el-form-item>
-        <el-form-item label="备件名称" required>
-          <el-input v-model="manualForm.sparePartName" placeholder="备件名称" />
-        </el-form-item>
-        <el-form-item label="入库数量" required>
-          <el-input-number v-model="manualForm.quantity" :min="1" />
-        </el-form-item>
-        <el-form-item label="入库类型">
-          <el-radio-group v-model="manualForm.refWoType">
-            <el-radio-button label="采购订单">采购到货</el-radio-button>
-            <el-radio-button label="退库">退库入库</el-radio-button>
-            <el-radio-button label="调拨入库">调拨入库</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="单号关联">
-          <el-input v-model="manualForm.refWoCode" placeholder="PO 号 / 工单号 / 调拨单号" />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="manualForm.remark" type="textarea" :rows="2" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="manualVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitManual">确认入库</el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -123,19 +91,6 @@ async function loadList() {
   }
 }
 function resetQuery() { Object.assign(queryParams, { recordCode: '', sparePartName: '', refWoCode: '' }); loadList() }
-
-const manualVisible = ref(false)
-const manualForm = reactive({ sparePartNumber: '', sparePartName: '', quantity: 1, refWoType: '采购订单', refWoCode: '', remark: '' })
-function openManual() {
-  Object.assign(manualForm, { sparePartNumber: '', sparePartName: '', quantity: 1, refWoType: '采购订单', refWoCode: '', remark: '' })
-  manualVisible.value = true
-}
-function submitManual() {
-  if (!manualForm.sparePartNumber || !manualForm.sparePartName) { ElMessage.warning('请填写备件编号和名称'); return }
-  ElMessage.success('入库登记成功，已生成单据并扣账')
-  manualVisible.value = false
-  loadList()
-}
 
 onMounted(loadList)
 </script>

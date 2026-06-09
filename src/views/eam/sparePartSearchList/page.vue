@@ -89,11 +89,19 @@
           </div>
           <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
             <el-table-column type="index" label="序号" width="60" align="center" />
-            <el-table-column label="备件编号" align="center" prop="number"  />
+            <el-table-column label="物料编码" align="center" prop="materialCode" width="120" />
+            <el-table-column label="备件编号" align="center" prop="number" width="100" />
             <el-table-column label="备件名称" align="center" prop="name"  />
             <el-table-column label="规格型号" align="center" prop="specification"  />
-            <el-table-column label="基础单位" align="center" prop="unitName"  />
-            <el-table-column label="备件类型" align="center" prop="materialGroupName" />
+            <el-table-column label="基础单位" align="center" prop="unitName" width="80" />
+            <el-table-column label="备件类型" align="center" prop="materialGroupName" width="100" />
+            <el-table-column label="物料属性" align="center" prop="materialAttr" width="90">
+              <template #default="scope">
+                <el-tag size="small" :type="scope.row.materialAttr === '自制' ? 'warning' : 'success'">{{ scope.row.materialAttr || '外购' }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="产品归属" align="center" prop="productOwner" width="90" />
+            <el-table-column label="项目编号" align="center" prop="projectNo" width="90" />
             <el-table-column label="分类" align="center" width="100">
               <template #default="scope">
                 <el-tag size="small" type="info">{{ getSparePartClass(scope.row) }}</el-tag>
