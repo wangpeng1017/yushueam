@@ -68,12 +68,13 @@
   }
 }
 
-/* —— 统一：禁用按钮保持原配色可读，仅降透明度（批量删除/派工/完成工单等未勾选态） —— */
+/* —— 统一：禁用按钮一律去色为灰白样式（2026-06-11 王老师拍板）——
+   可用态保持语义实色（深底白字），禁用态浅灰底+灰字+灰边，文字清晰且明确不可点 */
 .el-button.is-disabled,
 .el-button.is-disabled:hover,
 .el-button.is-disabled:focus {
-  --el-button-disabled-text-color: var(--el-button-text-color);
-  --el-button-disabled-bg-color: var(--el-button-bg-color);
-  --el-button-disabled-border-color: var(--el-button-border-color);
-  opacity: 0.55;
+  --el-button-disabled-text-color: #909399;
+  --el-button-disabled-bg-color: #f5f7fa;
+  --el-button-disabled-border-color: #dcdfe6;
+  opacity: 1;
 }

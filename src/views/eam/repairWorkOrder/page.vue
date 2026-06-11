@@ -156,7 +156,7 @@
         width="170"
         :formatter="dateFormatter"
       />
-      <el-table-column label="操作" align="center" fixed="right" width="280">
+      <el-table-column label="操作" align="center" fixed="right" width="320">
         <template #default="{ row }">
           <el-button
             v-if="row.status === '1'"

@@ -42,7 +42,7 @@ v-for="col in columns" :key="col.prop"
           <span v-else-if="col.formatter">{{ col.formatter(row) }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="enableDetail || enableEdit || enableDelete || $slots.action" label="操作" align="center" :width="actionWidth || 220" fixed="right">
+      <el-table-column v-if="enableDetail || enableEdit || enableDelete || $slots.action" label="操作" align="center" :width="actionWidth || 270" fixed="right">
         <template #default="scope">
           <el-button v-if="enableDetail" link type="primary" @click="openDetail(scope.row)">
             <Icon icon="ep:view" class="mr-3px" />详情

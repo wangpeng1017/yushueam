@@ -114,7 +114,7 @@
         <el-table-column label="结束日期" align="center" prop="endDate" width="120" />
         <el-table-column label="创建人" align="center" prop="createByPersonName" width="100" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
-        <el-table-column label="操作" align="center" fixed="right" width="220">
+        <el-table-column label="操作" align="center" fixed="right" width="320">
           <template #default="scope">
             <RowActions
               :row="scope.row"

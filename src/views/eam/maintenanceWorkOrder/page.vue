@@ -100,7 +100,7 @@
         <el-table-column label="保养人" align="center" prop="personName" width="100" />
         <el-table-column label="创建人" align="center" prop="createByPersonName" width="100" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
-        <el-table-column label="操作" align="center" fixed="right" width="200">
+        <el-table-column label="操作" align="center" fixed="right" width="250">
           <template #default="scope">
             <RowActions
               :row="scope.row"
