@@ -44,7 +44,7 @@ type="info" :closable="false" show-icon class="mb-15px"
       </el-row>
 
       <div class="mb-10px">
-        <el-button plain @click="ElMessage.info('请到「采购管理 → 备件采购」状态=已生成PO 的单据上一键到货入库')"><Icon icon="ep:link" />从 ERP 采购单一键入库</el-button>
+        <el-button type="primary" plain @click="ElMessage.info('请到「采购管理 → 备件采购」状态=已生成PO 的单据上一键到货入库')"><Icon icon="ep:link" />从 ERP 采购单一键入库</el-button>
       </div>
 
       <el-table v-loading="loading" :data="list" stripe>

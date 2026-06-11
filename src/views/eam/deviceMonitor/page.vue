@@ -11,7 +11,7 @@
       <el-col :span="6">
         <el-card shadow="hover" class="stat-card-wrapper">
           <div class="stat-card">
-            <div class="stat-value" style="color: #409EFF">{{ stats.total }}</div>
+            <div class="stat-value" style="color: #1677FF">{{ stats.total }}</div>
             <div class="stat-label">设备总数</div>
           </div>
         </el-card>
@@ -19,7 +19,7 @@
       <el-col :span="6">
         <el-card shadow="hover" class="stat-card-wrapper">
           <div class="stat-card">
-            <div class="stat-value" style="color: #67C23A">{{ stats.running }}</div>
+            <div class="stat-value" style="color: #52C41A">{{ stats.running }}</div>
             <div class="stat-label">运行中</div>
           </div>
         </el-card>
@@ -35,7 +35,7 @@
       <el-col :span="6">
         <el-card shadow="hover" class="stat-card-wrapper">
           <div class="stat-card">
-            <div class="stat-value" style="color: #F56C6C">{{ stats.fault }}</div>
+            <div class="stat-value" style="color: #FF4D4F">{{ stats.fault }}</div>
             <div class="stat-label">故障</div>
           </div>
         </el-card>
@@ -253,12 +253,12 @@ onMounted(() => {
 }
 
 .status-running {
-  background: #67C23A;
-  box-shadow: 0 0 6px #67C23A88;
+  background: #52C41A;
+  box-shadow: 0 0 6px #52C41A88;
 }
 
 .status-standby {
-  background: #E6A23C;
+  background: #FA8C16;
 }
 
 .status-stopped {
@@ -266,8 +266,8 @@ onMounted(() => {
 }
 
 .status-fault {
-  background: #F56C6C;
-  box-shadow: 0 0 6px #F56C6C88;
+  background: #FF4D4F;
+  box-shadow: 0 0 6px #FF4D4F88;
   animation: pulse 1.5s infinite;
 }
 
@@ -298,7 +298,7 @@ onMounted(() => {
 
 .device-alarm {
   font-size: 11px;
-  color: #F56C6C;
+  color: #FF4D4F;
   margin-top: 4px;
   white-space: nowrap;
   overflow: hidden;

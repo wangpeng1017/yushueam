@@ -92,7 +92,7 @@ type="warning" :closable="false" show-icon class="mb-15px"
       </el-table>
     </ContentWrap>
 
-    <el-dialog v-model="manualVisible" title="日常领用登记" width="520px">
+    <Dialog v-model="manualVisible" title="日常领用登记" width="520px">
       <el-form :model="manualForm" label-position="top">
         <el-form-item label="备件编号" required>
           <el-input v-model="manualForm.sparePartNumber" placeholder="扫码或输入" />
@@ -117,7 +117,7 @@ type="warning" :closable="false" show-icon class="mb-15px"
         <el-button @click="manualVisible = false">取消</el-button>
         <el-button type="primary" @click="submitManual">确认领用</el-button>
       </template>
-    </el-dialog>
+    </Dialog>
   </div>
 </template>
 

@@ -87,7 +87,7 @@
           @click="openForm('create')"
           v-hasPermi="['eam:repairWorkOrder:create']"
         >
-          <Icon icon="ep:plus" /> 创建快速工单
+          <Icon icon="ep:plus" /> 新增快速工单
         </el-button>
       </el-col>
     </el-row>

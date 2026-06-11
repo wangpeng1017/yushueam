@@ -142,7 +142,7 @@
   </ContentWrap>
 
   <!-- 详情弹窗 -->
-  <el-dialog
+  <Dialog
     v-model="detailVisible"
     title="维修知识详情"
     width="800px"
@@ -194,7 +194,7 @@
     <template #footer>
       <el-button @click="detailVisible = false">关闭</el-button>
     </template>
-  </el-dialog>
+  </Dialog>
 </template>
 
 <script lang="ts" setup>
@@ -290,7 +290,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 :deep(.el-button.btn-other) {
-  color: #a5d867;
+  color: #1677FF;
 
   &:hover {
     color: rgb(165 216 103 / 75%);

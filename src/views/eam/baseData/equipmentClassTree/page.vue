@@ -82,7 +82,7 @@
     </el-row>
 
     <!-- 新增对话框 -->
-    <el-dialog v-model="addDialogVisible" :title="`新增${addParent ? '子' : '根'}节点${addParent ? '到 ' + addParent.label : ''}`" width="500px">
+    <Dialog v-model="addDialogVisible" :title="`新增${addParent ? '子' : '根'}节点${addParent ? '到 ' + addParent.label : ''}`" width="500px">
       <el-form label-width="80px" :model="addForm">
         <el-form-item label="节点名称" required>
           <el-input v-model="addForm.label" placeholder="请输入名称" />
@@ -101,7 +101,7 @@
         <el-button @click="addDialogVisible = false">取消</el-button>
         <el-button type="primary" :loading="adding" @click="handleAdd">确认</el-button>
       </template>
-    </el-dialog>
+    </Dialog>
   </div>
 </template>
 

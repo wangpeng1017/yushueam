@@ -65,7 +65,7 @@ class="mt-15px"
   </ContentWrap>
 
   <!-- 详情对话框 -->
-  <el-dialog v-model="detailVisible" :title="detailTitle" width="900px">
+  <Dialog v-model="detailVisible" :title="detailTitle" width="900px">
     <el-descriptions :column="2" border>
       <el-descriptions-item v-for="col in detailColumns" :key="col.prop" :label="col.label" :span="col.span || 1">
         <el-tag v-if="col.tag" :type="col.tag(detailData)" size="small">{{ (col as any).formatter ? (col as any).formatter(detailData) : (detailData[col.prop] || '--') }}</el-tag>
@@ -75,7 +75,7 @@ class="mt-15px"
     <template #footer>
       <el-button @click="detailVisible = false">关闭</el-button>
     </template>
-  </el-dialog>
+  </Dialog>
 </template>
 
 <script setup lang="ts">

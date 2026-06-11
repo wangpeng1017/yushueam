@@ -90,7 +90,7 @@ type="info" :closable="false" show-icon class="mb-15px"
       </el-tabs>
     </ContentWrap>
 
-    <el-dialog v-model="detailVisible" :title="`项目详情 - ${detailRow?.projectCode}`" width="900px" top="6vh">
+    <Dialog v-model="detailVisible" :title="`项目详情 - ${detailRow?.projectCode}`" width="900px" top="6vh">
       <template v-if="detailRow">
         <el-descriptions :column="2" border size="small">
           <el-descriptions-item label="项目编号">{{ detailRow.projectCode }}</el-descriptions-item>
@@ -125,7 +125,7 @@ type="info" :closable="false" show-icon class="mb-15px"
           </el-descriptions-item>
         </el-descriptions>
       </template>
-    </el-dialog>
+    </Dialog>
   </div>
 </template>
 

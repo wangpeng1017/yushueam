@@ -84,7 +84,7 @@
     </ContentWrap>
 
     <!-- 表单弹窗 -->
-    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="640px">
+    <Dialog v-model="dialogVisible" :title="dialogTitle" width="640px">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px" :disabled="dialogMode === 'view'">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -153,7 +153,7 @@
         <el-button v-if="dialogMode !== 'view'" type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="dialogVisible = false">{{ dialogMode === 'view' ? '关闭' : '取消' }}</el-button>
       </template>
-    </el-dialog>
+    </Dialog>
   </div>
 </template>
 

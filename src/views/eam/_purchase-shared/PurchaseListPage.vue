@@ -27,7 +27,7 @@
     <ContentWrap>
       <div class="mb-10px">
         <el-button plain type="primary" @click="openForm('create')"><Icon icon="ep:plus" class="mr-5px" />新增{{ cfg.title }}</el-button>
-        <el-button plain @click="refreshAllStatus"><Icon icon="ep:refresh" class="mr-5px" />同步飞书/ERP 状态</el-button>
+        <el-button type="primary" plain @click="refreshAllStatus"><Icon icon="ep:refresh" class="mr-5px" />同步飞书/ERP 状态</el-button>
         <span class="ml-10px hint">⚡ 单据推送飞书后，由飞书完成审批 + ERP 对接，本页仅展示状态</span>
       </div>
 
@@ -69,7 +69,7 @@
     </ContentWrap>
 
     <!-- ============ 新建/编辑对话框 ============ -->
-    <el-dialog v-model="formVisible" :title="formTitle" :width="dialogWidth" top="6vh" :close-on-click-modal="false">
+    <Dialog v-model="formVisible" :title="formTitle" :width="dialogWidth" top="6vh" :close-on-click-modal="false">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="110px">
         <el-row :gutter="16">
           <el-col v-for="field in cfg.formFields" :key="field.prop" :span="field.span || 8">
@@ -109,7 +109,7 @@
         <el-tab-pane v-for="tab in cfg.detailTabs" :key="tab.name" :label="tab.label" :name="tab.name">
           <el-alert v-if="tab.alert" type="warning" :closable="false" show-icon class="mb-8px" :title="tab.alert" />
           <div class="mb-8px">
-            <el-button size="small" plain type="primary" @click="addRow(tab)"><Icon icon="ep:plus" />添加行</el-button>
+            <el-button size="small" plain type="primary" @click="addRow(tab)"><Icon icon="ep:plus" />新增行</el-button>
           </div>
           <el-table :data="formData[tab.itemsField]" border size="small">
             <el-table-column type="index" label="序号" width="55" align="center" />
@@ -132,10 +132,10 @@
         <el-button @click="formVisible = false">取消</el-button>
         <el-button type="primary" :loading="formSaving" @click="handleSave">保存</el-button>
       </template>
-    </el-dialog>
+    </Dialog>
 
     <!-- ============ 详情对话框 ============ -->
-    <el-dialog v-model="detailVisible" :title="`${cfg.title}详情 - ${detailData?.[cfg.codeField] || ''}`" :width="dialogWidth" top="6vh">
+    <Dialog v-model="detailVisible" :title="`${cfg.title}详情 - ${detailData?.[cfg.codeField] || ''}`" :width="dialogWidth" top="6vh">
       <template v-if="detailData">
         <el-descriptions :column="2" border size="small">
           <el-descriptions-item label="单据号">{{ detailData[cfg.codeField] }}</el-descriptions-item>
@@ -171,7 +171,7 @@
       <template #footer>
         <el-button @click="detailVisible = false">关闭</el-button>
       </template>
-    </el-dialog>
+    </Dialog>
   </div>
 </template>
 

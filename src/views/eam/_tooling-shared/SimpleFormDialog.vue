@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="visible" :title="title" width="800px" :close-on-click-modal="false">
+  <Dialog v-model="visible" :title="title" width="800px" :close-on-click-modal="false">
     <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px">
       <el-row :gutter="20">
         <el-col v-for="f in fields" :key="f.prop" :span="f.span || 12">
@@ -48,7 +48,7 @@
       <el-button @click="visible = false">取消</el-button>
       <el-button type="primary" :loading="submitting" @click="submit">确定</el-button>
     </template>
-  </el-dialog>
+  </Dialog>
 </template>
 
 <script setup lang="ts">

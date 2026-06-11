@@ -266,7 +266,7 @@
     </ContentWrap>
 
     <!-- ==================== 新增/编辑弹窗 ==================== -->
-    <el-dialog
+    <Dialog
       v-model="dialogVisible"
       :title="dialogTitle"
       width="680px"
@@ -368,7 +368,7 @@
           确定
         </el-button>
       </template>
-    </el-dialog>
+    </Dialog>
   </div>
 </template>
 

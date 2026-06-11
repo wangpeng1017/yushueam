@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <Dialog
     v-model="visible"
     :title="`批量打印贴纸（共 ${devices.length} 台 / ${pageInfo.totalPages} 页）`"
     width="900px"
@@ -33,7 +33,7 @@
       <el-button @click="visible = false">取消</el-button>
       <el-button type="primary" v-print="printConfig">打印</el-button>
     </template>
-  </el-dialog>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -161,7 +161,7 @@ defineExpose({ open })
   margin-top: 12px;
   padding: 8px 12px;
   background: #fdf6ec;
-  color: #E6A23C;
+  color: #FA8C16;
   border-radius: 4px;
   font-size: 12px;
   text-align: center;

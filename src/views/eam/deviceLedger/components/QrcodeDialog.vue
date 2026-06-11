@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <Dialog
     v-model="visible"
     title="设备二维码"
     width="400px"
@@ -20,7 +20,7 @@
       <el-button @click="handleDownload">下载 PNG</el-button>
       <el-button type="primary" v-print="printConfig">打印贴纸</el-button>
     </template>
-  </el-dialog>
+  </Dialog>
 </template>
 
 <script setup lang="ts">

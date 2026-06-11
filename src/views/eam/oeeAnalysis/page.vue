@@ -22,7 +22,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="loadData">查询</el-button>
+          <el-button @click="loadData"><Icon icon="ep:search" />搜索</el-button>
           <el-button @click="resetFilter">重置</el-button>
         </el-form-item>
       </el-form>
@@ -82,25 +82,25 @@ const gaugeData = computed(() => [
   {
     name: '综合设备效率 OEE',
     value: summaryData.value.oee,
-    color: '#409EFF',
+    color: '#1677FF',
     desc: '可用率 × 性能率 × 良品率',
   },
   {
     name: '可用率',
     value: summaryData.value.availability,
-    color: '#67C23A',
+    color: '#52C41A',
     desc: '实际运行时间 / 计划运行时间',
   },
   {
     name: '性能率',
     value: summaryData.value.performance,
-    color: '#E6A23C',
+    color: '#FA8C16',
     desc: '实际产量 / 理论产量',
   },
   {
     name: '良品率',
     value: summaryData.value.quality,
-    color: '#F56C6C',
+    color: '#FF4D4F',
     desc: '良品数 / 总产出数',
   },
 ])
@@ -129,10 +129,10 @@ function initTrendChart() {
     xAxis: { type: 'category', data: dates, axisLabel: { rotate: 0 } },
     yAxis: { type: 'value', min: 0, max: 100, axisLabel: { formatter: '{value}%' } },
     series: [
-      { name: 'OEE', type: 'line', data: oeeData, smooth: true, lineStyle: { width: 3 }, itemStyle: { color: '#409EFF' } },
-      { name: '可用率', type: 'line', data: availData, smooth: true, lineStyle: { width: 2, type: 'dashed' }, itemStyle: { color: '#67C23A' } },
-      { name: '性能率', type: 'line', data: perfData, smooth: true, lineStyle: { width: 2, type: 'dashed' }, itemStyle: { color: '#E6A23C' } },
-      { name: '良品率', type: 'line', data: qualData, smooth: true, lineStyle: { width: 2, type: 'dashed' }, itemStyle: { color: '#F56C6C' } },
+      { name: 'OEE', type: 'line', data: oeeData, smooth: true, lineStyle: { width: 3 }, itemStyle: { color: '#1677FF' } },
+      { name: '可用率', type: 'line', data: availData, smooth: true, lineStyle: { width: 2, type: 'dashed' }, itemStyle: { color: '#52C41A' } },
+      { name: '性能率', type: 'line', data: perfData, smooth: true, lineStyle: { width: 2, type: 'dashed' }, itemStyle: { color: '#FA8C16' } },
+      { name: '良品率', type: 'line', data: qualData, smooth: true, lineStyle: { width: 2, type: 'dashed' }, itemStyle: { color: '#FF4D4F' } },
     ],
   })
 }
@@ -160,9 +160,9 @@ function initRankChart() {
         itemStyle: {
           color: (params: any) => {
             const v = params.value
-            if (v >= 70) return '#67C23A'
-            if (v >= 55) return '#E6A23C'
-            return '#F56C6C'
+            if (v >= 70) return '#52C41A'
+            if (v >= 55) return '#FA8C16'
+            return '#FF4D4F'
           },
           borderRadius: [0, 4, 4, 0],
         },

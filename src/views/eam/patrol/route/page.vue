@@ -184,7 +184,7 @@
     </ContentWrap>
 
     <!-- ==================== 路线新增/编辑弹窗 ==================== -->
-    <el-dialog
+    <Dialog
       v-model="routeDialogVisible"
       :title="routeDialogTitle"
       width="560px"
@@ -215,10 +215,10 @@
         <el-button @click="routeDialogVisible = false">取消</el-button>
         <el-button v-if="routeDialogMode !== 'view'" type="primary" @click="submitRouteForm">确定</el-button>
       </template>
-    </el-dialog>
+    </Dialog>
 
     <!-- ==================== 点位新增弹窗 ==================== -->
-    <el-dialog
+    <Dialog
       v-model="pointDialogVisible"
       title="新增巡检点位"
       width="520px"
@@ -248,7 +248,7 @@
         <el-button @click="pointDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="submitPointForm">确定</el-button>
       </template>
-    </el-dialog>
+    </Dialog>
   </div>
 </template>
 
@@ -576,7 +576,7 @@ onMounted(async () => {
 }
 
 :deep(.el-button.btn-other) {
-  color: #a5d867;
+  color: #1677FF;
 
   &:hover {
     color: rgb(165 216 103 / 75%);

@@ -144,7 +144,7 @@
   </ContentWrap>
 
   <!-- 新增对话框 -->
-  <el-dialog v-model="addDialogVisible" :title="addDialogTitle" width="500px" :close-on-click-modal="false">
+  <Dialog v-model="addDialogVisible" :title="addDialogTitle" width="500px" :close-on-click-modal="false">
     <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" label-width="100px">
       <el-form-item label="分类名称" prop="name">
         <el-input v-model="addForm.name" placeholder="请输入分类名称" maxlength="40" show-word-limit />
@@ -166,7 +166,7 @@
       <el-button @click="addDialogVisible = false">取消</el-button>
       <el-button type="primary" :loading="adding" @click="submitAdd">确定</el-button>
     </template>
-  </el-dialog>
+  </Dialog>
 </template>
 
 <script setup lang="ts" name="EamToolCategory">

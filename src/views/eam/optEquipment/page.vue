@@ -129,7 +129,7 @@ v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
             <template #default="scope">
               <el-button link class="btn-other" v-hasPermi="[PERMI.QUERY]" @click="openDetail(scope.row.id)">查看</el-button>
               <el-button link class="btn-edit" v-hasPermi="[PERMI.UPDATE]" @click="openForm('update', scope.row.id)">编辑</el-button>
-              <el-button link style="color: #E6A23C" v-hasPermi="[PERMI.QUERY]" @click="openQrcode(scope.row)">生成二维码</el-button>
+              <el-button link type="warning" v-hasPermi="[PERMI.QUERY]" @click="openQrcode(scope.row)">生成二维码</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -590,7 +590,7 @@ onMounted(async () => {
   &:hover { color: rgb(213 73 65 / 75%); }
 }
 :deep(.el-button.btn-other) {
-  color: #a5d867;
+  color: #1677FF;
   &:hover { color: rgb(165 216 103 / 75%); }
 }
 </style>

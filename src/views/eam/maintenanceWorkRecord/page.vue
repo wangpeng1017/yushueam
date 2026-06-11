@@ -378,7 +378,7 @@ onMounted(async () => {
 
 // 操作列按钮样式
 :deep(.el-button.btn-other) {
-  color: #a5d867;
+  color: #1677FF;
 
   &:hover {
     color: rgb(165 216 103 / 75%);

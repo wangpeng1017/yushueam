@@ -78,7 +78,7 @@
     </ContentWrap>
 
     <!-- 轨迹弹窗 -->
-    <el-dialog v-model="traceVisible" title="巡检轨迹" width="640px">
+    <Dialog v-model="traceVisible" title="巡检轨迹" width="640px">
       <div v-if="curWork">
         <el-descriptions :column="2" border size="small">
           <el-descriptions-item label="工单号">{{ curWork.code }}</el-descriptions-item>
@@ -103,7 +103,7 @@
         <el-empty v-else description="暂无轨迹数据" />
       </div>
       <template #footer><el-button @click="traceVisible = false">关闭</el-button></template>
-    </el-dialog>
+    </Dialog>
   </div>
 </template>
 

@@ -23,7 +23,7 @@
     @success="reloadList"
   />
   <!-- 归还对话框 -->
-  <el-dialog v-model="returnVisible" title="量具归还登记" width="600px">
+  <Dialog v-model="returnVisible" title="量具归还登记" width="600px">
     <el-form :model="returnForm" label-width="120px">
       <el-form-item label="借用记录号">
         <el-input v-model="returnForm.borrowCode" disabled />
@@ -54,7 +54,7 @@ v-model="returnForm.damageRemark" type="textarea" :rows="3"
       <el-button @click="returnVisible = false">取消</el-button>
       <el-button type="primary" @click="submitReturn">确认归还</el-button>
     </template>
-  </el-dialog>
+  </Dialog>
 </template>
 
 <script setup lang="ts" name="EamGaugeBorrowReturn">

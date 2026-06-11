@@ -251,7 +251,7 @@
     </ContentWrap>
 
     <!-- ==================== 物料新增/编辑对话框 ==================== -->
-    <el-dialog v-model="sparePartDialogVisible" :title="sparePartDialogMode === 'create' ? '新增物料' : '编辑物料'" width="600px">
+    <Dialog v-model="sparePartDialogVisible" :title="sparePartDialogMode === 'create' ? '新增物料' : '编辑物料'" width="600px">
       <el-form ref="sparePartFormRef" :model="sparePartForm" :rules="sparePartFormRules" label-width="100px">
         <el-form-item label="选择备件" prop="sparePartId">
           <el-select
@@ -287,7 +287,7 @@
         <el-button @click="sparePartDialogVisible = false">取消</el-button>
         <el-button type="primary" :loading="sparePartSubmitting" @click="handleSparePartSubmit">确定</el-button>
       </template>
-    </el-dialog>
+    </Dialog>
 
     <!-- ==================== 弹窗 ==================== -->
     <StandardForm ref="standardFormRef" @success="onStandardFormSuccess" />
@@ -678,7 +678,7 @@ onMounted(async () => {
 }
 
 :deep(.el-button.btn-other) {
-  color: #a5d867;
+  color: #1677FF;
 
   &:hover {
     color: rgb(165 216 103 / 75%);

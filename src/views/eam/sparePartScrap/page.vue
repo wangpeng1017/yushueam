@@ -98,7 +98,7 @@ type="warning" :closable="false" show-icon class="mb-15px"
       </el-table>
     </ContentWrap>
 
-    <el-dialog v-model="formVisible" title="备件报废登记" width="560px">
+    <Dialog v-model="formVisible" title="备件报废登记" width="560px">
       <el-form :model="formData" label-position="top">
         <el-form-item label="备件编号" required>
           <el-input v-model="formData.sparePartNumber" placeholder="扫码或输入" />
@@ -135,7 +135,7 @@ type="warning" :closable="false" show-icon class="mb-15px"
         <el-button @click="formVisible = false">取消</el-button>
         <el-button type="primary" @click="submitForm">提交报废申请</el-button>
       </template>
-    </el-dialog>
+    </Dialog>
   </div>
 </template>
 
