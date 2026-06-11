@@ -77,7 +77,7 @@ v-for="item in eamEnumStore.getOperationStatusList" :key="item.value"
       <ContentWrap>
         <div class="mb-10px">
           <el-button
-            plain type="warning"
+            type="primary" plain
             :disabled="selectedRows.length === 0" @click="openBatchPrint">
             <Icon class="mr-5px" icon="ep:printer" />&nbsp;批量打印贴纸（已选 {{ selectedRows.length }} 台）
           </el-button>

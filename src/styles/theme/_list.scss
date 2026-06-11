@@ -78,3 +78,12 @@
   --el-button-disabled-border-color: #dcdfe6;
   opacity: 1;
 }
+
+/* plain 款禁用同样去色（Element 对 plain disabled 有更高优先级的彩色规则，这里压平） */
+.el-button.is-plain.is-disabled,
+.el-button.is-plain.is-disabled:hover,
+.el-button.is-plain.is-disabled:focus {
+  color: #909399;
+  background-color: #ffffff;
+  border-color: #dcdfe6;
+}

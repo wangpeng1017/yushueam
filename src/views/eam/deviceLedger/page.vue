@@ -66,24 +66,7 @@
           v-model:limit="queryParams.pageSize"
           @pagination="getList"
         >
-          <template #actions>
-            <el-button
-              type="primary"
-              :disabled="selectedRows.length === 0"
-              @click="openBatchPrint"
-            >
-              <Icon icon="ep:printer" class="mr-5px" />
-              批量打印贴纸（已选 {{ selectedRows.length }} 台）
-            </el-button>
-          </template>
-          <el-table
-            ref="tableRef"
-            :data="list"
-            :stripe="true"
-            :show-overflow-tooltip="true"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" width="50" align="center" />
+          <el-table :data="list" :stripe="true" :show-overflow-tooltip="true">
             <el-table-column label="设备编号" align="center" prop="equipmentSn" width="160" />
             <el-table-column label="设备名称" align="center" prop="equipmentName" min-width="120" />
             <el-table-column label="设备状态" align="center" prop="operationStatus" width="80">
@@ -126,18 +109,12 @@
               width="120"
             />
             <el-table-column label="购置时间" align="center" prop="equipmentPurchase" width="120" />
-            <el-table-column label="操作" align="center" fixed="right" width="160">
+            <el-table-column label="操作" align="center" fixed="right" width="100">
               <template #default="scope">
                 <RowActions
                   :row="scope.row"
                   :on-detail="checkPermi([PERMI.QUERY]) ? (r: any) => openDetail(r.id) : null"
-                >
-                  <template v-if="checkPermi([PERMI.QUERY])" #more>
-                    <el-dropdown-item @click="openQrcode(scope.row)">
-                      生成二维码
-                    </el-dropdown-item>
-                  </template>
-                </RowActions>
+                />
               </template>
             </el-table-column>
           </el-table>
@@ -147,12 +124,6 @@
 
     <!-- 详情弹窗 -->
     <DeviceLedgerDetail ref="detailRef" />
-
-    <!-- 二维码弹窗 -->
-    <QrcodeDialog ref="qrcodeRef" />
-
-    <!-- 批量打印贴纸 -->
-    <BatchLabelPrint ref="batchPrintRef" />
   </div>
 </template>
 
@@ -161,8 +132,6 @@ import { checkPermi } from '@/utils/permission'
 import * as DeviceLedgerApi from '@/api/eam/deviceLedger'
 import { useEamEnumStore } from '@/store/modules/enums'
 import DeviceLedgerDetail from './detail.vue'
-import QrcodeDialog from './components/QrcodeDialog.vue'
-import BatchLabelPrint from './components/BatchLabelPrint.vue'
 
 defineOptions({ name: 'EamDeviceLedger' })
 
@@ -270,9 +239,6 @@ const getList = async () => {
     const res = await DeviceLedgerApi.getDeviceLedgerPage(params)
     list.value = res.records ?? []
     total.value = res.total ?? 0
-    // 翻页/筛选/重置后清空多选，避免与 el-table 内部状态不一致
-    selectedRows.value = []
-    tableRef.value?.clearSelection?.()
   } finally {
     loading.value = false
   }
@@ -309,34 +275,6 @@ const getOperationStatusClass = (status: string) => {
 const detailRef = ref()
 const openDetail = (id: string) => {
   detailRef.value.open(id)
-}
-
-// ==================== 二维码弹窗 ====================
-const qrcodeRef = ref<InstanceType<typeof QrcodeDialog>>()
-const openQrcode = (row: DeviceLedgerApi.DeviceLedgerVo) => {
-  qrcodeRef.value.open({
-    equipmentSn: row.equipmentSn,
-    equipmentName: row.equipmentName,
-  })
-}
-
-// ==================== 多选 + 批量打印 ====================
-const tableRef = ref()
-const selectedRows = ref<DeviceLedgerApi.DeviceLedgerVo[]>([])
-const batchPrintRef = ref<InstanceType<typeof BatchLabelPrint>>()
-
-const handleSelectionChange = (rows: DeviceLedgerApi.DeviceLedgerVo[]) => {
-  selectedRows.value = rows
-}
-
-const openBatchPrint = () => {
-  if (selectedRows.value.length === 0) return
-  batchPrintRef.value?.open(
-    selectedRows.value.map(r => ({
-      equipmentSn: r.equipmentSn,
-      equipmentName: r.equipmentName,
-    }))
-  )
 }
 
 // ==================== 初始化 ====================
