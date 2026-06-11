@@ -391,7 +391,8 @@ const categoryTabs = ref<any[]>([])
 const loadCategoryTabs = async () => {
   try {
     const res = await EquipmentApi.getEquipmentCategoryList()
-    categoryTabs.value = res?.records ?? []
+    // 过滤 categoryName 为空的脏数据，避免渲染空白 Tab
+    categoryTabs.value = (res?.records ?? []).filter((t: any) => t.categoryCode && t.categoryName)
   } catch (error) {
     console.error('加载设备分类列表失败:', error)
   }

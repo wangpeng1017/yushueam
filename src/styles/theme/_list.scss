@@ -7,7 +7,7 @@
 
   &__header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
     gap: 8px;
     padding: 16px 24px;
@@ -66,4 +66,14 @@
     height: auto;
     font-weight: 500;
   }
+}
+
+/* —— 统一：禁用按钮保持原配色可读，仅降透明度（批量删除/派工/完成工单等未勾选态） —— */
+.el-button.is-disabled,
+.el-button.is-disabled:hover,
+.el-button.is-disabled:focus {
+  --el-button-disabled-text-color: var(--el-button-text-color);
+  --el-button-disabled-bg-color: var(--el-button-bg-color);
+  --el-button-disabled-border-color: var(--el-button-border-color);
+  opacity: 0.55;
 }

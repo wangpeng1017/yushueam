@@ -42,7 +42,11 @@ export function tryMatchMock(
     const mm = (mock.method || 'get').toLowerCase()
     if (m !== mm) continue
     const mockPath = mock.url.replace('/admin-api', '')
-    if (url.includes(mockPath)) {
+    // 路径段边界匹配：去掉查询串后要求精确结尾或后跟下一段，
+    // 避免 /xxx/list 误吞 /xxx/listOfYesNo、/xxx/listOfMode 等枚举接口（点检计划列错位的根因）
+    const qi = url.indexOf('?')
+    const urlPath = qi >= 0 ? url.slice(0, qi) : url
+    if (urlPath.endsWith(mockPath) || urlPath.includes(mockPath + '/')) {
       const query = parseQS(url)
       const body = typeof data === 'string'
         ? (() => { try { return JSON.parse(data) } catch { return {} } })()
