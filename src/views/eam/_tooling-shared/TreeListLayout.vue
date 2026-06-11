@@ -1,7 +1,7 @@
 <template>
-  <el-row :gutter="16">
-    <!-- 左侧树 -->
-    <el-col :span="5">
+  <div class="tree-list-layout">
+    <!-- 左侧树：固定 240px（与设备履历一致，2026-06-11 王老师拍板） -->
+    <div class="tll-tree">
       <el-card shadow="never" style="height: calc(100vh - 180px); overflow: auto">
         <el-input
           v-model="treeFilterText"
@@ -37,13 +37,13 @@
           </template>
         </el-tree>
       </el-card>
-    </el-col>
+    </div>
 
     <!-- 右侧主区 -->
-    <el-col :span="19">
+    <div class="tll-main">
       <slot :selected-key="selectedKey" :selected-node="selectedNode"></slot>
-    </el-col>
-  </el-row>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -102,6 +102,21 @@ defineExpose({ selectedKey })
 </script>
 
 <style scoped>
+.tree-list-layout {
+  display: flex;
+  gap: 16px;
+}
+
+.tll-tree {
+  flex-shrink: 0;
+  width: 240px;
+}
+
+.tll-main {
+  flex: 1;
+  min-width: 0;
+}
+
 .custom-tree-node {
   display: flex;
   align-items: center;
