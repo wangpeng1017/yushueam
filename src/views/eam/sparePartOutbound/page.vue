@@ -4,9 +4,6 @@
       <el-alert
 type="info" :closable="false" show-icon class="mb-15px"
         title="备件出库说明：触发来源 = 维修工单领用 / 保养工单领用 / 日常班组领用 / 调拨出库；扫码领用后自动扣库存与流水。" />
-      <el-alert
-type="warning" :closable="false" show-icon class="mb-15px"
-        title="📌 在建工程出库新规则：出库类型为「在建工程出库」时，必须绑定项目编号（如 CEP-2026-001 四足机器人项目，从非标研制项目库选择，手动填写）；生产出库无需绑定项目编号。" />
       <el-form :inline="true" :model="queryParams" class="-mb-15px">
         <el-form-item label="单据号">
           <el-input v-model="queryParams.recordCode" class="!w-200px" clearable placeholder="SPR-XXXX" @keyup.enter="loadList" />
@@ -14,18 +11,13 @@ type="warning" :closable="false" show-icon class="mb-15px"
         <el-form-item label="备件名称">
           <el-input v-model="queryParams.sparePartName" class="!w-200px" clearable placeholder="如 NSK 润滑脂" @keyup.enter="loadList" />
         </el-form-item>
-        <el-form-item label="关联工单">
-          <el-input v-model="queryParams.refWoCode" class="!w-200px" clearable placeholder="MW-XXXX / RW-XXXX" @keyup.enter="loadList" />
+        <el-form-item label="关联单号">
+          <el-input v-model="queryParams.refWoCode" class="!w-200px" clearable placeholder="MW-XXXX / RW-XXXX / ALLOC-XXXX" @keyup.enter="loadList" />
         </el-form-item>
         <el-form-item label="出库类型">
           <el-select v-model="queryParams.subType" class="!w-180px" clearable placeholder="全部">
-            <el-option label="工单出库" value="出库" />
-            <el-option label="日常领用" value="手动领用" />
-            <el-option label="在建工程出库" value="在建工程" />
+            <el-option v-for="t in outboundTypes" :key="t" :label="t" :value="t" />
           </el-select>
-        </el-form-item>
-        <el-form-item label="项目编号">
-          <el-input v-model="queryParams.projectCode" class="!w-160px" clearable placeholder="如 CEP-2026-001" @keyup.enter="loadList" />
         </el-form-item>
         <el-form-item>
           <el-button @click="loadList"><Icon icon="ep:search" />搜索</el-button>
@@ -63,28 +55,22 @@ type="warning" :closable="false" show-icon class="mb-15px"
       </el-row>
 
       <div class="mb-10px">
-        <el-button type="primary" plain @click="openManual"><Icon icon="ep:plus" />日常领用登记</el-button>
+        <el-button type="primary" @click="openAdd"><Icon icon="ep:plus" />新增</el-button>
         <span class="hint">⚡ 工单出库由维修/保养工单完工时自动写入，不在此页面新增</span>
       </div>
 
       <el-table v-loading="loading" :data="list" stripe>
         <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column label="单据号" prop="recordCode" width="160" align="center" />
-        <el-table-column label="出库类型" width="110" align="center">
+        <el-table-column label="出库类型" width="130" align="center">
           <template #default="{ row }">
-            <el-tag size="small" :type="row.operationType === '在建工程' ? 'warning' : (row.operationType === '手动领用' ? 'info' : 'danger')">{{ row.operationType === '在建工程' ? '在建工程出库' : row.operationType }}</el-tag>
+            <el-tag size="small" :type="outboundTagType(row.outboundType)">{{ row.outboundType }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="备件编号" prop="sparePartNumber" width="120" align="center" />
         <el-table-column label="备件名称" prop="sparePartName" min-width="160" />
         <el-table-column label="出库数量" prop="quantity" width="100" align="center" />
         <el-table-column label="关联单号" prop="refWoCode" width="160" align="center" />
-        <el-table-column label="项目编号" width="150" align="center">
-          <template #default="{ row }">
-            <el-tag v-if="row.projectCode" size="small" type="warning">{{ row.projectCode }}</el-tag>
-            <span v-else style="color:#c0c4cc;">—</span>
-          </template>
-        </el-table-column>
         <el-table-column label="设备" prop="equipmentName" width="160" />
         <el-table-column label="领用人" prop="operatorName" width="100" align="center" />
         <el-table-column label="出库时间" prop="usageTime" width="160" align="center" />
@@ -92,30 +78,38 @@ type="warning" :closable="false" show-icon class="mb-15px"
       </el-table>
     </ContentWrap>
 
-    <Dialog v-model="manualVisible" title="日常领用登记" width="520px">
-      <el-form :model="manualForm" label-position="top">
+    <Dialog v-model="dialogVisible" title="新增出库" width="540px">
+      <el-form :model="form" label-position="top">
+        <el-form-item label="出库类型" required>
+          <el-select v-model="form.outboundType" class="w-full" placeholder="请选择出库类型">
+            <el-option v-for="t in addableTypes" :key="t" :label="t" :value="t" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="备件编号" required>
-          <el-input v-model="manualForm.sparePartNumber" placeholder="扫码或输入" />
+          <el-input v-model="form.sparePartNumber" placeholder="扫码或输入" />
         </el-form-item>
         <el-form-item label="备件名称" required>
-          <el-input v-model="manualForm.sparePartName" />
+          <el-input v-model="form.sparePartName" />
         </el-form-item>
         <el-form-item label="出库数量" required>
-          <el-input-number v-model="manualForm.quantity" :min="1" />
+          <el-input-number v-model="form.quantity" :min="1" />
         </el-form-item>
         <el-form-item label="使用设备">
-          <el-input v-model="manualForm.equipmentName" placeholder="可选" />
+          <el-input v-model="form.equipmentName" placeholder="可选" />
         </el-form-item>
         <el-form-item label="领用人" required>
-          <el-input v-model="manualForm.operatorName" />
+          <el-input v-model="form.operatorName" />
+        </el-form-item>
+        <el-form-item label="出库时间">
+          <el-date-picker v-model="form.usageTime" type="datetime" value-format="YYYY-MM-DD HH:mm" placeholder="留空取当前时间" class="w-full" />
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="manualForm.remark" type="textarea" :rows="2" />
+          <el-input v-model="form.remark" type="textarea" :rows="2" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="manualVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitManual">确认领用</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitForm">确认新增</el-button>
       </template>
     </Dialog>
   </div>
@@ -130,62 +124,87 @@ const loading = ref(false)
 const list = ref<any[]>([])
 const queryParams = reactive({ recordCode: '', sparePartName: '', refWoCode: '', subType: '' })
 
+// 出库类型：维修工单出库 / 保养工单出库 / 日常领用 / 调拨出库；新增弹窗仅允许人工登记的两种
+const outboundTypes = ['维修工单出库', '保养工单出库', '日常领用', '调拨出库']
+const addableTypes = ['日常领用', '调拨出库']
+function outboundTagType(t: string) {
+  switch (t) {
+    case '维修工单出库': return 'danger'
+    case '保养工单出库': return 'warning'
+    case '日常领用': return 'info'
+    case '调拨出库': return 'success'
+    default: return ''
+  }
+}
+
 const totalQty = computed(() => list.value.reduce((s, x) => s + Number(x.quantity || 0), 0))
-const countWo = computed(() => list.value.filter(x => x.operationType === '出库').length)
-const countManual = computed(() => list.value.filter(x => x.operationType === '手动领用').length)
+const countWo = computed(() => list.value.filter(x => x.outboundType === '维修工单出库' || x.outboundType === '保养工单出库').length)
+const countManual = computed(() => list.value.filter(x => x.outboundType === '日常领用').length)
 
 async function loadList() {
   loading.value = true
   try {
-    if (queryParams.subType) {
-      const res: any = await request.get({
-        url: '/workOrder/eamSparePartUsageRecord/list',
-        params: { pageNo: 1, pageSize: 100, operationType: queryParams.subType, sparePartName: queryParams.sparePartName }
-      })
-      list.value = filterLocal(res?.records || [])
-    } else {
-      const [a, b] = await Promise.all([
-        request.get({ url: '/workOrder/eamSparePartUsageRecord/list', params: { pageNo: 1, pageSize: 100, operationType: '出库', sparePartName: queryParams.sparePartName } }),
-        request.get({ url: '/workOrder/eamSparePartUsageRecord/list', params: { pageNo: 1, pageSize: 100, operationType: '手动领用', sparePartName: queryParams.sparePartName } })
-      ])
-      list.value = filterLocal([...((a as any)?.records || []), ...((b as any)?.records || [])])
-        .sort((x: any, y: any) => (y.usageTime || '').localeCompare(x.usageTime || ''))
-    }
-    // 为部分记录注入"在建工程出库"演示数据：每 5 条挂一个项目编号
-    const demoProjects = ['CEP-2026-001', 'CEP-2026-003', 'CEP-2026-007']
-    list.value.forEach((x: any, i: number) => {
-      if (i % 5 === 2) {
-        x.operationType = '在建工程'
-        x.projectCode = demoProjects[i % demoProjects.length]
-      }
+    const [a, b] = await Promise.all([
+      request.get({ url: '/workOrder/eamSparePartUsageRecord/list', params: { pageNo: 1, pageSize: 100, operationType: '出库', sparePartName: queryParams.sparePartName } }),
+      request.get({ url: '/workOrder/eamSparePartUsageRecord/list', params: { pageNo: 1, pageSize: 100, operationType: '手动领用', sparePartName: queryParams.sparePartName } })
+    ])
+    // 浅拷贝，避免污染共用 mock 数据
+    let arr = [...((a as any)?.records || []), ...((b as any)?.records || [])].map((x: any) => ({ ...x }))
+    // 派生出库类型：维修工单出库 / 保养工单出库 / 日常领用
+    arr.forEach((x: any) => {
+      if (x.refWoType === '维修工单') x.outboundType = '维修工单出库'
+      else if (x.refWoType === '保养工单') x.outboundType = '保养工单出库'
+      else x.outboundType = '日常领用'
+    })
+    // 演示：注入调拨出库
+    ;['SPR-2026-0011', 'SPR-2026-0006'].forEach(code => {
+      const hit = arr.find((x: any) => x.recordCode === code)
+      if (hit) { hit.outboundType = '调拨出库'; hit.refWoCode = 'ALLOC-' + code.slice(-4); hit.remark = '车间调拨出库' }
+    })
+    arr.sort((x: any, y: any) => (y.usageTime || '').localeCompare(x.usageTime || ''))
+    list.value = arr.filter((x: any) => {
+      if (queryParams.subType && x.outboundType !== queryParams.subType) return false
+      if (queryParams.recordCode && !(x.recordCode || '').includes(queryParams.recordCode)) return false
+      if (queryParams.refWoCode && !(x.refWoCode || '').includes(queryParams.refWoCode)) return false
+      return true
     })
   } finally {
     loading.value = false
   }
 }
-function filterLocal(arr: any[]) {
-  return arr.filter(x => {
-    if (queryParams.recordCode && !(x.recordCode || '').includes(queryParams.recordCode)) return false
-    if (queryParams.refWoCode && !(x.refWoCode || '').includes(queryParams.refWoCode)) return false
-    return true
-  })
-}
 function resetQuery() { Object.assign(queryParams, { recordCode: '', sparePartName: '', refWoCode: '', subType: '' }); loadList() }
 
-const manualVisible = ref(false)
-const manualForm = reactive({ sparePartNumber: '', sparePartName: '', quantity: 1, equipmentName: '', operatorName: '', remark: '' })
-function openManual() {
-  Object.assign(manualForm, { sparePartNumber: '', sparePartName: '', quantity: 1, equipmentName: '', operatorName: '', remark: '' })
-  manualVisible.value = true
+// ── 新增出库弹窗 ──
+const dialogVisible = ref(false)
+const form = reactive({ outboundType: '日常领用', sparePartNumber: '', sparePartName: '', quantity: 1, equipmentName: '', operatorName: '', usageTime: '', remark: '' })
+function openAdd() {
+  Object.assign(form, { outboundType: '日常领用', sparePartNumber: '', sparePartName: '', quantity: 1, equipmentName: '', operatorName: '', usageTime: '', remark: '' })
+  dialogVisible.value = true
 }
-function submitManual() {
-  if (!manualForm.sparePartNumber || !manualForm.sparePartName || !manualForm.operatorName) {
-    ElMessage.warning('请填写备件编号 / 名称 / 领用人')
+function pad(n: number) { return String(n).padStart(2, '0') }
+function genCode() { const d = new Date(); return `SPR-${d.getFullYear()}-${pad(d.getMonth() + 1)}${pad(d.getDate())}${pad(d.getHours())}${pad(d.getMinutes())}` }
+function nowStr() { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}` }
+function submitForm() {
+  if (!form.outboundType || !form.sparePartNumber || !form.sparePartName || !form.operatorName) {
+    ElMessage.warning('请填写出库类型 / 备件编号 / 名称 / 领用人')
     return
   }
-  ElMessage.success('日常领用登记成功，已扣减库存并生成流水')
-  manualVisible.value = false
-  loadList()
+  list.value.unshift({
+    id: 'NEW-' + Date.now(),
+    recordCode: genCode(),
+    outboundType: form.outboundType,
+    operationType: form.outboundType === '日常领用' ? '手动领用' : '出库',
+    sparePartNumber: form.sparePartNumber,
+    sparePartName: form.sparePartName,
+    quantity: form.quantity,
+    refWoCode: '-',
+    equipmentName: form.equipmentName,
+    operatorName: form.operatorName,
+    usageTime: form.usageTime || nowStr(),
+    remark: form.remark
+  })
+  ElMessage.success('出库登记成功，已扣减库存并生成流水')
+  dialogVisible.value = false
 }
 
 onMounted(loadList)
