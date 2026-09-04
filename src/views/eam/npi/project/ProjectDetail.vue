@@ -102,20 +102,6 @@
           <IssueTab :project-id="project.id" />
         </el-tab-pane>
 
-        <el-tab-pane label="项目资料" name="docs">
-          <div v-for="s in stagesWithDocs" :key="s.idx" class="doc-group">
-            <div class="doc-group-title">{{ s.idx }}. {{ s.name }}</div>
-            <el-table :data="s.docs" size="small" border>
-              <el-table-column label="文件名" prop="name" min-width="220" />
-              <el-table-column label="大小" width="100">
-                <template #default="{ row }">{{ formatSize(row?.size) }}</template>
-              </el-table-column>
-              <el-table-column label="上传人" prop="uploader" width="100" />
-              <el-table-column label="上传时间" prop="uploadedAt" width="120" />
-            </el-table>
-          </div>
-          <el-empty v-if="stagesWithDocs.length === 0" description="暂无已上传资料" :image-size="60" />
-        </el-tab-pane>
       </el-tabs>
     </ContentWrap>
     <ContentWrap v-else>
@@ -261,14 +247,6 @@ function logActionText(action: string): string {
   return action === 'advance' ? '推进' : action === 'force_advance' ? '强制推进' : '编辑'
 }
 
-// ==================== 项目资料 ====================
-const stagesWithDocs = computed(() => project.value?.stages.filter((s) => s.docs.length > 0) ?? [])
-
-function formatSize(bytes?: number): string {
-  if (!bytes) return '-'
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
-}
 </script>
 
 <style scoped>
@@ -277,8 +255,6 @@ function formatSize(bytes?: number): string {
 .detail-title-text { font-size: 16px; font-weight: 600; color: #303133; }
 .advance-bar { margin-top: 12px; display: flex; justify-content: center; }
 .section-title { font-size: 14px; font-weight: 600; color: #303133; margin-bottom: 8px; padding-left: 8px; border-left: 3px solid #1677FF; }
-.doc-group { margin-bottom: 16px; }
-.doc-group-title { font-size: 13px; font-weight: 600; color: #303133; margin-bottom: 8px; }
 .force-tip { color: #606266; margin: 0 0 6px; }
 .missing-list { margin: 0 0 12px; padding-left: 18px; color: #FF4D4F; }
 </style>
