@@ -76,7 +76,6 @@ export interface KbFolder {
   id: string
   parentId: string | null
   name: string
-  readonly: boolean
   projectId?: string
   stageIdx?: number
 }
@@ -345,17 +344,17 @@ function makeKbFile(name: string, uploader: string, date: string, folderId: stri
   }
 }
 
-/** 阶段已上传资料自动归档到 项目资料/项目名/阶段名（只读文件夹） */
+/** 项目资料/项目名 文件夹永远存在（即便阶段尚无资料）；阶段已上传资料自动归档到其下的 阶段名 子夹 */
 function archiveDocsToKb(folders: KbFolder[], files: KbFile[], project: NpiProject) {
   const projFolderId = `kb-proj-${project.id}`
   if (!folders.find((f) => f.id === projFolderId)) {
-    folders.push({ id: projFolderId, parentId: 'kb-root-project', name: project.projectName, readonly: true, projectId: project.id })
+    folders.push({ id: projFolderId, parentId: 'kb-root-project', name: project.projectName, projectId: project.id })
   }
   project.stages.forEach((stage) => {
     if (stage.docs.length === 0) return
     const stageFolderId = `${projFolderId}-s${stage.idx}`
     if (!folders.find((f) => f.id === stageFolderId)) {
-      folders.push({ id: stageFolderId, parentId: projFolderId, name: stage.name, readonly: true, projectId: project.id, stageIdx: stage.idx })
+      folders.push({ id: stageFolderId, parentId: projFolderId, name: stage.name, projectId: project.id, stageIdx: stage.idx })
     }
     stage.docs.forEach((doc) => {
       files.push({ ...doc, id: `kbfile-arch-${stageFolderId}-${doc.id}`, folderId: stageFolderId, projectId: project.id, stageIdx: stage.idx })
@@ -383,10 +382,10 @@ export function buildSeed(): { projects: NpiProject[]; issues: NpiIssue[]; folde
   const issues: NpiIssue[] = buildIssues()
 
   const folders: KbFolder[] = [
-    { id: 'kb-root-project', parentId: null, name: '项目资料', readonly: true },
-    { id: 'kb-root-public', parentId: null, name: '公共资料', readonly: false },
-    { id: 'kb-public-spec', parentId: 'kb-root-public', name: '设计规范', readonly: false },
-    { id: 'kb-public-supplier', parentId: 'kb-root-public', name: '供应商资料', readonly: false }
+    { id: 'kb-root-project', parentId: null, name: '项目资料' },
+    { id: 'kb-root-public', parentId: null, name: '公共资料' },
+    { id: 'kb-public-spec', parentId: 'kb-root-public', name: '设计规范' },
+    { id: 'kb-public-supplier', parentId: 'kb-root-public', name: '供应商资料' }
   ]
   const files: KbFile[] = [
     makeKbFile('非标设备通用技术要求.docx', '设备工程部', '2026-02-10', 'kb-public-spec', seq),

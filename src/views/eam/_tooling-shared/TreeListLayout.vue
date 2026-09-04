@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue'
+import { ref, watch, computed, onMounted, nextTick } from 'vue'
 
 const props = defineProps<{
   /** 树数据：{ key, label, children?, count? } */
@@ -61,6 +61,8 @@ const props = defineProps<{
   defaultKey?: string
   /** 默认展开的 key 数组 */
   defaultExpandedKeys?: string[]
+  /** 外部受控的当前选中 key（面包屑跳转/删除后选父级等场景同步树高亮） */
+  currentKey?: string
 }>()
 
 const emit = defineEmits<{
@@ -102,6 +104,15 @@ onMounted(() => {
     emit('select', firstKey, props.treeData[0])
   }
 })
+
+watch(
+  () => props.currentKey,
+  (key) => {
+    if (!key || key === selectedKey.value) return
+    selectedKey.value = key
+    nextTick(() => treeRef.value?.setCurrentKey(key))
+  }
+)
 
 defineExpose({ selectedKey })
 </script>
@@ -145,6 +156,10 @@ defineExpose({ selectedKey })
 }
 
 :deep(.el-tree-node__content:hover) .custom-tree-node__actions {
+  opacity: 1;
+}
+
+:deep(.el-tree-node.is-current > .el-tree-node__content .custom-tree-node__actions) {
   opacity: 1;
 }
 </style>

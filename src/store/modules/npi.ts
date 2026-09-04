@@ -1,7 +1,8 @@
 /**
  * EM-06 非标设备研制（NPI）改版 — Pinia store
- * 纯前端 demo：数据落地 localStorage（key: eam-npi-store-v1），不经后端接口。
+ * 纯前端 demo：数据落地 localStorage（key: eam-npi-store-v2），不经后端接口。
  * 2026-09-04 设计文档：docs/plans/2026-09-04-npi-project-management-design.md
+ * 2026-09-04 修正：知识库去「只读目录」概念，改为自由文件夹/文件管理（根目录仅禁删除）。
  */
 import { defineStore } from 'pinia'
 import dayjs from 'dayjs'
@@ -17,7 +18,7 @@ import {
   type ProjectStatus
 } from '@/mock-data/eam-npi'
 
-const STORAGE_KEY = 'eam-npi-store-v1'
+const STORAGE_KEY = 'eam-npi-store-v2'
 
 function uid(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
@@ -25,6 +26,23 @@ function uid(prefix: string): string {
 
 function today(): string {
   return dayjs().format('YYYY-MM-DD')
+}
+
+/** 文件夹 id 自身 + 全部子孙文件夹 id（用于级联删除/统计） */
+function collectDescendantFolderIds(folders: KbFolder[], id: string): string[] {
+  const childIds = folders.filter((f) => f.parentId === id).map((f) => f.id)
+  return [id, ...childIds.flatMap((cid) => collectDescendantFolderIds(folders, cid))]
+}
+
+/** 从项目某阶段的 docs 中移除同名记录（知识库文件与项目阶段资料按 name 对应，id 各自独立生成） */
+function pruneStageDocByName(projects: NpiProject[], projectId: string, stageIdx: number, docName: string): NpiProject[] {
+  return projects.map((p) => {
+    if (p.id !== projectId) return p
+    return {
+      ...p,
+      stages: p.stages.map((s) => (s.idx === stageIdx ? { ...s, docs: s.docs.filter((d) => d.name !== docName) } : s))
+    }
+  })
 }
 
 /** 新建项目：按 8 阶段模板等分计划区间生成 stages，第一阶段直接进入进行中 */
@@ -161,6 +179,13 @@ export const useNpiStore = defineStore('npi', {
         description: payload.description
       }
       this.projects = [...this.projects, project]
+
+      // 同步在「项目资料」根下创建该项目的文件夹（已存在同 projectId 的不重复建）
+      const projFolderId = `kb-proj-${project.id}`
+      if (!this.folders.find((f) => f.projectId === project.id && f.parentId === 'kb-root-project')) {
+        this.folders = [...this.folders, { id: projFolderId, parentId: 'kb-root-project', name: project.projectName, projectId: project.id }]
+      }
+
       this.persist()
       return project
     },
@@ -170,7 +195,14 @@ export const useNpiStore = defineStore('npi', {
       this.persist()
     },
 
+    /** 删除项目：级联删除该项目在知识库下的文件夹树与文件 */
     removeProject(id: string) {
+      const projFolderId = `kb-proj-${id}`
+      if (this.folders.find((f) => f.id === projFolderId)) {
+        const idSet = new Set(collectDescendantFolderIds(this.folders, projFolderId))
+        this.files = this.files.filter((f) => !idSet.has(f.folderId))
+        this.folders = this.folders.filter((f) => !idSet.has(f.id))
+      }
       this.projects = this.projects.filter((p) => p.id !== id)
       this.persist()
     },
@@ -232,7 +264,7 @@ export const useNpiStore = defineStore('npi', {
       return { ok: true, missing: [] }
     },
 
-    /** 阶段上传资料：写入阶段 docs，并自动归档到知识库 项目资料/项目名/阶段名（只读） */
+    /** 阶段上传资料：写入阶段 docs，并自动归档到知识库 项目资料/项目名/阶段名 */
     addStageDoc(projectId: string, stageIdx: number, doc: { name: string; size: number; type: string }) {
       const project = this.projects.find((p) => p.id === projectId)
       if (!project) return
@@ -250,17 +282,17 @@ export const useNpiStore = defineStore('npi', {
       project.stages = project.stages.map((s) => (s.idx === stageIdx ? { ...s, docs: [...s.docs, newDoc] } : s))
       this.projects = [...this.projects]
 
-      // 归档到知识库：项目资料/项目名（只读）/阶段名（只读）
+      // 归档到知识库：项目资料/项目名/阶段名
       const projFolderId = `kb-proj-${project.id}`
       if (!this.folders.find((f) => f.id === projFolderId)) {
         this.folders = [...this.folders, {
-          id: projFolderId, parentId: 'kb-root-project', name: project.projectName, readonly: true, projectId: project.id
+          id: projFolderId, parentId: 'kb-root-project', name: project.projectName, projectId: project.id
         }]
       }
       const stageFolderId = `${projFolderId}-s${stageIdx}`
       if (!this.folders.find((f) => f.id === stageFolderId)) {
         this.folders = [...this.folders, {
-          id: stageFolderId, parentId: projFolderId, name: stage.name, readonly: true, projectId: project.id, stageIdx
+          id: stageFolderId, parentId: projFolderId, name: stage.name, projectId: project.id, stageIdx
         }]
       }
       this.files = [...this.files, { ...newDoc, id: uid('kbfile'), folderId: stageFolderId, projectId: project.id, stageIdx }]
@@ -301,38 +333,48 @@ export const useNpiStore = defineStore('npi', {
       this.persist()
     },
 
-    // ==================== 知识库 ====================
+    // ==================== 知识库（自由文件夹/文件管理，根目录仅禁删除） ====================
     addFolder(parentId: string, name: string) {
       const parent = this.folders.find((f) => f.id === parentId)
       if (!parent) throw new Error('父目录不存在')
-      if (parent.readonly) throw new Error('该目录为系统只读目录，不能在此新建文件夹')
-      this.folders = [...this.folders, { id: uid('kbfolder'), parentId, name, readonly: false }]
+      this.folders = [...this.folders, { id: uid('kbfolder'), parentId, name }]
       this.persist()
     },
 
     renameFolder(id: string, name: string) {
       const folder = this.folders.find((f) => f.id === id)
       if (!folder) throw new Error('文件夹不存在')
-      if (folder.readonly) throw new Error('该文件夹为系统只读目录，不能重命名')
       this.folders = this.folders.map((f) => (f.id === id ? { ...f, name } : f))
       this.persist()
     },
 
-    removeFolder(id: string) {
+    /** 级联删除文件夹：递归删除所有子孙文件夹与其中文件；被删文件若带 projectId/stageIdx，同步从项目阶段 docs 移除同名记录 */
+    removeFolder(id: string): { folders: number; files: number } {
       const folder = this.folders.find((f) => f.id === id)
       if (!folder) throw new Error('文件夹不存在')
-      if (folder.readonly) throw new Error('该文件夹为系统只读目录，不能删除')
-      const hasChildFolder = this.folders.some((f) => f.parentId === id)
-      const hasChildFile = this.files.some((f) => f.folderId === id)
-      if (hasChildFolder || hasChildFile) throw new Error('文件夹非空，请先清空后再删除')
-      this.folders = this.folders.filter((f) => f.id !== id)
+      if (folder.parentId === null) throw new Error('根目录不能删除')
+
+      const idSet = new Set(collectDescendantFolderIds(this.folders, id))
+      const removedFiles = this.files.filter((f) => idSet.has(f.folderId))
+
+      let projects = this.projects
+      removedFiles.forEach((f) => {
+        if (f.projectId && f.stageIdx !== undefined) {
+          projects = pruneStageDocByName(projects, f.projectId, f.stageIdx, f.name)
+        }
+      })
+      this.projects = projects
+
+      this.files = this.files.filter((f) => !idSet.has(f.folderId))
+      this.folders = this.folders.filter((f) => !idSet.has(f.id))
       this.persist()
+
+      return { folders: idSet.size - 1, files: removedFiles.length }
     },
 
     addFile(folderId: string, file: { name: string; size: number; type: string; uploader: string }) {
       const folder = this.folders.find((f) => f.id === folderId)
       if (!folder) throw new Error('文件夹不存在')
-      if (folder.readonly) throw new Error('该文件夹为系统只读目录，不能上传文件')
       const newFile: KbFile = {
         id: uid('kbfile'), name: file.name, size: file.size, type: file.type,
         uploadedAt: today(), uploader: file.uploader, folderId
@@ -341,11 +383,13 @@ export const useNpiStore = defineStore('npi', {
       this.persist()
     },
 
+    /** 删除文件：若带 projectId/stageIdx，同步从项目阶段 docs 移除同名记录 */
     removeFile(id: string) {
       const file = this.files.find((f) => f.id === id)
       if (!file) throw new Error('文件不存在')
-      const folder = this.folders.find((f) => f.id === file.folderId)
-      if (folder?.readonly) throw new Error('该文件夹为系统只读目录，不能删除文件')
+      if (file.projectId && file.stageIdx !== undefined) {
+        this.projects = pruneStageDocByName(this.projects, file.projectId, file.stageIdx, file.name)
+      }
       this.files = this.files.filter((f) => f.id !== id)
       this.persist()
     }
