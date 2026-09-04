@@ -23,16 +23,21 @@
         >
           <template #default="{ data }">
             <span class="custom-tree-node">
-              <span>{{ data.label }}</span>
-              <el-tag
-                v-if="data.count !== undefined"
-                size="small"
-                type="info"
-                round
-                style="margin-left: 6px; height: 18px; line-height: 16px; padding: 0 6px"
-              >
-                {{ data.count }}
-              </el-tag>
+              <span class="custom-tree-node__label">
+                <span>{{ data.label }}</span>
+                <el-tag
+                  v-if="data.count !== undefined"
+                  size="small"
+                  type="info"
+                  round
+                  style="margin-left: 6px; height: 18px; line-height: 16px; padding: 0 6px"
+                >
+                  {{ data.count }}
+                </el-tag>
+              </span>
+              <span v-if="$slots['node-actions']" class="custom-tree-node__actions" @click.stop>
+                <slot name="node-actions" :data="data"></slot>
+              </span>
             </span>
           </template>
         </el-tree>
@@ -120,7 +125,26 @@ defineExpose({ selectedKey })
 .custom-tree-node {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex: 1;
   font-size: 14px;
+}
+
+.custom-tree-node__label {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.custom-tree-node__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+:deep(.el-tree-node__content:hover) .custom-tree-node__actions {
+  opacity: 1;
 }
 </style>

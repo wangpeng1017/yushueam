@@ -18,10 +18,9 @@ import baseDataMock from './mock-data/eam-base-data'
 import purchaseRequestMock from './mock-data/eam-purchase-request'
 import equipmentClassTreeMock from './mock-data/eam-equipment-class-tree'
 import reportMock from './mock-data/eam-report'
-import npiMock from './mock-data/eam-npi'
 import mobileMock from './mock-data/eam-mobile'
 
-const allMocks = [...authMock, ...equipmentMock, ...workorderMock, ...extraMock, ...routeMock, ...knowledgeMock, ...projectMock, ...iotOeeMock, ...toolingMock, ...plantConfigMock, ...feishuApprovalMock, ...erpSyncMock, ...baseDataMock, ...purchaseRequestMock, ...equipmentClassTreeMock, ...reportMock, ...npiMock, ...mobileMock]
+const allMocks = [...authMock, ...equipmentMock, ...workorderMock, ...extraMock, ...routeMock, ...knowledgeMock, ...projectMock, ...iotOeeMock, ...toolingMock, ...plantConfigMock, ...feishuApprovalMock, ...erpSyncMock, ...baseDataMock, ...purchaseRequestMock, ...equipmentClassTreeMock, ...reportMock, ...mobileMock]
 
 function parseQS(url: string): Record<string, string> {
   const q: Record<string, string> = {}

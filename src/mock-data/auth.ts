@@ -127,16 +127,14 @@ const eamMenus = [
       { path: 'diyPurchaseDashboard', name: '采购到货看板', icon: 'ep:data-line', component: 'eam/diyEquipmentPartPurchase/dashboard', componentName: 'EamDiyPurchaseDashboard', visible: true, keepAlive: true, parentId: 95 },
     ]
   },
-  // 非标设备研制（4 个独立子菜单：项目总览 / 方案评审 / BOM管理 / 装配与验收）
+  // 非标设备研制（2026-09-04 改版：项目管理 / 项目知识库，纯前端 demo，数据 localStorage 持久化）
   {
     path: '/eam/npi',
     name: '非标设备研制', icon: 'ep:cpu', component: '#',
     visible: true, keepAlive: true, alwaysShow: true, parentId: 0,
     children: [
-      { path: 'npiOverview', name: '项目总览', icon: 'ep:data-line', component: 'eam/npi/overview/page', componentName: 'EamNpiOverview', visible: true, keepAlive: true, parentId: 230 },
-      { path: 'npiDesignReview', name: '方案评审', icon: 'ep:document-checked', component: 'eam/npi/designReview/page', componentName: 'EamNpiDesignReview', visible: true, keepAlive: true, parentId: 230 },
-      { path: 'npiBom', name: 'BOM 管理', icon: 'ep:tickets', component: 'eam/npi/bom/page', componentName: 'EamNpiBom', visible: true, keepAlive: true, parentId: 230 },
-      { path: 'npiAcceptance', name: '装配与验收', icon: 'ep:medal', component: 'eam/npi/acceptance/page', componentName: 'EamNpiAcceptance', visible: true, keepAlive: true, parentId: 230 }
+      { path: 'npiProject', name: '项目管理', icon: 'ep:calendar', component: 'eam/npi/project/page', componentName: 'EamNpiProject', visible: true, keepAlive: true, parentId: 230 },
+      { path: 'npiKnowledge', name: '项目知识库', icon: 'ep:folder-opened', component: 'eam/npi/knowledge/page', componentName: 'EamNpiKnowledge', visible: true, keepAlive: true, parentId: 230 }
     ]
   },
   // 报表中心（独立顶级菜单，全端可见，置于采购管理下方）

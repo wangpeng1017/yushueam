@@ -263,7 +263,8 @@ const remainingRouter: AppRouteRecordRaw[] = [
     meta: { hidden: true, title: '项目流程详情', activeMenu: '/eam/project/customEquipmentProject', noCache: false }
   },
   { path: '/eam/purchase/index', redirect: '/eam/purchase/equipmentPurchaseRequest', meta: { hidden: true } },
-  { path: '/eam/npi/index', redirect: '/eam/npi/npiOverview', meta: { hidden: true } },
+  { path: '/eam/npi/index', redirect: '/eam/npi/npiProject', meta: { hidden: true } },
+  { path: '/eam/npi/npiOverview', redirect: '/eam/npi/npiProject', meta: { hidden: true } },
   { path: '/eam/report/index', redirect: '/eam/report/dashboard', meta: { hidden: true } },
   {
     path: '/:pathMatch(.*)*',
