@@ -27,7 +27,7 @@
         </div>
         <div class="gantt-row gantt-header-row2">
           <div class="gantt-label-cell sticky-corner2"></div>
-          <div v-for="d in days" :key="d.date" class="gantt-day-cell" :style="{ width: dayWidth + 'px' }">
+          <div v-for="d in days" :key="d.date" class="gantt-day-cell" :class="{ 'no-tick': !d.label }" :style="{ width: dayWidth + 'px' }">
             {{ d.label }}
           </div>
         </div>
@@ -85,7 +85,9 @@ const days = computed(() => {
   const list: { date: string; label: string; monthKey: string }[] = []
   let cur = rangeStart.value
   while (!cur.isAfter(rangeEnd.value, 'day')) {
-    list.push({ date: cur.format('YYYY-MM-DD'), label: String(cur.date()), monthKey: cur.format('YYYY-MM') })
+    // 月粒度下每天仅 6px，只在 1/8/15/22 号显示刻度，避免数字挤成一串
+    const showLabel = granularity.value === 'week' || [1, 8, 15, 22].includes(cur.date())
+    list.push({ date: cur.format('YYYY-MM-DD'), label: showLabel ? String(cur.date()) : '', monthKey: cur.format('YYYY-MM') })
     cur = cur.add(1, 'day')
   }
   return list
@@ -180,6 +182,9 @@ function barClass(s: NpiStage): string {
   font-size: 11px; color: #909399; padding: 4px 0; background: #F5F7FA;
 }
 .gantt-month-cell { font-weight: 600; color: #606266; }
+/* 月粒度下日刻度只在 1/8/15/22 号有文字，允许溢出到相邻空格子；无文字的格子不画竖线 */
+.gantt-day-cell { white-space: nowrap; overflow: visible; }
+.gantt-day-cell.no-tick { border-right-color: transparent; }
 
 .gantt-body-row { cursor: pointer; }
 .gantt-body-row:hover .gantt-label-cell { background: #F0F7FF; }
