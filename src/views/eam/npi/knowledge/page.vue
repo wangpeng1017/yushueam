@@ -8,11 +8,13 @@
 
     <template #default>
       <div class="kb-toolbar">
-        <el-upload :show-file-list="false" :auto-upload="false" :disabled="!selectedFolderId || selectedFolder?.readonly" :on-change="handleUpload">
-          <el-button type="primary" :disabled="!selectedFolderId || selectedFolder?.readonly">
-            <Icon icon="ep:upload" class="mr-5px" />上传文件
-          </el-button>
-        </el-upload>
+        <el-button
+          type="primary"
+          :disabled="!selectedFolderId || selectedFolder?.readonly"
+          @click="uploadVisible = true"
+        >
+          <Icon icon="ep:upload" class="mr-5px" />上传文件
+        </el-button>
         <el-button type="primary" plain :disabled="!selectedFolderId || selectedFolder?.readonly" @click="handleAddFolderForCurrent">
           <Icon icon="ep:folder-add" class="mr-5px" />新建文件夹
         </el-button>
@@ -57,6 +59,14 @@
       </ListPage>
     </template>
   </TreeListLayout>
+
+  <UploadDocDialog
+    v-model="uploadVisible"
+    :title="uploadDialogTitle"
+    :required-docs="[]"
+    :existing-docs="[]"
+    @confirm="handleUploadConfirm"
+  />
 </template>
 
 <script setup lang="ts" name="EamNpiKnowledge">
@@ -65,6 +75,7 @@ import { useNpiStore } from '@/store/modules/npi'
 import { useUserStore } from '@/store/modules/user'
 import type { KbFile } from '@/mock-data/eam-npi'
 import TreeListLayout from '../../_tooling-shared/TreeListLayout.vue'
+import UploadDocDialog from '../project/UploadDocDialog.vue'
 
 const npiStore = useNpiStore()
 const userStore = useUserStore()
@@ -159,14 +170,16 @@ function formatSize(bytes?: number): string {
 }
 
 // ==================== 上传 / 删除文件 ====================
-function handleUpload(uploadFile: any) {
+const uploadVisible = ref(false)
+const uploadDialogTitle = computed(() => `上传到 · ${selectedFolder.value?.name ?? ''}`)
+
+function handleUploadConfirm(files: { name: string; size: number; type: string }[]) {
   if (!selectedFolderId.value) return
-  const name = uploadFile?.name || uploadFile?.raw?.name || '未命名文件'
-  const size = uploadFile?.size ?? uploadFile?.raw?.size ?? 0
-  const type = name.includes('.') ? name.slice(name.lastIndexOf('.') + 1) : ''
   try {
-    npiStore.addFile(selectedFolderId.value, { name, size, type, uploader: userStore.getUser.nickname || '管理员' })
-    message.success('文件已上传')
+    files.forEach((f) =>
+      npiStore.addFile(selectedFolderId.value, { ...f, uploader: userStore.getUser.nickname || '管理员' })
+    )
+    message.success(`已上传 ${files.length} 个文件`)
   } catch (e: any) {
     message.error(e?.message || '上传失败')
   }

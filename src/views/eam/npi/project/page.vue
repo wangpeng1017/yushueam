@@ -1,5 +1,5 @@
 <template>
-  <div class="npi-project-page">
+  <div class="npi-project-page" v-if="!detailProjectId">
     <QueryForm :model="queryParams" :cols="4" @search="handleQuery" @reset="resetQuery">
       <QueryItem label="项目编号">
         <el-input v-model="queryParams.projectCode" clearable placeholder="如 CIP045" />
@@ -137,13 +137,13 @@
         <el-button type="primary" @click="submitCreate">确定</el-button>
       </template>
     </Dialog>
-
-    <ProjectDetail v-model="detailVisible" :project-id="detailProjectId" />
   </div>
+
+  <ProjectDetail v-else :project-id="detailProjectId" @back="handleBack" />
 </template>
 
 <script setup lang="ts" name="EamNpiProject">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useNpiStore } from '@/store/modules/npi'
 import type { NpiProject, ProjectStatus } from '@/mock-data/eam-npi'
@@ -211,12 +211,23 @@ function statusText(status?: ProjectStatus): string {
 }
 
 // ==================== 详情 ====================
-const detailVisible = ref(false)
 const detailProjectId = ref<string | null>(null)
+
+function scrollContentToTop() {
+  const container = document.querySelector('.app-main')
+  if (container) container.scrollTo(0, 0)
+  window.scrollTo(0, 0)
+}
+
 function openDetail(project?: NpiProject) {
   if (!project) return
   detailProjectId.value = project.id
-  detailVisible.value = true
+  nextTick(scrollContentToTop)
+}
+
+function handleBack() {
+  detailProjectId.value = null
+  nextTick(scrollContentToTop)
 }
 
 // ==================== 删除 / 重置演示数据 ====================

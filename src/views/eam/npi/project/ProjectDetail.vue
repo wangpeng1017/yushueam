@@ -1,16 +1,26 @@
 <template>
-  <Dialog v-model="visible" :title="dialogTitle" width="1100px">
-    <template v-if="project">
-      <el-descriptions :column="3" border size="small" class="mb-15px">
+  <div class="npi-project-detail">
+    <ContentWrap v-if="project">
+      <div class="detail-header">
+        <el-button @click="emit('back')">
+          <Icon icon="ep:arrow-left" class="mr-5px" />返回列表
+        </el-button>
+        <div class="detail-title">
+          <span class="detail-title-text">{{ project.projectCode }} · {{ project.projectName }}</span>
+          <el-tag size="small" :type="statusTag(project.status)">{{ statusText(project.status) }}</el-tag>
+        </div>
+      </div>
+
+      <el-descriptions :column="4" border size="small" class="mb-15px">
         <el-descriptions-item label="项目编号">{{ project.projectCode }}</el-descriptions-item>
         <el-descriptions-item label="负责人">{{ project.owner }}</el-descriptions-item>
         <el-descriptions-item label="状态">
           <el-tag size="small" :type="statusTag(project.status)">{{ statusText(project.status) }}</el-tag>
         </el-descriptions-item>
+        <el-descriptions-item label="当前阶段">{{ project.currentStage }}. {{ currentStage?.name ?? '-' }}</el-descriptions-item>
         <el-descriptions-item label="计划开始">{{ project.planStart }}</el-descriptions-item>
         <el-descriptions-item label="计划结束">{{ project.planEnd }}</el-descriptions-item>
-        <el-descriptions-item label="当前阶段">{{ project.currentStage }}. {{ currentStage?.name ?? '-' }}</el-descriptions-item>
-        <el-descriptions-item label="项目说明" :span="3">{{ project.description || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="项目说明" :span="2">{{ project.description || '-' }}</el-descriptions-item>
       </el-descriptions>
 
       <el-tabs v-model="activeTab">
@@ -67,9 +77,7 @@
             </el-table-column>
             <el-table-column label="操作" width="100" align="center" fixed="right">
               <template #default="{ row }">
-                <el-upload :show-file-list="false" :auto-upload="false" :on-change="(f: any) => handleUpload(row, f)">
-                  <el-button link type="primary">上传资料</el-button>
-                </el-upload>
+                <el-button link type="primary" @click="openUpload(row)">上传资料</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -109,20 +117,33 @@
           <el-empty v-if="stagesWithDocs.length === 0" description="暂无已上传资料" :image-size="60" />
         </el-tab-pane>
       </el-tabs>
-    </template>
-  </Dialog>
+    </ContentWrap>
+    <ContentWrap v-else>
+      <el-empty description="项目不存在或已被删除" :image-size="80">
+        <el-button @click="emit('back')">返回列表</el-button>
+      </el-empty>
+    </ContentWrap>
 
-  <Dialog v-model="forceVisible" title="资料未齐全，是否强制推进" width="520px">
-    <p class="force-tip">当前阶段以下必传资料尚未上传：</p>
-    <ul class="missing-list">
-      <li v-for="m in missingDocs" :key="m">{{ m }}</li>
-    </ul>
-    <el-input v-model="forceReason" type="textarea" :rows="3" placeholder="请填写强制推进理由" />
-    <template #footer>
-      <el-button @click="forceVisible = false">取消</el-button>
-      <el-button type="danger" @click="confirmForceAdvance">确认强推</el-button>
-    </template>
-  </Dialog>
+    <Dialog v-model="forceVisible" title="资料未齐全，是否强制推进" width="520px">
+      <p class="force-tip">当前阶段以下必传资料尚未上传：</p>
+      <ul class="missing-list">
+        <li v-for="m in missingDocs" :key="m">{{ m }}</li>
+      </ul>
+      <el-input v-model="forceReason" type="textarea" :rows="3" placeholder="请填写强制推进理由" />
+      <template #footer>
+        <el-button @click="forceVisible = false">取消</el-button>
+        <el-button type="danger" @click="confirmForceAdvance">确认强推</el-button>
+      </template>
+    </Dialog>
+
+    <UploadDocDialog
+      v-model="uploadVisible"
+      :title="uploadDialogTitle"
+      :required-docs="uploadStage?.requiredDocs ?? []"
+      :existing-docs="uploadStage?.docs ?? []"
+      @confirm="handleUploadConfirm"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -131,24 +152,19 @@ import dayjs from 'dayjs'
 import { useNpiStore } from '@/store/modules/npi'
 import type { NpiStage, ProjectStatus } from '@/mock-data/eam-npi'
 import IssueTab from './IssueTab.vue'
+import UploadDocDialog from './UploadDocDialog.vue'
 
-const props = defineProps<{ modelValue: boolean; projectId: string | null }>()
-const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()
+const props = defineProps<{ projectId: string }>()
+const emit = defineEmits<{ (e: 'back'): void }>()
 
 const npiStore = useNpiStore()
 const message = useMessage()
 
-const visible = computed({
-  get: () => props.modelValue,
-  set: (v: boolean) => emit('update:modelValue', v)
-})
-
 const project = computed(() => npiStore.projects.find((p) => p.id === props.projectId) || null)
 const currentStage = computed(() => project.value?.stages.find((s) => s.idx === project.value?.currentStage))
-const dialogTitle = computed(() => `项目详情 - ${project.value?.projectCode ?? ''} ${project.value?.projectName ?? ''}`)
 
 const activeTab = ref('stage')
-watch(() => props.modelValue, (v) => { if (v) activeTab.value = 'stage' })
+watch(() => props.projectId, () => { activeTab.value = 'stage' })
 
 const nextStageLabel = computed(() => {
   if (!project.value) return ''
@@ -181,13 +197,21 @@ function editStage(idx: number, patch: Partial<Pick<NpiStage, 'name' | 'owner' |
   npiStore.updateStage(project.value.id, idx, patch)
 }
 
-function handleUpload(row: NpiStage, uploadFile: any) {
-  if (!project.value) return
-  const name = uploadFile?.name || uploadFile?.raw?.name || '未命名文件'
-  const size = uploadFile?.size ?? uploadFile?.raw?.size ?? 0
-  const type = name.includes('.') ? name.slice(name.lastIndexOf('.') + 1) : ''
-  npiStore.addStageDoc(project.value.id, row.idx, { name, size, type })
-  message.success('资料已上传并归档到知识库')
+// ==================== 上传资料 ====================
+const uploadVisible = ref(false)
+const uploadStageIdx = ref<number | null>(null)
+const uploadStage = computed(() => project.value?.stages.find((s) => s.idx === uploadStageIdx.value) ?? null)
+const uploadDialogTitle = computed(() => `上传阶段资料 · ${uploadStage.value?.name ?? ''}`)
+
+function openUpload(row: NpiStage) {
+  uploadStageIdx.value = row.idx
+  uploadVisible.value = true
+}
+
+function handleUploadConfirm(files: { name: string; size: number; type: string }[]) {
+  if (!project.value || uploadStageIdx.value === null) return
+  files.forEach((f) => npiStore.addStageDoc(project.value!.id, uploadStageIdx.value!, f))
+  message.success(`已上传 ${files.length} 个文件`)
 }
 
 // ==================== 推进 / 强推 ====================
@@ -248,6 +272,9 @@ function formatSize(bytes?: number): string {
 </script>
 
 <style scoped>
+.detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+.detail-title { display: flex; align-items: center; gap: 10px; }
+.detail-title-text { font-size: 16px; font-weight: 600; color: #303133; }
 .advance-bar { margin-top: 12px; display: flex; justify-content: center; }
 .section-title { font-size: 14px; font-weight: 600; color: #303133; margin-bottom: 8px; padding-left: 8px; border-left: 3px solid #1677FF; }
 .doc-group { margin-bottom: 16px; }
