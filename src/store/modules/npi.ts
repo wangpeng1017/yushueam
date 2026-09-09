@@ -8,10 +8,16 @@ import { defineStore } from 'pinia'
 import dayjs from 'dayjs'
 import {
   buildSeed,
+  DEFAULT_ISSUE_TYPES,
+  ISSUE_ALLOWED_ACTIONS,
+  ISSUE_ACTION_TEXT,
   STAGE_TEMPLATE,
   type NpiProject,
   type NpiStage,
   type NpiIssue,
+  type NpiIssueFlow,
+  type IssueFlowAction,
+  type IssueStatus,
   type KbFolder,
   type KbFile,
   type NpiDoc,
@@ -50,9 +56,10 @@ function buildNewStages(planStart: string, planEnd: string, owner: string): NpiS
   const s = dayjs(planStart)
   const e = dayjs(planEnd)
   const totalDays = Math.max(e.diff(s, 'day'), 7)
+  const n = STAGE_TEMPLATE.length
   return STAGE_TEMPLATE.map((tpl, i) => {
-    const segStart = s.add(Math.round((totalDays * i) / 8), 'day')
-    const segEndRaw = i === 7 ? e : s.add(Math.round((totalDays * (i + 1)) / 8) - 1, 'day')
+    const segStart = s.add(Math.round((totalDays * i) / n), 'day')
+    const segEndRaw = i === n - 1 ? e : s.add(Math.round((totalDays * (i + 1)) / n) - 1, 'day')
     const segEnd = segEndRaw.isBefore(segStart) ? segStart : segEndRaw
     return {
       idx: tpl.idx,
@@ -83,12 +90,45 @@ export interface AddIssuePayload {
   stageIdx: number
   problem: string
   cause: string
-  tempMeasure: string
-  longMeasure: string
+  /** 措施由处理 / 优化环节填写，新建时不传 */
+  tempMeasure?: string
+  longMeasure?: string
   issueType: NpiIssue['issueType']
   owner: string
+  handler: string
   occurDate: string
   planDoneDate: string
+}
+
+/** 流转入参：处理/优化带措施，打回带理由，结案无附加字段 */
+export interface IssueTransitionPayload {
+  tempMeasure?: string
+  longMeasure?: string
+  reason?: string
+  /** 操作人；不传则按动作取处理人（处理/优化）或阶段责任人（打回/结案） */
+  operator?: string
+}
+
+/** 动作 → 流转后状态。与 ISSUE_ALLOWED_ACTIONS 一起构成状态机的全部规则 */
+const ACTION_TARGET: Record<IssueFlowAction, IssueStatus> = {
+  create: 'pending',
+  handle: 'handled',
+  optimize: 'optimized',
+  reject: 'pending',
+  close: 'closed'
+}
+
+/**
+ * 旧存档兼容：早期 issue 是 open/closed 两态、无 flow/handler。
+ * 读档时统一补齐，避免页面上出现空状态标签或空流转记录。
+ */
+function normalizeIssue(raw: any): NpiIssue {
+  const legacyStatus: Record<string, IssueStatus> = { open: 'pending', closed: 'closed' }
+  const status: IssueStatus = legacyStatus[raw?.status] ?? raw?.status ?? 'pending'
+  const flow: NpiIssueFlow[] = Array.isArray(raw?.flow) && raw.flow.length
+    ? raw.flow
+    : [{ time: `${raw?.occurDate ?? today()} 00:00`, action: 'create' as const, operator: raw?.owner ?? '', remark: '新建异常' }]
+  return { ...raw, handler: raw?.handler ?? '', status, flow }
 }
 
 export interface AdvanceResult {
@@ -102,6 +142,8 @@ export const useNpiStore = defineStore('npi', {
     issues: [] as NpiIssue[],
     folders: [] as KbFolder[],
     files: [] as KbFile[],
+    /** 异常类型字典：用户可自维护，随其余数据一起落 localStorage */
+    issueTypes: [...DEFAULT_ISSUE_TYPES] as string[],
     loaded: false
   }),
 
@@ -132,9 +174,11 @@ export const useNpiStore = defineStore('npi', {
         if (raw) {
           const data = JSON.parse(raw)
           this.projects = data.projects || []
-          this.issues = data.issues || []
+          this.issues = (data.issues || []).map(normalizeIssue)
           this.folders = data.folders || []
           this.files = data.files || []
+          // 旧版本存档没有 issueTypes，回落默认字典
+          this.issueTypes = data.issueTypes?.length ? data.issueTypes : [...DEFAULT_ISSUE_TYPES]
           this.loaded = true
           return
         }
@@ -148,7 +192,8 @@ export const useNpiStore = defineStore('npi', {
     persist() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          projects: this.projects, issues: this.issues, folders: this.folders, files: this.files
+          projects: this.projects, issues: this.issues, folders: this.folders,
+          files: this.files, issueTypes: this.issueTypes
         }))
       } catch (e) {
         console.error('NPI store persist failed:', e)
@@ -161,6 +206,7 @@ export const useNpiStore = defineStore('npi', {
       this.issues = seed.issues
       this.folders = seed.folders
       this.files = seed.files
+      this.issueTypes = [...DEFAULT_ISSUE_TYPES]
       this.persist()
     },
 
@@ -225,6 +271,58 @@ export const useNpiStore = defineStore('npi', {
       this.persist()
     },
 
+    /**
+     * 在第 afterIdx 个阶段之后插入一个新阶段（新增阶段的唯一入口）。
+     * 阶段 idx 是「位置序号」不是稳定 ID，插入后整表重排，因此必须同步位移全部引用点：
+     * project.currentStage、issues.stageIdx、知识库 folders/files.stageIdx。
+     * 新增出口时务必接这个入口，不要在别处自行拼 stages 数组。
+     */
+    insertStageAfter(projectId: string, afterIdx: number): NpiStage | null {
+      const project = this.projects.find((p) => p.id === projectId)
+      if (!project) return null
+      const pos = project.stages.findIndex((s) => s.idx === afterIdx)
+      if (pos < 0) return null
+
+      const prev = project.stages[pos]
+      const start = dayjs(prev.planEnd).add(1, 'day')
+      const newStage: NpiStage = {
+        idx: afterIdx + 1,
+        name: '新阶段',
+        owner: prev.owner,
+        planStart: start.format('YYYY-MM-DD'),
+        planEnd: start.add(2, 'day').format('YYYY-MM-DD'),
+        progress: 0,
+        status: 'pending',
+        requiredDocs: [],
+        docs: [],
+        logs: [{
+          time: `${today()} ${dayjs().format('HH:mm')}`,
+          action: 'edit' as const,
+          operator: prev.owner,
+          remark: `在「${prev.name}」之后新增阶段`
+        }]
+      }
+
+      const merged = [...project.stages.slice(0, pos + 1), newStage, ...project.stages.slice(pos + 1)]
+      project.stages = merged.map((s, i) => ({ ...s, idx: i + 1 }))
+      if (project.currentStage > afterIdx) project.currentStage += 1
+      this.projects = [...this.projects]
+
+      const shift = (idx: number | undefined) => (idx !== undefined && idx > afterIdx ? idx + 1 : idx)
+      this.issues = this.issues.map((i) =>
+        i.projectId === projectId ? { ...i, stageIdx: shift(i.stageIdx)! } : i
+      )
+      this.folders = this.folders.map((f) =>
+        f.projectId === projectId ? { ...f, stageIdx: shift(f.stageIdx) } : f
+      )
+      this.files = this.files.map((f) =>
+        f.projectId === projectId ? { ...f, stageIdx: shift(f.stageIdx) } : f
+      )
+
+      this.persist()
+      return newStage
+    },
+
     /** 推进到下一阶段；force=true 时忽略缺失资料强推，reason 记入阶段日志 */
     advanceStage(projectId: string, force = false, reason = ''): AdvanceResult {
       const project = this.projects.find((p) => p.id === projectId)
@@ -246,7 +344,8 @@ export const useNpiStore = defineStore('npi', {
           : '资料齐全，正常推进下一阶段'
       }
 
-      const isLast = stage.idx >= 8
+      // 阶段总数可由「插入阶段」变动，不能写死 8
+      const isLast = stage.idx >= project.stages.length
       project.stages = project.stages.map((s) => {
         if (s.idx === stage.idx) {
           return { ...s, status: 'completed', progress: 100, logs: [...s.logs, logEntry] }
@@ -289,13 +388,14 @@ export const useNpiStore = defineStore('npi', {
           id: projFolderId, parentId: 'kb-root-project', name: project.projectName, projectId: project.id
         }]
       }
-      const stageFolderId = `${projFolderId}-s${stageIdx}`
-      if (!this.folders.find((f) => f.id === stageFolderId)) {
-        this.folders = [...this.folders, {
-          id: stageFolderId, parentId: projFolderId, name: stage.name, projectId: project.id, stageIdx
-        }]
+      // 阶段文件夹按 projectId + stageIdx 字段定位（不能靠 id 拼 -s{idx}）：
+      // 插入阶段会重排序号，folder.id 必须保持稳定，否则旧夹认不出来会重复建夹
+      let stageFolder = this.folders.find((f) => f.projectId === project.id && f.stageIdx === stageIdx)
+      if (!stageFolder) {
+        stageFolder = { id: uid('kbfolder'), parentId: projFolderId, name: stage.name, projectId: project.id, stageIdx }
+        this.folders = [...this.folders, stageFolder]
       }
-      this.files = [...this.files, { ...newDoc, id: uid('kbfile'), folderId: stageFolderId, projectId: project.id, stageIdx }]
+      this.files = [...this.files, { ...newDoc, id: uid('kbfile'), folderId: stageFolder.id, projectId: project.id, stageIdx }]
 
       this.persist()
     },
@@ -310,14 +410,21 @@ export const useNpiStore = defineStore('npi', {
         seq,
         problem: payload.problem,
         cause: payload.cause,
-        tempMeasure: payload.tempMeasure,
-        longMeasure: payload.longMeasure,
+        tempMeasure: payload.tempMeasure ?? '',
+        longMeasure: payload.longMeasure ?? '',
         issueType: payload.issueType,
         owner: payload.owner,
+        handler: payload.handler,
         occurDate: payload.occurDate,
         planDoneDate: payload.planDoneDate,
         actualDoneDate: '',
-        status: 'open'
+        status: 'pending',
+        flow: [{
+          time: `${today()} ${dayjs().format('HH:mm')}`,
+          action: 'create',
+          operator: payload.owner,
+          remark: `新建异常，指定处理人：${payload.handler || '未指定'}`
+        }]
       }
       this.issues = [...this.issues, issue]
       this.persist()
@@ -328,9 +435,82 @@ export const useNpiStore = defineStore('npi', {
       this.persist()
     },
 
-    closeIssue(id: string) {
-      this.issues = this.issues.map((i) => (i.id === id ? { ...i, status: 'closed', actualDoneDate: today() } : i))
+    /**
+     * 异常闭环流转的唯一入口：处理 / 优化 / 打回 / 结案全部走这里。
+     * 集中做「合法性校验 → 写措施字段 → 追加流转记录 → 持久化」，
+     * 页面按钮不得自行 updateIssue 改 status，否则流转记录会缺条。
+     * 合法性以 ISSUE_ALLOWED_ACTIONS 为准，与操作列按钮同一份数据源。
+     */
+    transitionIssue(id: string, action: IssueFlowAction, payload: IssueTransitionPayload = {}) {
+      const issue = this.issues.find((i) => i.id === id)
+      if (!issue) throw new Error('异常记录不存在')
+      if (!ISSUE_ALLOWED_ACTIONS[issue.status].includes(action)) {
+        throw new Error(`当前状态「${issue.status}」不允许执行「${ISSUE_ACTION_TEXT[action]}」`)
+      }
+
+      const operator = payload.operator
+        || (action === 'handle' || action === 'optimize' ? issue.handler : issue.owner)
+      const nextStatus = ACTION_TARGET[action]
+
+      const remark = action === 'reject'
+        ? `打回理由：${payload.reason ?? ''}`
+        : action === 'close'
+          ? '结案：确认处理结果有效'
+          : [
+              payload.tempMeasure ? `临时措施：${payload.tempMeasure}` : '',
+              payload.longMeasure ? `长期措施：${payload.longMeasure}` : ''
+            ].filter(Boolean).join('；')
+
+      const entry: NpiIssueFlow = {
+        time: `${today()} ${dayjs().format('HH:mm')}`,
+        action,
+        operator,
+        remark
+      }
+
+      this.issues = this.issues.map((i) => {
+        if (i.id !== id) return i
+        return {
+          ...i,
+          // 打回不清空已填措施：处理人在原基础上改
+          tempMeasure: payload.tempMeasure ?? i.tempMeasure,
+          longMeasure: payload.longMeasure ?? i.longMeasure,
+          status: nextStatus,
+          actualDoneDate: action === 'close' ? today() : i.actualDoneDate,
+          flow: [...i.flow, entry]
+        }
+      })
       this.persist()
+    },
+
+    // ==================== 异常类型字典（用户自维护） ====================
+    /** 新增一个异常类型；重名直接抛错，由调用方提示 */
+    addIssueType(name: string) {
+      const value = name.trim()
+      if (!value) throw new Error('类型名称不能为空')
+      if (this.issueTypes.includes(value)) throw new Error('该类型已存在')
+      this.issueTypes = [...this.issueTypes, value]
+      this.persist()
+    },
+
+    /** 重命名异常类型：同步改写已引用该类型的异常记录，避免出现悬空取值 */
+    renameIssueType(oldName: string, newName: string) {
+      const value = newName.trim()
+      if (!value) throw new Error('类型名称不能为空')
+      if (value === oldName) return
+      if (this.issueTypes.includes(value)) throw new Error('该类型已存在')
+      this.issueTypes = this.issueTypes.map((t) => (t === oldName ? value : t))
+      this.issues = this.issues.map((i) => (i.issueType === oldName ? { ...i, issueType: value } : i))
+      this.persist()
+    },
+
+    /** 删除异常类型：已被异常记录引用时拒绝删除（返回引用条数供提示） */
+    removeIssueType(name: string): { ok: boolean; usedBy: number } {
+      const usedBy = this.issues.filter((i) => i.issueType === name).length
+      if (usedBy > 0) return { ok: false, usedBy }
+      this.issueTypes = this.issueTypes.filter((t) => t !== name)
+      this.persist()
+      return { ok: true, usedBy: 0 }
     },
 
     // ==================== 知识库（自由文件夹/文件管理，根目录仅禁删除） ====================

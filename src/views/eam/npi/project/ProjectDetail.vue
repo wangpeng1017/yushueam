@@ -75,9 +75,14 @@
             <el-table-column label="资料" width="70" align="center">
               <template #default="{ row }">{{ row?.docs?.length ?? 0 }}/{{ row?.requiredDocs?.length ?? 0 }}</template>
             </el-table-column>
-            <el-table-column label="操作" width="100" align="center" fixed="right">
+            <el-table-column label="操作" width="140" align="center" fixed="right">
               <template #default="{ row }">
                 <el-button link type="primary" @click="openUpload(row)">上传资料</el-button>
+                <el-tooltip content="在此行下方插入一个阶段" placement="top">
+                  <el-button link type="primary" class="ml-6px" @click="handleInsertStage(row.idx)">
+                    <Icon icon="ep:plus" />
+                  </el-button>
+                </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
@@ -154,7 +159,8 @@ watch(() => props.projectId, () => { activeTab.value = 'stage' })
 
 const nextStageLabel = computed(() => {
   if (!project.value) return ''
-  if (project.value.currentStage >= 8) return '完成交付'
+  // 阶段总数可由「插入阶段」变动，以实际长度为准
+  if (project.value.currentStage >= project.value.stages.length) return '完成交付'
   return project.value.stages.find((s) => s.idx === project.value!.currentStage + 1)?.name || ''
 })
 
@@ -181,6 +187,16 @@ function stageStatusText(row?: NpiStage): string {
 function editStage(idx: number, patch: Partial<Pick<NpiStage, 'name' | 'owner' | 'planStart' | 'planEnd' | 'progress'>>) {
   if (!project.value) return
   npiStore.updateStage(project.value.id, idx, patch)
+}
+
+function handleInsertStage(afterIdx: number) {
+  if (!project.value) return
+  const stage = npiStore.insertStageAfter(project.value.id, afterIdx)
+  if (!stage) {
+    message.error('插入阶段失败：未找到该阶段')
+    return
+  }
+  message.success(`已在第 ${afterIdx} 阶段后插入新阶段，当前共 ${project.value.stages.length} 个阶段`)
 }
 
 // ==================== 上传资料 ====================

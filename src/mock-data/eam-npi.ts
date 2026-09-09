@@ -9,8 +9,14 @@ import dayjs from 'dayjs'
 
 export type StageStatus = 'pending' | 'in_progress' | 'completed'
 export type ProjectStatus = 'not_started' | 'in_progress' | 'delivered'
-export type IssueType = '结构设计' | '电气问题' | '装配问题' | '软件调试' | '品质异常' | '其他'
-export type IssueStatus = 'open' | 'closed'
+/** 异常类型是用户可自维护的字典，取值不再写死为联合类型；默认项见 DEFAULT_ISSUE_TYPES */
+export type IssueType = string
+/**
+ * 异常闭环状态机（2026-09-09 设计：docs/plans/2026-09-09-npi-issue-workflow-design.md）
+ * pending 待处理 → handled 已处理待确认 / optimized 已优化待确认 → closed 已结案
+ */
+export type IssueStatus = 'pending' | 'handled' | 'optimized' | 'closed'
+export type IssueFlowAction = 'create' | 'handle' | 'optimize' | 'reject' | 'close'
 export type StageLogAction = 'advance' | 'force_advance' | 'edit'
 
 export interface NpiDoc {
@@ -65,11 +71,49 @@ export interface NpiIssue {
   tempMeasure: string
   longMeasure: string
   issueType: IssueType
+  /** 阶段责任人：由所属阶段自动带出 */
   owner: string
+  /** 处理人：下拉选择，可与阶段责任人不同 */
+  handler: string
   occurDate: string
   planDoneDate: string
   actualDoneDate: string
   status: IssueStatus
+  /** 流转记录：新建/处理/优化/打回/结案逐条追加，表格展开行以时间线展示 */
+  flow: NpiIssueFlow[]
+}
+
+export interface NpiIssueFlow {
+  time: string
+  action: IssueFlowAction
+  operator: string
+  remark: string
+}
+
+/**
+ * 状态 → 允许动作。这是「按钮矩阵」与「store 流转校验」的唯一数据源：
+ * 操作列按钮由它渲染，store 也用它拦非法流转。新增状态时两边自动跟上，不会漏出口。
+ */
+export const ISSUE_ALLOWED_ACTIONS: Record<IssueStatus, IssueFlowAction[]> = {
+  pending: ['handle', 'optimize'],
+  handled: ['optimize', 'reject', 'close'],
+  optimized: ['reject', 'close'],
+  closed: []
+}
+
+export const ISSUE_STATUS_TEXT: Record<IssueStatus, string> = {
+  pending: '待处理',
+  handled: '已处理待确认',
+  optimized: '已优化待确认',
+  closed: '已结案'
+}
+
+export const ISSUE_ACTION_TEXT: Record<IssueFlowAction, string> = {
+  create: '新建',
+  handle: '处理',
+  optimize: '优化',
+  reject: '打回',
+  close: '结案'
 }
 
 export interface KbFolder {
@@ -85,6 +129,10 @@ export interface KbFile extends NpiDoc {
   projectId?: string
   stageIdx?: number
 }
+
+// ==================== 异常类型默认字典（用户可在页面上增删改） ====================
+
+export const DEFAULT_ISSUE_TYPES: string[] = ['结构设计', '电气问题', '装配问题', '软件调试', '品质异常', '其他']
 
 // ==================== 8 阶段模板（design §3 表） ====================
 
@@ -290,42 +338,135 @@ function buildProjectStages(spec: ProjectSpec, seq: { n: number }): NpiStage[] {
   })
 }
 
+function flow(action: IssueFlowAction, time: string, operator: string, remark: string): NpiIssueFlow {
+  return { action, time, operator, remark }
+}
+
+/**
+ * 演示异常数据：10 条铺满四个状态与两条路径（处理 / 优化），
+ * 其中 iss-4、iss-7 给最长流转链（含打回、含 ②→③ 升级），用于演示闭环。
+ */
 function buildIssues(): NpiIssue[] {
   return [
+    // ① 待处理：刚建，等处理人接手
     {
-      id: 'iss-1', projectId: 'p-cip033', stageIdx: 4, seq: 1,
+      id: 'iss-1', projectId: 'p-cip045', stageIdx: 5, seq: 1,
+      problem: '热装工位温度传感器读数漂移', cause: '传感器校准超期',
+      tempMeasure: '', longMeasure: '',
+      issueType: '品质异常', owner: '谢工', handler: '王工',
+      occurDate: '2026-09-07', planDoneDate: '2026-09-15', actualDoneDate: '', status: 'pending',
+      flow: [flow('create', '2026-09-07 09:12', '谢工', '新建异常，指定处理人：王工')]
+    },
+    // ② 已处理待确认：建 → 处理
+    {
+      id: 'iss-2', projectId: 'p-cip045', stageIdx: 5, seq: 2,
+      problem: '供料机构偶发卡料', cause: '料仓导向条间隙偏大',
+      tempMeasure: '垫片调整导向条间隙至 0.3mm，人工巡检每 2 小时一次', longMeasure: '',
+      issueType: '装配问题', owner: '谢工', handler: '李鹏超',
+      occurDate: '2026-09-03', planDoneDate: '2026-09-12', actualDoneDate: '', status: 'handled',
+      flow: [
+        flow('create', '2026-09-03 10:20', '谢工', '新建异常，指定处理人：李鹏超'),
+        flow('handle', '2026-09-04 15:40', '李鹏超', '临时措施：垫片调整导向条间隙至 0.3mm，人工巡检每 2 小时一次')
+      ]
+    },
+    // ③ 已优化待确认：建 → 优化（临时+长期一次到位）
+    {
+      id: 'iss-3', projectId: 'p-cip045', stageIdx: 5, seq: 3,
+      problem: '气缸安装板方向装反', cause: '装配图未标注方向基准',
+      tempMeasure: '现场拆装调换气缸安装板方向', longMeasure: '装配图增加方向基准箭头，工艺卡同步更新并纳入首件检查项',
+      issueType: '结构设计', owner: '谢工', handler: '王工',
+      occurDate: '2026-08-28', planDoneDate: '2026-09-10', actualDoneDate: '', status: 'optimized',
+      flow: [
+        flow('create', '2026-08-28 08:50', '谢工', '新建异常，指定处理人：王工'),
+        flow('optimize', '2026-08-29 17:05', '王工', '临时措施：现场拆装调换气缸安装板方向；长期措施：装配图增加方向基准箭头，工艺卡同步更新并纳入首件检查项')
+      ]
+    },
+    // ④ 已结案：建 → 处理 → 打回 → 再处理 → 结案（最长链，演示打回）
+    {
+      id: 'iss-4', projectId: 'p-cip045', stageIdx: 4, seq: 4,
+      problem: '伺服驱动器上电报 F-01 过流', cause: '动力线屏蔽层未接地，干扰导致误报',
+      tempMeasure: '动力线屏蔽层单端接地至机柜接地排，复测无报警', longMeasure: '',
+      issueType: '电气问题', owner: '李工', handler: '高工',
+      occurDate: '2026-08-10', planDoneDate: '2026-08-20', actualDoneDate: '2026-08-18', status: 'closed',
+      flow: [
+        flow('create', '2026-08-10 09:00', '李工', '新建异常，指定处理人：高工'),
+        flow('handle', '2026-08-12 14:30', '高工', '临时措施：更换驱动器后不再报警'),
+        flow('reject', '2026-08-13 09:15', '李工', '打回理由：换件属于试错，没定位到根因，换新机后仍有复发风险，请重新排查'),
+        flow('handle', '2026-08-17 16:20', '高工', '临时措施：动力线屏蔽层单端接地至机柜接地排，复测无报警'),
+        flow('close', '2026-08-18 10:05', '李工', '结案：根因明确（屏蔽层未接地），现场复测通过')
+      ]
+    },
+    // ① 待处理（被打回后退回，能看到打回理由）
+    {
+      id: 'iss-5', projectId: 'p-cip047', stageIdx: 4, seq: 1,
+      problem: '定子热装后同轴度超差 0.05mm', cause: '待重新确认',
+      tempMeasure: '增加热装后同轴度全检', longMeasure: '',
+      issueType: '品质异常', owner: '李工', handler: '王工',
+      occurDate: '2026-09-01', planDoneDate: '2026-09-16', actualDoneDate: '', status: 'pending',
+      flow: [
+        flow('create', '2026-09-01 11:10', '李工', '新建异常，指定处理人：王工'),
+        flow('handle', '2026-09-03 15:00', '王工', '临时措施：增加热装后同轴度全检'),
+        flow('reject', '2026-09-05 08:40', '李工', '打回理由：全检只是拦截不良，没解决热装工装定位问题，请给出定位方案')
+      ]
+    },
+    // ② 已处理待确认
+    {
+      id: 'iss-6', projectId: 'p-cip047', stageIdx: 4, seq: 2,
+      problem: '感应加热线圈温升过快', cause: '冷却水流量不足',
+      tempMeasure: '将冷却水流量由 8L/min 调至 12L/min，加装流量报警', longMeasure: '',
+      issueType: '电气问题', owner: '李工', handler: '高工',
+      occurDate: '2026-09-02', planDoneDate: '2026-09-14', actualDoneDate: '', status: 'handled',
+      flow: [
+        flow('create', '2026-09-02 13:25', '李工', '新建异常，指定处理人：高工'),
+        flow('handle', '2026-09-04 10:50', '高工', '临时措施：将冷却水流量由 8L/min 调至 12L/min，加装流量报警')
+      ]
+    },
+    // ③ 已优化待确认：建 → 处理 → 升级优化（演示 ②→③ 这条边）
+    {
+      id: 'iss-7', projectId: 'p-cip047', stageIdx: 3, seq: 3,
+      problem: '机器人上料抓手偶发打滑', cause: '真空吸盘吸力不足且无到位检测',
+      tempMeasure: '更换加大吸盘，节拍放慢 0.5s', longMeasure: '抓手增加真空压力检测与到位传感器，PLC 增加抓取失败重试与报警逻辑',
+      issueType: '软件调试', owner: '李工', handler: '李鹏超',
+      occurDate: '2026-08-22', planDoneDate: '2026-09-11', actualDoneDate: '', status: 'optimized',
+      flow: [
+        flow('create', '2026-08-22 09:30', '李工', '新建异常，指定处理人：李鹏超'),
+        flow('handle', '2026-08-25 14:10', '李鹏超', '临时措施：更换加大吸盘，节拍放慢 0.5s'),
+        flow('optimize', '2026-08-30 16:45', '李鹏超', '升级为优化 —— 长期措施：抓手增加真空压力检测与到位传感器，PLC 增加抓取失败重试与报警逻辑')
+      ]
+    },
+    // ④ 已结案：走优化路径结案
+    {
+      id: 'iss-8', projectId: 'p-cip047', stageIdx: 2, seq: 4,
+      problem: '电气图纸与实物端子号不一致', cause: '出图后现场改线未回签图纸',
+      tempMeasure: '现场按实物重新标注端子号', longMeasure: '建立改线回签流程：现场变更 24 小时内回签图纸，交付前由责任人核对',
+      issueType: '结构设计', owner: '李工', handler: '王工',
+      occurDate: '2026-07-15', planDoneDate: '2026-07-30', actualDoneDate: '2026-07-28', status: 'closed',
+      flow: [
+        flow('create', '2026-07-15 10:00', '李工', '新建异常，指定处理人：王工'),
+        flow('optimize', '2026-07-22 15:30', '王工', '临时措施：现场按实物重新标注端子号；长期措施：建立改线回签流程，现场变更 24 小时内回签图纸，交付前由责任人核对'),
+        flow('close', '2026-07-28 09:20', '李工', '结案：流程已纳入设计部作业指导书')
+      ]
+    },
+    // 原有两条，补齐 flow
+    {
+      id: 'iss-9', projectId: 'p-cip033', stageIdx: 4, seq: 1,
       problem: '集线器输出信号灯不亮', cause: '传感器被异物遮挡',
       tempMeasure: '现场清理异物、复位信号灯', longMeasure: '加装防护罩防止异物进入',
-      issueType: '电气问题', owner: '外包人员',
-      occurDate: '2026-05-18', planDoneDate: '2026-05-20', actualDoneDate: '2026-05-19', status: 'closed'
+      issueType: '电气问题', owner: '外包人员', handler: '李鹏超',
+      occurDate: '2026-05-18', planDoneDate: '2026-05-20', actualDoneDate: '2026-05-19', status: 'closed',
+      flow: [
+        flow('create', '2026-05-18 08:30', '外包人员', '新建异常，指定处理人：李鹏超'),
+        flow('optimize', '2026-05-19 11:00', '李鹏超', '临时措施：现场清理异物、复位信号灯；长期措施：加装防护罩防止异物进入'),
+        flow('close', '2026-05-19 17:30', '外包人员', '结案：防护罩已加装并验证')
+      ]
     },
     {
-      id: 'iss-2', projectId: 'p-cip033', stageIdx: 5, seq: 2,
-      problem: '5系电机供料机货叉与吸塑盒不匹配', cause: '气缸安装板装反',
-      tempMeasure: '现场手动调整供料机构，临时对位', longMeasure: '更改装配工艺，修正气缸安装板方向标识',
-      issueType: '装配问题', owner: '李鹏超',
-      occurDate: '2026-05-18', planDoneDate: '2026-05-22', actualDoneDate: '2026-05-20', status: 'closed'
-    },
-    {
-      id: 'iss-3', projectId: 'p-cip045', stageIdx: 5, seq: 1,
-      problem: '热装工位温度传感器读数漂移', cause: '传感器校准超期',
-      tempMeasure: '更换备用传感器', longMeasure: '',
-      issueType: '品质异常', owner: '谢工',
-      occurDate: '2026-08-25', planDoneDate: '2026-09-10', actualDoneDate: '', status: 'open'
-    },
-    {
-      id: 'iss-4', projectId: 'p-cip010', stageIdx: 3, seq: 1,
+      id: 'iss-10', projectId: 'p-cip010', stageIdx: 3, seq: 1,
       problem: '清洗机排水阀渗漏', cause: '密封圈老化',
-      tempMeasure: '现场更换密封圈临时止漏', longMeasure: '',
-      issueType: '结构设计', owner: '王工',
-      occurDate: '2026-08-28', planDoneDate: '2026-09-12', actualDoneDate: '', status: 'open'
-    },
-    {
-      id: 'iss-5', projectId: 'p-cip010', stageIdx: 3, seq: 2,
-      problem: 'PLC 清洗流程时序错乱', cause: '软件逻辑未覆盖异常复位场景',
-      tempMeasure: '人工干预复位', longMeasure: '',
-      issueType: '软件调试', owner: '高工',
-      occurDate: '2026-08-30', planDoneDate: '2026-09-15', actualDoneDate: '', status: 'open'
+      tempMeasure: '', longMeasure: '',
+      issueType: '结构设计', owner: '王工', handler: '谢工',
+      occurDate: '2026-08-28', planDoneDate: '2026-09-12', actualDoneDate: '', status: 'pending',
+      flow: [flow('create', '2026-08-28 14:00', '王工', '新建异常，指定处理人：谢工')]
     }
   ]
 }
