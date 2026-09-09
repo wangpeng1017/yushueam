@@ -95,9 +95,11 @@ curl -s http://8.130.182.148:3010/assets/<chunk名>.js | grep -c "<标识>"
 
 - 远程：`origin` → `https://github.com/wangpeng1017/yushueam-archived.git`
 - 当前分支：`dev_2026.3.1`
+- 推送：`git push origin dev_2026.3.1`（2026-09-09 实测可写，仓库名里的 `-archived` 只是名字，不是 GitHub 归档态）
 - 排除：`dist/`、`.playwright-mcp/`（已在 .gitignore 或不提交）
-- ⚠️ 2026-09-09 实测 `git ls-remote origin` 报 `schannel: failed to receive handshake, SSL/TLS connection failed`，
-  且仓库名带 `-archived`（GitHub 归档仓库为只读）。**push 前须王老师确认正确的远程地址**。
+- ⚠️ 偶发 `schannel: failed to receive handshake, SSL/TLS connection failed`（网络抖动），重试即可，不是权限问题
+- ⚠️ 工作区里长期存在与功能无关的未提交改动（`deploy.sh`、`_unitree-style/sync.sh`、`pnpm-lock.yaml`、`pnpm-workspace.yaml`），
+  **提交时按文件显式 `git add`，不要 `git add -A`**
 
 ## 文档同步清单
 
